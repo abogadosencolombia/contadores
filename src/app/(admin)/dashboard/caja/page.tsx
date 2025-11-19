@@ -3,12 +3,24 @@
 import React, { useState, useEffect } from 'react';
 import PageBreadCrumb from '@/components/common/PageBreadCrumb';
 import Alert from '@/components/ui/alert/Alert';
+import WompiConfigForm from '@/components/pagos/WompiConfigForm';
 
-// Define the type for the Wompi object
+// Define the type for the Wompi object and its initialize callback parameters
 declare global {
   interface Window {
-    $wompi: any;
+    $wompi: {
+      initialize: (callback: (data: WompiInitializeData, error: WompiInitializeError | null) => void) => void;
+    };
   }
+}
+
+interface WompiInitializeData {
+  sessionId: string;
+}
+
+interface WompiInitializeError {
+  message: string;
+  // Add other properties if known
 }
 
 export default function CajaPage() {
@@ -27,7 +39,7 @@ export default function CajaPage() {
     const interval = setInterval(() => {
       if (window.$wompi) {
         clearInterval(interval);
-        window.$wompi.initialize((data: any, error: any) => {
+        window.$wompi.initialize((data: WompiInitializeData, error: WompiInitializeError | null) => {
           if (error === null) {
             setSessionId(data.sessionId);
             console.log('Wompi sessionId:', data.sessionId);
@@ -83,6 +95,10 @@ export default function CajaPage() {
             <h3 className="font-semibold text-md mb-2">Cuentas por Cobrar</h3>
             <p className="text-sm text-gray-500">Monitorización de facturas de clientes y alertas de mora.</p>
           </div>
+        </div>
+
+        <div className="mt-8">
+            <WompiConfigForm />
         </div>
       </div>
     </>

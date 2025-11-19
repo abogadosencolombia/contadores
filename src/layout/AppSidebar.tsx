@@ -68,14 +68,21 @@ const navItems: NavItem[] = [
     path: "/dashboard/reportes-regulatorios",
   },
   {
-      icon: <DollarLineIcon />,
-      name: "Capital Extranjero",
-      // Se elimina el 'path' principal
-      subItems: [
-        { name: "Reportes", path: "/dashboard/capital-extranjero" },
-        { name: "Registrar", path: "/dashboard/capital-extranjero/registrar" },
-      ],
-    },
+    icon: <DollarLineIcon />,
+    name: "Capital Extranjero",
+    // Se elimina el 'path' principal
+    subItems: [
+      { name: "Reportes", path: "/dashboard/capital-extranjero" },
+      { name: "Registrar", path: "/dashboard/capital-extranjero/registrar" },
+    ],
+  },
+  {
+    icon: <PageIcon />,
+    name: "Tesoreria",
+    subItems: [
+      { name: "Cuentas", path: "/dashboard/tesoreria/cuentas" },
+    ],
+  },
   {
     icon: <DollarLineIcon />, // Reusing DollarLineIcon, or a new one if available
     name: "Pagos",
