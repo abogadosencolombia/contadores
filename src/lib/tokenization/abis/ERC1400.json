@@ -1,0 +1,3 @@
+[
+  "function issueByPartition(bytes32 partition, address tokenHolder, uint256 value, bytes data) external"
+]

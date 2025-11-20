@@ -39,3 +39,5 @@ yarn-error.log*
 next-env.d.ts
 
 /secure_uploads/
+
+/Database.sql
