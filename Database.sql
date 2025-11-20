@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict qWTUr06Zg6pxoLDsqAGjjVMTzyoznVXKh6KQAndMLtvstNtRvGzz5UWpaRondfU
+\restrict LyG2pBknmbKBa3GVv6GZPbfxucxnki0CRRBZIn9qNeRVixYo6EKq5I0bac7KyYx
 
 -- Dumped from database version 18.0
 -- Dumped by pg_dump version 18.0
 
--- Started on 2025-11-20 08:58:25
+-- Started on 2025-11-20 10:10:55
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -86,7 +86,7 @@ CREATE SEQUENCE core.accionistas_id_seq
 ALTER SEQUENCE core.accionistas_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5395 (class 0 OID 0)
+-- TOC entry 5397 (class 0 OID 0)
 -- Dependencies: 262
 -- Name: accionistas_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -129,7 +129,7 @@ CREATE SEQUENCE core.aml_log_id_seq
 ALTER SEQUENCE core.aml_log_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5396 (class 0 OID 0)
+-- TOC entry 5398 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: aml_log_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -175,7 +175,7 @@ CREATE SEQUENCE core.auditoria_etica_id_seq
 ALTER SEQUENCE core.auditoria_etica_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5397 (class 0 OID 0)
+-- TOC entry 5399 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: auditoria_etica_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -221,7 +221,7 @@ CREATE SEQUENCE core.auditoria_explicabilidad_id_seq
 ALTER SEQUENCE core.auditoria_explicabilidad_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5398 (class 0 OID 0)
+-- TOC entry 5400 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: auditoria_explicabilidad_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -264,7 +264,7 @@ CREATE SEQUENCE core.auditoria_pagos_log_id_seq
 ALTER SEQUENCE core.auditoria_pagos_log_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5399 (class 0 OID 0)
+-- TOC entry 5401 (class 0 OID 0)
 -- Dependencies: 258
 -- Name: auditoria_pagos_log_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -312,7 +312,7 @@ CREATE SEQUENCE core.balances_financieros_id_seq
 ALTER SEQUENCE core.balances_financieros_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5400 (class 0 OID 0)
+-- TOC entry 5402 (class 0 OID 0)
 -- Dependencies: 241
 -- Name: balances_financieros_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -360,7 +360,7 @@ CREATE SEQUENCE core.canal_etico_casos_id_seq
 ALTER SEQUENCE core.canal_etico_casos_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5401 (class 0 OID 0)
+-- TOC entry 5403 (class 0 OID 0)
 -- Dependencies: 249
 -- Name: canal_etico_casos_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -403,7 +403,7 @@ CREATE SEQUENCE core.canal_etico_respuestas_id_seq
 ALTER SEQUENCE core.canal_etico_respuestas_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5402 (class 0 OID 0)
+-- TOC entry 5404 (class 0 OID 0)
 -- Dependencies: 251
 -- Name: canal_etico_respuestas_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -423,7 +423,8 @@ CREATE TABLE core.cap_table (
     porcentaje numeric(6,3),
     fecha timestamp without time zone DEFAULT now(),
     lockup_hasta date,
-    calificado boolean DEFAULT false
+    calificado boolean DEFAULT false,
+    cantidad numeric(18,0) DEFAULT 0
 );
 
 
@@ -446,7 +447,7 @@ CREATE SEQUENCE core.cap_table_id_seq
 ALTER SEQUENCE core.cap_table_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5403 (class 0 OID 0)
+-- TOC entry 5405 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: cap_table_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -489,7 +490,7 @@ CREATE SEQUENCE core.certificadosdividendos_id_seq
 ALTER SEQUENCE core.certificadosdividendos_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5404 (class 0 OID 0)
+-- TOC entry 5406 (class 0 OID 0)
 -- Dependencies: 266
 -- Name: certificadosdividendos_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -534,7 +535,7 @@ CREATE SEQUENCE core.configuracion_pagos_id_seq
 ALTER SEQUENCE core.configuracion_pagos_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5405 (class 0 OID 0)
+-- TOC entry 5407 (class 0 OID 0)
 -- Dependencies: 280
 -- Name: configuracion_pagos_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -577,7 +578,7 @@ CREATE SEQUENCE core.consent_cookies_id_seq
 ALTER SEQUENCE core.consent_cookies_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5406 (class 0 OID 0)
+-- TOC entry 5408 (class 0 OID 0)
 -- Dependencies: 235
 -- Name: consent_cookies_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -620,7 +621,7 @@ CREATE SEQUENCE core.consent_log_id_seq
 ALTER SEQUENCE core.consent_log_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5407 (class 0 OID 0)
+-- TOC entry 5409 (class 0 OID 0)
 -- Dependencies: 239
 -- Name: consent_log_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -664,7 +665,7 @@ CREATE SEQUENCE core.cuentas_bancarias_id_seq
 ALTER SEQUENCE core.cuentas_bancarias_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5408 (class 0 OID 0)
+-- TOC entry 5410 (class 0 OID 0)
 -- Dependencies: 274
 -- Name: cuentas_bancarias_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -708,7 +709,7 @@ CREATE SEQUENCE core.data_lineage_id_seq
 ALTER SEQUENCE core.data_lineage_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5409 (class 0 OID 0)
+-- TOC entry 5411 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: data_lineage_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -752,7 +753,7 @@ CREATE SEQUENCE core.dividendospagados_id_seq
 ALTER SEQUENCE core.dividendospagados_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5410 (class 0 OID 0)
+-- TOC entry 5412 (class 0 OID 0)
 -- Dependencies: 264
 -- Name: dividendospagados_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -810,7 +811,7 @@ CREATE SEQUENCE core.documentos_legales_id_seq
 ALTER SEQUENCE core.documentos_legales_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5411 (class 0 OID 0)
+-- TOC entry 5413 (class 0 OID 0)
 -- Dependencies: 247
 -- Name: documentos_legales_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -873,7 +874,7 @@ CREATE SEQUENCE core.facturas_id_seq
 ALTER SEQUENCE core.facturas_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5412 (class 0 OID 0)
+-- TOC entry 5414 (class 0 OID 0)
 -- Dependencies: 246
 -- Name: facturas_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -922,7 +923,7 @@ CREATE SEQUENCE core.inversiones_extranjeras_id_seq
 ALTER SEQUENCE core.inversiones_extranjeras_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5413 (class 0 OID 0)
+-- TOC entry 5415 (class 0 OID 0)
 -- Dependencies: 268
 -- Name: inversiones_extranjeras_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -972,7 +973,7 @@ CREATE SEQUENCE core.movimientos_caja_id_seq
 ALTER SEQUENCE core.movimientos_caja_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5414 (class 0 OID 0)
+-- TOC entry 5416 (class 0 OID 0)
 -- Dependencies: 276
 -- Name: movimientos_caja_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -1032,7 +1033,7 @@ CREATE SEQUENCE core.ordenes_pago_id_seq
 ALTER SEQUENCE core.ordenes_pago_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5415 (class 0 OID 0)
+-- TOC entry 5417 (class 0 OID 0)
 -- Dependencies: 256
 -- Name: ordenes_pago_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -1076,7 +1077,7 @@ CREATE SEQUENCE core.postmortems_id_seq
 ALTER SEQUENCE core.postmortems_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5416 (class 0 OID 0)
+-- TOC entry 5418 (class 0 OID 0)
 -- Dependencies: 231
 -- Name: postmortems_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -1123,7 +1124,7 @@ CREATE SEQUENCE core.presupuestos_id_seq
 ALTER SEQUENCE core.presupuestos_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5417 (class 0 OID 0)
+-- TOC entry 5419 (class 0 OID 0)
 -- Dependencies: 272
 -- Name: presupuestos_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -1174,7 +1175,7 @@ CREATE SEQUENCE core.reportes_dcin_id_seq
 ALTER SEQUENCE core.reportes_dcin_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5418 (class 0 OID 0)
+-- TOC entry 5420 (class 0 OID 0)
 -- Dependencies: 270
 -- Name: reportes_dcin_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -1224,7 +1225,7 @@ CREATE SEQUENCE core.reportes_regulatorios_id_seq
 ALTER SEQUENCE core.reportes_regulatorios_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5419 (class 0 OID 0)
+-- TOC entry 5421 (class 0 OID 0)
 -- Dependencies: 253
 -- Name: reportes_regulatorios_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -1272,7 +1273,7 @@ CREATE SEQUENCE core.riesgos_id_seq
 ALTER SEQUENCE core.riesgos_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5420 (class 0 OID 0)
+-- TOC entry 5422 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: riesgos_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -1310,7 +1311,7 @@ CREATE SEQUENCE core.roles_id_seq
 ALTER SEQUENCE core.roles_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5421 (class 0 OID 0)
+-- TOC entry 5423 (class 0 OID 0)
 -- Dependencies: 259
 -- Name: roles_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -1352,7 +1353,7 @@ CREATE SEQUENCE core.tenants_id_seq
 ALTER SEQUENCE core.tenants_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5422 (class 0 OID 0)
+-- TOC entry 5424 (class 0 OID 0)
 -- Dependencies: 243
 -- Name: tenants_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -1381,6 +1382,7 @@ CREATE TABLE core.tokenizacion_legal (
     contract_address text,
     token_standard character varying(20) DEFAULT 'ERC-1400'::character varying,
     documento_legal_id integer,
+    cantidad numeric(18,0) DEFAULT 0,
     CONSTRAINT tokenizacion_legal_estado_blockchain_check CHECK (((estado_blockchain)::text = ANY ((ARRAY['PENDIENTE'::character varying, 'MINADO'::character varying, 'FALLIDO'::character varying, 'CONFIRMADO'::character varying])::text[]))),
     CONSTRAINT tokenizacion_legal_tipo_red_check CHECK (((tipo_red)::text = ANY ((ARRAY['HYPERLEDGER'::character varying, 'ERC1400'::character varying, 'OFF_CHAIN'::character varying])::text[])))
 );
@@ -1405,7 +1407,7 @@ CREATE SEQUENCE core.tokenizacion_legal_id_seq
 ALTER SEQUENCE core.tokenizacion_legal_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5423 (class 0 OID 0)
+-- TOC entry 5425 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: tokenizacion_legal_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -1449,7 +1451,7 @@ CREATE SEQUENCE core.transacciones_bancarias_externas_id_seq
 ALTER SEQUENCE core.transacciones_bancarias_externas_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5424 (class 0 OID 0)
+-- TOC entry 5426 (class 0 OID 0)
 -- Dependencies: 278
 -- Name: transacciones_bancarias_externas_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -1506,7 +1508,7 @@ CREATE SEQUENCE core.users_id_seq
 ALTER SEQUENCE core.users_id_seq OWNER TO postgres;
 
 --
--- TOC entry 5425 (class 0 OID 0)
+-- TOC entry 5427 (class 0 OID 0)
 -- Dependencies: 237
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: core; Owner: postgres
 --
@@ -1515,7 +1517,7 @@ ALTER SEQUENCE core.users_id_seq OWNED BY core.users.id;
 
 
 --
--- TOC entry 4975 (class 2604 OID 49403)
+-- TOC entry 4977 (class 2604 OID 49403)
 -- Name: accionistas id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1523,7 +1525,7 @@ ALTER TABLE ONLY core.accionistas ALTER COLUMN id SET DEFAULT nextval('core.acci
 
 
 --
--- TOC entry 4923 (class 2604 OID 24620)
+-- TOC entry 4924 (class 2604 OID 24620)
 -- Name: aml_log id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1547,7 +1549,7 @@ ALTER TABLE ONLY core.auditoria_explicabilidad ALTER COLUMN id SET DEFAULT nextv
 
 
 --
--- TOC entry 4972 (class 2604 OID 41120)
+-- TOC entry 4974 (class 2604 OID 41120)
 -- Name: auditoria_pagos_log id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1555,7 +1557,7 @@ ALTER TABLE ONLY core.auditoria_pagos_log ALTER COLUMN id SET DEFAULT nextval('c
 
 
 --
--- TOC entry 4942 (class 2604 OID 24759)
+-- TOC entry 4944 (class 2604 OID 24759)
 -- Name: balances_financieros id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1563,7 +1565,7 @@ ALTER TABLE ONLY core.balances_financieros ALTER COLUMN id SET DEFAULT nextval('
 
 
 --
--- TOC entry 4957 (class 2604 OID 24965)
+-- TOC entry 4959 (class 2604 OID 24965)
 -- Name: canal_etico_casos id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1571,7 +1573,7 @@ ALTER TABLE ONLY core.canal_etico_casos ALTER COLUMN id SET DEFAULT nextval('cor
 
 
 --
--- TOC entry 4961 (class 2604 OID 25002)
+-- TOC entry 4963 (class 2604 OID 25002)
 -- Name: canal_etico_respuestas id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1579,7 +1581,7 @@ ALTER TABLE ONLY core.canal_etico_respuestas ALTER COLUMN id SET DEFAULT nextval
 
 
 --
--- TOC entry 4925 (class 2604 OID 24629)
+-- TOC entry 4926 (class 2604 OID 24629)
 -- Name: cap_table id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1587,7 +1589,7 @@ ALTER TABLE ONLY core.cap_table ALTER COLUMN id SET DEFAULT nextval('core.cap_ta
 
 
 --
--- TOC entry 4979 (class 2604 OID 49447)
+-- TOC entry 4981 (class 2604 OID 49447)
 -- Name: certificadosdividendos id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1595,7 +1597,7 @@ ALTER TABLE ONLY core.certificadosdividendos ALTER COLUMN id SET DEFAULT nextval
 
 
 --
--- TOC entry 4999 (class 2604 OID 73838)
+-- TOC entry 5001 (class 2604 OID 73838)
 -- Name: configuracion_pagos id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1603,7 +1605,7 @@ ALTER TABLE ONLY core.configuracion_pagos ALTER COLUMN id SET DEFAULT nextval('c
 
 
 --
--- TOC entry 4934 (class 2604 OID 24675)
+-- TOC entry 4936 (class 2604 OID 24675)
 -- Name: consent_cookies id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1611,7 +1613,7 @@ ALTER TABLE ONLY core.consent_cookies ALTER COLUMN id SET DEFAULT nextval('core.
 
 
 --
--- TOC entry 4940 (class 2604 OID 24704)
+-- TOC entry 4942 (class 2604 OID 24704)
 -- Name: consent_log id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1619,7 +1621,7 @@ ALTER TABLE ONLY core.consent_log ALTER COLUMN id SET DEFAULT nextval('core.cons
 
 
 --
--- TOC entry 4992 (class 2604 OID 65683)
+-- TOC entry 4994 (class 2604 OID 65683)
 -- Name: cuentas_bancarias id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1627,7 +1629,7 @@ ALTER TABLE ONLY core.cuentas_bancarias ALTER COLUMN id SET DEFAULT nextval('cor
 
 
 --
--- TOC entry 4932 (class 2604 OID 24664)
+-- TOC entry 4934 (class 2604 OID 24664)
 -- Name: data_lineage id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1635,7 +1637,7 @@ ALTER TABLE ONLY core.data_lineage ALTER COLUMN id SET DEFAULT nextval('core.dat
 
 
 --
--- TOC entry 4977 (class 2604 OID 49427)
+-- TOC entry 4979 (class 2604 OID 49427)
 -- Name: dividendospagados id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1643,7 +1645,7 @@ ALTER TABLE ONLY core.dividendospagados ALTER COLUMN id SET DEFAULT nextval('cor
 
 
 --
--- TOC entry 4953 (class 2604 OID 24848)
+-- TOC entry 4955 (class 2604 OID 24848)
 -- Name: documentos_legales id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1651,7 +1653,7 @@ ALTER TABLE ONLY core.documentos_legales ALTER COLUMN id SET DEFAULT nextval('co
 
 
 --
--- TOC entry 4947 (class 2604 OID 24826)
+-- TOC entry 4949 (class 2604 OID 24826)
 -- Name: facturas id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1659,7 +1661,7 @@ ALTER TABLE ONLY core.facturas ALTER COLUMN id SET DEFAULT nextval('core.factura
 
 
 --
--- TOC entry 4981 (class 2604 OID 57460)
+-- TOC entry 4983 (class 2604 OID 57460)
 -- Name: inversiones_extranjeras id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1667,7 +1669,7 @@ ALTER TABLE ONLY core.inversiones_extranjeras ALTER COLUMN id SET DEFAULT nextva
 
 
 --
--- TOC entry 4994 (class 2604 OID 65703)
+-- TOC entry 4996 (class 2604 OID 65703)
 -- Name: movimientos_caja id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1675,7 +1677,7 @@ ALTER TABLE ONLY core.movimientos_caja ALTER COLUMN id SET DEFAULT nextval('core
 
 
 --
--- TOC entry 4967 (class 2604 OID 41086)
+-- TOC entry 4969 (class 2604 OID 41086)
 -- Name: ordenes_pago id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1683,7 +1685,7 @@ ALTER TABLE ONLY core.ordenes_pago ALTER COLUMN id SET DEFAULT nextval('core.ord
 
 
 --
--- TOC entry 4930 (class 2604 OID 24653)
+-- TOC entry 4932 (class 2604 OID 24653)
 -- Name: postmortems id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1691,7 +1693,7 @@ ALTER TABLE ONLY core.postmortems ALTER COLUMN id SET DEFAULT nextval('core.post
 
 
 --
--- TOC entry 4989 (class 2604 OID 65654)
+-- TOC entry 4991 (class 2604 OID 65654)
 -- Name: presupuestos id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1699,7 +1701,7 @@ ALTER TABLE ONLY core.presupuestos ALTER COLUMN id SET DEFAULT nextval('core.pre
 
 
 --
--- TOC entry 4984 (class 2604 OID 57490)
+-- TOC entry 4986 (class 2604 OID 57490)
 -- Name: reportes_dcin id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1707,7 +1709,7 @@ ALTER TABLE ONLY core.reportes_dcin ALTER COLUMN id SET DEFAULT nextval('core.re
 
 
 --
--- TOC entry 4964 (class 2604 OID 32878)
+-- TOC entry 4966 (class 2604 OID 32878)
 -- Name: reportes_regulatorios id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1715,7 +1717,7 @@ ALTER TABLE ONLY core.reportes_regulatorios ALTER COLUMN id SET DEFAULT nextval(
 
 
 --
--- TOC entry 4928 (class 2604 OID 24639)
+-- TOC entry 4930 (class 2604 OID 24639)
 -- Name: riesgos id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1723,7 +1725,7 @@ ALTER TABLE ONLY core.riesgos ALTER COLUMN id SET DEFAULT nextval('core.riesgos_
 
 
 --
--- TOC entry 4974 (class 2604 OID 49262)
+-- TOC entry 4976 (class 2604 OID 49262)
 -- Name: roles id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1731,7 +1733,7 @@ ALTER TABLE ONLY core.roles ALTER COLUMN id SET DEFAULT nextval('core.roles_id_s
 
 
 --
--- TOC entry 4945 (class 2604 OID 24784)
+-- TOC entry 4947 (class 2604 OID 24784)
 -- Name: tenants id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1747,7 +1749,7 @@ ALTER TABLE ONLY core.tokenizacion_legal ALTER COLUMN id SET DEFAULT nextval('co
 
 
 --
--- TOC entry 4997 (class 2604 OID 65741)
+-- TOC entry 4999 (class 2604 OID 65741)
 -- Name: transacciones_bancarias_externas id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1755,7 +1757,7 @@ ALTER TABLE ONLY core.transacciones_bancarias_externas ALTER COLUMN id SET DEFAU
 
 
 --
--- TOC entry 4936 (class 2604 OID 24686)
+-- TOC entry 4938 (class 2604 OID 24686)
 -- Name: users id; Type: DEFAULT; Schema: core; Owner: postgres
 --
 
@@ -1763,7 +1765,7 @@ ALTER TABLE ONLY core.users ALTER COLUMN id SET DEFAULT nextval('core.users_id_s
 
 
 --
--- TOC entry 5371 (class 0 OID 49400)
+-- TOC entry 5373 (class 0 OID 49400)
 -- Dependencies: 263
 -- Data for Name: accionistas; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -1776,18 +1778,31 @@ COPY core.accionistas (id, tenant_id, nombre_completo, tipo_documento, numero_do
 
 
 --
--- TOC entry 5334 (class 0 OID 24617)
+-- TOC entry 5336 (class 0 OID 24617)
 -- Dependencies: 226
 -- Data for Name: aml_log; Type: TABLE DATA; Schema: core; Owner: postgres
 --
 
 COPY core.aml_log (id, inversionista_id, tipo_operacion, monto, pais_origen, riesgo, fecha) FROM stdin;
 1	2	EMISION_TOKEN	1132321321.00	\N	BAJO	2025-11-20 07:38:45.48142
+2	1	EMISION_TOKEN	1000.00	\N	BAJO	2025-11-20 09:02:40.923233
+3	7	EMISION_TOKEN	1000.00	\N	BAJO	2025-11-20 09:02:44.858558
+4	5	EMISION_TOKEN	1000.00	\N	BAJO	2025-11-20 09:02:48.646454
+5	1	EMISION_TOKEN	654564546.00	\N	BAJO	2025-11-20 09:03:18.891654
+6	1	EMISION_TOKEN	1132321332.00	\N	BAJO	2025-11-20 09:06:34.623757
+7	4	EMISION_TOKEN	1000.00	\N	BAJO	2025-11-20 09:23:14.183241
+8	1	EMISION_TOKEN	1000.00	\N	BAJO	2025-11-20 09:25:11.409059
+9	4	EMISION_TOKEN	1000.00	\N	BAJO	2025-11-20 09:25:12.713322
+10	6	EMISION_TOKEN	1000.00	\N	BAJO	2025-11-20 09:25:15.79771
+11	5	EMISION_TOKEN	1000.00	\N	BAJO	2025-11-20 09:25:19.08946
+12	1	EMISION_TOKEN	5000.00	\N	BAJO	2025-11-20 09:25:51.455946
+13	4	EMISION_TOKEN	5000.00	\N	BAJO	2025-11-20 09:25:53.580517
+14	1	EMISION_TOKEN	1000000.00	\N	BAJO	2025-11-20 09:37:08.738399
 \.
 
 
 --
--- TOC entry 5330 (class 0 OID 24590)
+-- TOC entry 5332 (class 0 OID 24590)
 -- Dependencies: 222
 -- Data for Name: auditoria_etica; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -1797,7 +1812,7 @@ COPY core.auditoria_etica (id, decision_id, tipo_evento, descripcion, severidad,
 
 
 --
--- TOC entry 5328 (class 0 OID 24579)
+-- TOC entry 5330 (class 0 OID 24579)
 -- Dependencies: 220
 -- Data for Name: auditoria_explicabilidad; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -1807,7 +1822,7 @@ COPY core.auditoria_explicabilidad (id, modelo, version, decision, justificacion
 
 
 --
--- TOC entry 5365 (class 0 OID 41110)
+-- TOC entry 5367 (class 0 OID 41110)
 -- Dependencies: 257
 -- Data for Name: auditoria_pagos_log; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -1837,7 +1852,7 @@ COPY core.auditoria_pagos_log (id, orden_pago_id, user_id, accion, detalles, has
 
 
 --
--- TOC entry 5350 (class 0 OID 24756)
+-- TOC entry 5352 (class 0 OID 24756)
 -- Dependencies: 242
 -- Data for Name: balances_financieros; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -1852,7 +1867,7 @@ COPY core.balances_financieros (id, tenant_id, tipo_empresa, normativa, periodo_
 
 
 --
--- TOC entry 5358 (class 0 OID 24962)
+-- TOC entry 5360 (class 0 OID 24962)
 -- Dependencies: 250
 -- Data for Name: canal_etico_casos; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -1867,7 +1882,7 @@ COPY core.canal_etico_casos (id, tenant_id, caso_uuid, creado_por_user_id, titul
 
 
 --
--- TOC entry 5360 (class 0 OID 24999)
+-- TOC entry 5362 (class 0 OID 24999)
 -- Dependencies: 252
 -- Data for Name: canal_etico_respuestas; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -1877,18 +1892,24 @@ COPY core.canal_etico_respuestas (id, caso_id, user_id, mensaje, fecha_creacion,
 
 
 --
--- TOC entry 5336 (class 0 OID 24626)
+-- TOC entry 5338 (class 0 OID 24626)
 -- Dependencies: 228
 -- Data for Name: cap_table; Type: TABLE DATA; Schema: core; Owner: postgres
 --
 
-COPY core.cap_table (id, inversionista_id, token_id, porcentaje, fecha, lockup_hasta, calificado) FROM stdin;
-1	2	fc0b19a4-acb8-4d20-9083-0435f83aae4c	99.996	2025-11-20 07:38:45.478469	2026-11-20	f
+COPY core.cap_table (id, inversionista_id, token_id, porcentaje, fecha, lockup_hasta, calificado, cantidad) FROM stdin;
+8	1	4c4ece88-5bee-4445-adbb-1ae79c0908cf	0.118	2025-11-20 09:25:11.407781	2026-11-20	f	10
+9	4	7e9df68c-3992-4b9a-8001-24d8d3502128	0.118	2025-11-20 09:25:12.712861	2026-11-20	f	10
+10	6	14ceb454-d68d-4614-b9c7-9f9cdeb5c27e	0.118	2025-11-20 09:25:15.796954	2026-11-20	f	10
+11	5	a1b4568b-3d97-4194-85a2-02eb5813ecc6	0.118	2025-11-20 09:25:19.088935	2026-11-20	f	10
+12	1	1db2e35f-7d0f-4485-8b06-bd8bcb85f38a	0.118	2025-11-20 09:25:51.45469	2026-11-20	f	10
+13	4	35ba49a4-ed85-463d-896b-79bb760a2f27	0.118	2025-11-20 09:25:53.580013	2026-11-20	f	10
+14	1	c94e84f2-74c3-4011-b2d0-290f770194b9	50.000	2025-11-20 09:37:08.736355	2026-11-20	f	8500
 \.
 
 
 --
--- TOC entry 5375 (class 0 OID 49444)
+-- TOC entry 5377 (class 0 OID 49444)
 -- Dependencies: 267
 -- Data for Name: certificadosdividendos; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -1900,7 +1921,7 @@ COPY core.certificadosdividendos (id, accionista_id, ano_fiscal, verification_uu
 
 
 --
--- TOC entry 5389 (class 0 OID 73835)
+-- TOC entry 5391 (class 0 OID 73835)
 -- Dependencies: 281
 -- Data for Name: configuracion_pagos; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -1910,7 +1931,7 @@ COPY core.configuracion_pagos (id, tenant_id, proveedor, public_key, private_key
 
 
 --
--- TOC entry 5344 (class 0 OID 24672)
+-- TOC entry 5346 (class 0 OID 24672)
 -- Dependencies: 236
 -- Data for Name: consent_cookies; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -1920,7 +1941,7 @@ COPY core.consent_cookies (id, tenant, user_id, version_politica, categorias, ip
 
 
 --
--- TOC entry 5348 (class 0 OID 24701)
+-- TOC entry 5350 (class 0 OID 24701)
 -- Dependencies: 240
 -- Data for Name: consent_log; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -1942,7 +1963,7 @@ COPY core.consent_log (id, user_id, ip, fecha, version, finalidad, tenant) FROM 
 
 
 --
--- TOC entry 5383 (class 0 OID 65680)
+-- TOC entry 5385 (class 0 OID 65680)
 -- Dependencies: 275
 -- Data for Name: cuentas_bancarias; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -1953,7 +1974,7 @@ COPY core.cuentas_bancarias (id, tenant_id, nombre_banco, numero_cuenta_display,
 
 
 --
--- TOC entry 5342 (class 0 OID 24661)
+-- TOC entry 5344 (class 0 OID 24661)
 -- Dependencies: 234
 -- Data for Name: data_lineage; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -1963,7 +1984,7 @@ COPY core.data_lineage (id, dataset_id, dataset_hash, modelo, version, origen_da
 
 
 --
--- TOC entry 5373 (class 0 OID 49424)
+-- TOC entry 5375 (class 0 OID 49424)
 -- Dependencies: 265
 -- Data for Name: dividendospagados; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -1979,7 +2000,7 @@ COPY core.dividendospagados (id, accionista_id, ano_fiscal, monto_bruto, retenci
 
 
 --
--- TOC entry 5356 (class 0 OID 24845)
+-- TOC entry 5358 (class 0 OID 24845)
 -- Dependencies: 248
 -- Data for Name: documentos_legales; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -1991,7 +2012,7 @@ COPY core.documentos_legales (id, tenant_id, creado_por_user_id, titulo, descrip
 
 
 --
--- TOC entry 5353 (class 0 OID 24802)
+-- TOC entry 5355 (class 0 OID 24802)
 -- Dependencies: 245
 -- Data for Name: facturas; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -2010,7 +2031,7 @@ COPY core.facturas (id, tenant_id, creado_por_user_id, consecutivo, fecha_emisio
 
 
 --
--- TOC entry 5377 (class 0 OID 57457)
+-- TOC entry 5379 (class 0 OID 57457)
 -- Dependencies: 269
 -- Data for Name: inversiones_extranjeras; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -2028,7 +2049,7 @@ COPY core.inversiones_extranjeras (id, tenant_id, creado_por_user_id, nombre_inv
 
 
 --
--- TOC entry 5385 (class 0 OID 65700)
+-- TOC entry 5387 (class 0 OID 65700)
 -- Dependencies: 277
 -- Data for Name: movimientos_caja; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -2038,7 +2059,7 @@ COPY core.movimientos_caja (id, tenant_id, fecha, tipo_movimiento, monto, moneda
 
 
 --
--- TOC entry 5363 (class 0 OID 41066)
+-- TOC entry 5365 (class 0 OID 41066)
 -- Dependencies: 255
 -- Data for Name: ordenes_pago; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -2056,7 +2077,7 @@ COPY core.ordenes_pago (id, tenant_id, creado_por_user_id, proveedor_nit, provee
 
 
 --
--- TOC entry 5340 (class 0 OID 24650)
+-- TOC entry 5342 (class 0 OID 24650)
 -- Dependencies: 232
 -- Data for Name: postmortems; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -2066,7 +2087,7 @@ COPY core.postmortems (id, incidente_id, fecha, impacto, causa_raiz, acciones_co
 
 
 --
--- TOC entry 5381 (class 0 OID 65651)
+-- TOC entry 5383 (class 0 OID 65651)
 -- Dependencies: 273
 -- Data for Name: presupuestos; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -2076,7 +2097,7 @@ COPY core.presupuestos (id, tenant_id, creado_por_user_id, nombre, ano_fiscal, m
 
 
 --
--- TOC entry 5379 (class 0 OID 57487)
+-- TOC entry 5381 (class 0 OID 57487)
 -- Dependencies: 271
 -- Data for Name: reportes_dcin; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -2094,7 +2115,7 @@ COPY core.reportes_dcin (id, tenant_id, inversion_id, entidad_regulatoria, tipo_
 
 
 --
--- TOC entry 5362 (class 0 OID 32875)
+-- TOC entry 5364 (class 0 OID 32875)
 -- Dependencies: 254
 -- Data for Name: reportes_regulatorios; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -2105,7 +2126,7 @@ COPY core.reportes_regulatorios (id, tenant_id, balance_financiero_id, entidad_r
 
 
 --
--- TOC entry 5338 (class 0 OID 24636)
+-- TOC entry 5340 (class 0 OID 24636)
 -- Dependencies: 230
 -- Data for Name: riesgos; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -2124,7 +2145,7 @@ COPY core.riesgos (id, dominio, riesgo, probabilidad, impacto, owner, control, e
 
 
 --
--- TOC entry 5368 (class 0 OID 49259)
+-- TOC entry 5370 (class 0 OID 49259)
 -- Dependencies: 260
 -- Data for Name: roles; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -2135,7 +2156,7 @@ COPY core.roles (id, nombre_rol) FROM stdin;
 
 
 --
--- TOC entry 5352 (class 0 OID 24781)
+-- TOC entry 5354 (class 0 OID 24781)
 -- Dependencies: 244
 -- Data for Name: tenants; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -2148,18 +2169,24 @@ COPY core.tenants (id, tenant_id, nombre_empresa, subdominio, fecha_creacion, co
 
 
 --
--- TOC entry 5332 (class 0 OID 24603)
+-- TOC entry 5334 (class 0 OID 24603)
 -- Dependencies: 224
 -- Data for Name: tokenizacion_legal; Type: TABLE DATA; Schema: core; Owner: postgres
 --
 
-COPY core.tokenizacion_legal (id, token_id, inversionista_id, porcentaje, valor_inicial, hash_firma, registro_cambiario, fecha, tipo_red, estado_blockchain, tx_hash, block_number, contract_address, token_standard, documento_legal_id) FROM stdin;
-1	fc0b19a4-acb8-4d20-9083-0435f83aae4c	2	100.00	1132321321.00	95781a0d8bbd81e17a875eeb20c56a5951f5dc6cdc1176efcf3f0ca4eae35bce	f	2025-11-20 07:38:45.46896	OFF_CHAIN	CONFIRMADO	0xa4a43c58cb66aabd007e32db915e145731059829999c738b024893ba7e2db687	\N	\N	ERC-1400	19
+COPY core.tokenizacion_legal (id, token_id, inversionista_id, porcentaje, valor_inicial, hash_firma, registro_cambiario, fecha, tipo_red, estado_blockchain, tx_hash, block_number, contract_address, token_standard, documento_legal_id, cantidad) FROM stdin;
+8	4c4ece88-5bee-4445-adbb-1ae79c0908cf	1	0.12	1000.00	95781a0d8bbd81e17a875eeb20c56a5951f5dc6cdc1176efcf3f0ca4eae35bce	f	2025-11-20 09:25:11.404279	OFF_CHAIN	CONFIRMADO	0x5e0b60bd0f5766baa47ae49137437d2eb4015fba3afdce6b5b81a15c499e343d	\N	\N	ERC-1400	19	10
+9	7e9df68c-3992-4b9a-8001-24d8d3502128	4	0.12	1000.00	95781a0d8bbd81e17a875eeb20c56a5951f5dc6cdc1176efcf3f0ca4eae35bce	f	2025-11-20 09:25:12.711986	OFF_CHAIN	CONFIRMADO	0xe2baf7575b35a41b4f7feccdb58a64179e7c343263da59d2bc57cbda1db30211	\N	\N	ERC-1400	19	10
+10	14ceb454-d68d-4614-b9c7-9f9cdeb5c27e	6	0.12	1000.00	95781a0d8bbd81e17a875eeb20c56a5951f5dc6cdc1176efcf3f0ca4eae35bce	f	2025-11-20 09:25:15.795703	OFF_CHAIN	CONFIRMADO	0xa07d60db5476c6dbeca5fddb4c9ed65b4468fc81c5ecf1c547d18e1e7f9e5703	\N	\N	ERC-1400	19	10
+11	a1b4568b-3d97-4194-85a2-02eb5813ecc6	5	0.12	1000.00	95781a0d8bbd81e17a875eeb20c56a5951f5dc6cdc1176efcf3f0ca4eae35bce	f	2025-11-20 09:25:19.087611	OFF_CHAIN	CONFIRMADO	0xa70e95bd9915bdbbd96049dc41155a04ced918e53515906c516db16d74b0067e	\N	\N	ERC-1400	19	10
+12	1db2e35f-7d0f-4485-8b06-bd8bcb85f38a	1	0.12	5000.00	95781a0d8bbd81e17a875eeb20c56a5951f5dc6cdc1176efcf3f0ca4eae35bce	f	2025-11-20 09:25:51.451248	OFF_CHAIN	CONFIRMADO	0x060f7b066e7b4f5d1c2616338557973d92c06a10e88fecdcc5226a5c5ea6f709	\N	\N	ERC-1400	19	10
+13	35ba49a4-ed85-463d-896b-79bb760a2f27	4	0.12	5000.00	95781a0d8bbd81e17a875eeb20c56a5951f5dc6cdc1176efcf3f0ca4eae35bce	f	2025-11-20 09:25:53.578987	OFF_CHAIN	CONFIRMADO	0x67036bd04534982c44b614ed6f3084de67d805760c0382d108c104a74d8a3d04	\N	\N	ERC-1400	19	10
+14	c94e84f2-74c3-4011-b2d0-290f770194b9	1	50.00	1000000.00	95781a0d8bbd81e17a875eeb20c56a5951f5dc6cdc1176efcf3f0ca4eae35bce	f	2025-11-20 09:37:08.73335	OFF_CHAIN	CONFIRMADO	0x2faaad82d194c6d621c2df82e2403fb51ec1d9bd88cec9138716eb00a8f18fe0	\N	\N	ERC-1400	19	8500
 \.
 
 
 --
--- TOC entry 5387 (class 0 OID 65738)
+-- TOC entry 5389 (class 0 OID 65738)
 -- Dependencies: 279
 -- Data for Name: transacciones_bancarias_externas; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -2169,7 +2196,7 @@ COPY core.transacciones_bancarias_externas (id, cuenta_bancaria_id, pasarela_id_
 
 
 --
--- TOC entry 5369 (class 0 OID 49269)
+-- TOC entry 5371 (class 0 OID 49269)
 -- Dependencies: 261
 -- Data for Name: user_roles; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -2181,7 +2208,7 @@ COPY core.user_roles (user_id, role_id) FROM stdin;
 
 
 --
--- TOC entry 5346 (class 0 OID 24683)
+-- TOC entry 5348 (class 0 OID 24683)
 -- Dependencies: 238
 -- Data for Name: users; Type: TABLE DATA; Schema: core; Owner: postgres
 --
@@ -2198,7 +2225,7 @@ COPY core.users (id, email, password_hash, tenant_id, created_at, kyc_status, mf
 
 
 --
--- TOC entry 5426 (class 0 OID 0)
+-- TOC entry 5428 (class 0 OID 0)
 -- Dependencies: 262
 -- Name: accionistas_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2207,16 +2234,16 @@ SELECT pg_catalog.setval('core.accionistas_id_seq', 3, true);
 
 
 --
--- TOC entry 5427 (class 0 OID 0)
+-- TOC entry 5429 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: aml_log_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
 
-SELECT pg_catalog.setval('core.aml_log_id_seq', 1, true);
+SELECT pg_catalog.setval('core.aml_log_id_seq', 14, true);
 
 
 --
--- TOC entry 5428 (class 0 OID 0)
+-- TOC entry 5430 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: auditoria_etica_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2225,7 +2252,7 @@ SELECT pg_catalog.setval('core.auditoria_etica_id_seq', 1, false);
 
 
 --
--- TOC entry 5429 (class 0 OID 0)
+-- TOC entry 5431 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: auditoria_explicabilidad_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2234,7 +2261,7 @@ SELECT pg_catalog.setval('core.auditoria_explicabilidad_id_seq', 1, false);
 
 
 --
--- TOC entry 5430 (class 0 OID 0)
+-- TOC entry 5432 (class 0 OID 0)
 -- Dependencies: 258
 -- Name: auditoria_pagos_log_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2243,7 +2270,7 @@ SELECT pg_catalog.setval('core.auditoria_pagos_log_id_seq', 20, true);
 
 
 --
--- TOC entry 5431 (class 0 OID 0)
+-- TOC entry 5433 (class 0 OID 0)
 -- Dependencies: 241
 -- Name: balances_financieros_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2252,7 +2279,7 @@ SELECT pg_catalog.setval('core.balances_financieros_id_seq', 10, true);
 
 
 --
--- TOC entry 5432 (class 0 OID 0)
+-- TOC entry 5434 (class 0 OID 0)
 -- Dependencies: 249
 -- Name: canal_etico_casos_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2261,7 +2288,7 @@ SELECT pg_catalog.setval('core.canal_etico_casos_id_seq', 5, true);
 
 
 --
--- TOC entry 5433 (class 0 OID 0)
+-- TOC entry 5435 (class 0 OID 0)
 -- Dependencies: 251
 -- Name: canal_etico_respuestas_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2270,16 +2297,16 @@ SELECT pg_catalog.setval('core.canal_etico_respuestas_id_seq', 1, false);
 
 
 --
--- TOC entry 5434 (class 0 OID 0)
+-- TOC entry 5436 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: cap_table_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
 
-SELECT pg_catalog.setval('core.cap_table_id_seq', 1, true);
+SELECT pg_catalog.setval('core.cap_table_id_seq', 14, true);
 
 
 --
--- TOC entry 5435 (class 0 OID 0)
+-- TOC entry 5437 (class 0 OID 0)
 -- Dependencies: 266
 -- Name: certificadosdividendos_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2288,7 +2315,7 @@ SELECT pg_catalog.setval('core.certificadosdividendos_id_seq', 3, true);
 
 
 --
--- TOC entry 5436 (class 0 OID 0)
+-- TOC entry 5438 (class 0 OID 0)
 -- Dependencies: 280
 -- Name: configuracion_pagos_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2297,7 +2324,7 @@ SELECT pg_catalog.setval('core.configuracion_pagos_id_seq', 1, false);
 
 
 --
--- TOC entry 5437 (class 0 OID 0)
+-- TOC entry 5439 (class 0 OID 0)
 -- Dependencies: 235
 -- Name: consent_cookies_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2306,7 +2333,7 @@ SELECT pg_catalog.setval('core.consent_cookies_id_seq', 1, false);
 
 
 --
--- TOC entry 5438 (class 0 OID 0)
+-- TOC entry 5440 (class 0 OID 0)
 -- Dependencies: 239
 -- Name: consent_log_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2315,7 +2342,7 @@ SELECT pg_catalog.setval('core.consent_log_id_seq', 12, true);
 
 
 --
--- TOC entry 5439 (class 0 OID 0)
+-- TOC entry 5441 (class 0 OID 0)
 -- Dependencies: 274
 -- Name: cuentas_bancarias_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2324,7 +2351,7 @@ SELECT pg_catalog.setval('core.cuentas_bancarias_id_seq', 1, true);
 
 
 --
--- TOC entry 5440 (class 0 OID 0)
+-- TOC entry 5442 (class 0 OID 0)
 -- Dependencies: 233
 -- Name: data_lineage_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2333,7 +2360,7 @@ SELECT pg_catalog.setval('core.data_lineage_id_seq', 1, false);
 
 
 --
--- TOC entry 5441 (class 0 OID 0)
+-- TOC entry 5443 (class 0 OID 0)
 -- Dependencies: 264
 -- Name: dividendospagados_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2342,7 +2369,7 @@ SELECT pg_catalog.setval('core.dividendospagados_id_seq', 6, true);
 
 
 --
--- TOC entry 5442 (class 0 OID 0)
+-- TOC entry 5444 (class 0 OID 0)
 -- Dependencies: 247
 -- Name: documentos_legales_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2351,7 +2378,7 @@ SELECT pg_catalog.setval('core.documentos_legales_id_seq', 28, true);
 
 
 --
--- TOC entry 5443 (class 0 OID 0)
+-- TOC entry 5445 (class 0 OID 0)
 -- Dependencies: 246
 -- Name: facturas_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2360,7 +2387,7 @@ SELECT pg_catalog.setval('core.facturas_id_seq', 9, true);
 
 
 --
--- TOC entry 5444 (class 0 OID 0)
+-- TOC entry 5446 (class 0 OID 0)
 -- Dependencies: 268
 -- Name: inversiones_extranjeras_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2369,7 +2396,7 @@ SELECT pg_catalog.setval('core.inversiones_extranjeras_id_seq', 8, true);
 
 
 --
--- TOC entry 5445 (class 0 OID 0)
+-- TOC entry 5447 (class 0 OID 0)
 -- Dependencies: 276
 -- Name: movimientos_caja_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2378,7 +2405,7 @@ SELECT pg_catalog.setval('core.movimientos_caja_id_seq', 1, false);
 
 
 --
--- TOC entry 5446 (class 0 OID 0)
+-- TOC entry 5448 (class 0 OID 0)
 -- Dependencies: 256
 -- Name: ordenes_pago_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2387,7 +2414,7 @@ SELECT pg_catalog.setval('core.ordenes_pago_id_seq', 8, true);
 
 
 --
--- TOC entry 5447 (class 0 OID 0)
+-- TOC entry 5449 (class 0 OID 0)
 -- Dependencies: 231
 -- Name: postmortems_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2396,7 +2423,7 @@ SELECT pg_catalog.setval('core.postmortems_id_seq', 1, false);
 
 
 --
--- TOC entry 5448 (class 0 OID 0)
+-- TOC entry 5450 (class 0 OID 0)
 -- Dependencies: 272
 -- Name: presupuestos_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2405,7 +2432,7 @@ SELECT pg_catalog.setval('core.presupuestos_id_seq', 1, false);
 
 
 --
--- TOC entry 5449 (class 0 OID 0)
+-- TOC entry 5451 (class 0 OID 0)
 -- Dependencies: 270
 -- Name: reportes_dcin_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2414,7 +2441,7 @@ SELECT pg_catalog.setval('core.reportes_dcin_id_seq', 8, true);
 
 
 --
--- TOC entry 5450 (class 0 OID 0)
+-- TOC entry 5452 (class 0 OID 0)
 -- Dependencies: 253
 -- Name: reportes_regulatorios_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2423,7 +2450,7 @@ SELECT pg_catalog.setval('core.reportes_regulatorios_id_seq', 5, true);
 
 
 --
--- TOC entry 5451 (class 0 OID 0)
+-- TOC entry 5453 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: riesgos_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2432,7 +2459,7 @@ SELECT pg_catalog.setval('core.riesgos_id_seq', 11, true);
 
 
 --
--- TOC entry 5452 (class 0 OID 0)
+-- TOC entry 5454 (class 0 OID 0)
 -- Dependencies: 259
 -- Name: roles_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2441,7 +2468,7 @@ SELECT pg_catalog.setval('core.roles_id_seq', 1, true);
 
 
 --
--- TOC entry 5453 (class 0 OID 0)
+-- TOC entry 5455 (class 0 OID 0)
 -- Dependencies: 243
 -- Name: tenants_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2450,16 +2477,16 @@ SELECT pg_catalog.setval('core.tenants_id_seq', 3, true);
 
 
 --
--- TOC entry 5454 (class 0 OID 0)
+-- TOC entry 5456 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: tokenizacion_legal_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
 
-SELECT pg_catalog.setval('core.tokenizacion_legal_id_seq', 1, true);
+SELECT pg_catalog.setval('core.tokenizacion_legal_id_seq', 14, true);
 
 
 --
--- TOC entry 5455 (class 0 OID 0)
+-- TOC entry 5457 (class 0 OID 0)
 -- Dependencies: 278
 -- Name: transacciones_bancarias_externas_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2468,7 +2495,7 @@ SELECT pg_catalog.setval('core.transacciones_bancarias_externas_id_seq', 1, fals
 
 
 --
--- TOC entry 5456 (class 0 OID 0)
+-- TOC entry 5458 (class 0 OID 0)
 -- Dependencies: 237
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
@@ -2477,7 +2504,7 @@ SELECT pg_catalog.setval('core.users_id_seq', 7, true);
 
 
 --
--- TOC entry 5093 (class 2606 OID 49415)
+-- TOC entry 5095 (class 2606 OID 49415)
 -- Name: accionistas accionistas_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2486,7 +2513,7 @@ ALTER TABLE ONLY core.accionistas
 
 
 --
--- TOC entry 5095 (class 2606 OID 49417)
+-- TOC entry 5097 (class 2606 OID 49417)
 -- Name: accionistas accionistas_tenant_id_numero_documento_key; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2495,7 +2522,7 @@ ALTER TABLE ONLY core.accionistas
 
 
 --
--- TOC entry 5030 (class 2606 OID 24624)
+-- TOC entry 5032 (class 2606 OID 24624)
 -- Name: aml_log aml_log_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2504,7 +2531,7 @@ ALTER TABLE ONLY core.aml_log
 
 
 --
--- TOC entry 5024 (class 2606 OID 24601)
+-- TOC entry 5026 (class 2606 OID 24601)
 -- Name: auditoria_etica auditoria_etica_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2513,7 +2540,7 @@ ALTER TABLE ONLY core.auditoria_etica
 
 
 --
--- TOC entry 5022 (class 2606 OID 24588)
+-- TOC entry 5024 (class 2606 OID 24588)
 -- Name: auditoria_explicabilidad auditoria_explicabilidad_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2522,7 +2549,7 @@ ALTER TABLE ONLY core.auditoria_explicabilidad
 
 
 --
--- TOC entry 5084 (class 2606 OID 41122)
+-- TOC entry 5086 (class 2606 OID 41122)
 -- Name: auditoria_pagos_log auditoria_pagos_log_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2531,7 +2558,7 @@ ALTER TABLE ONLY core.auditoria_pagos_log
 
 
 --
--- TOC entry 5048 (class 2606 OID 24773)
+-- TOC entry 5050 (class 2606 OID 24773)
 -- Name: balances_financieros balances_financieros_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2540,7 +2567,7 @@ ALTER TABLE ONLY core.balances_financieros
 
 
 --
--- TOC entry 5069 (class 2606 OID 24982)
+-- TOC entry 5071 (class 2606 OID 24982)
 -- Name: canal_etico_casos canal_etico_casos_caso_uuid_key; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2549,7 +2576,7 @@ ALTER TABLE ONLY core.canal_etico_casos
 
 
 --
--- TOC entry 5071 (class 2606 OID 24980)
+-- TOC entry 5073 (class 2606 OID 24980)
 -- Name: canal_etico_casos canal_etico_casos_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2558,7 +2585,7 @@ ALTER TABLE ONLY core.canal_etico_casos
 
 
 --
--- TOC entry 5074 (class 2606 OID 25014)
+-- TOC entry 5076 (class 2606 OID 25014)
 -- Name: canal_etico_respuestas canal_etico_respuestas_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2567,7 +2594,7 @@ ALTER TABLE ONLY core.canal_etico_respuestas
 
 
 --
--- TOC entry 5032 (class 2606 OID 24634)
+-- TOC entry 5034 (class 2606 OID 24634)
 -- Name: cap_table cap_table_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2576,7 +2603,7 @@ ALTER TABLE ONLY core.cap_table
 
 
 --
--- TOC entry 5101 (class 2606 OID 49462)
+-- TOC entry 5103 (class 2606 OID 49462)
 -- Name: certificadosdividendos certificadosdividendos_accionista_id_ano_fiscal_key; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2585,7 +2612,7 @@ ALTER TABLE ONLY core.certificadosdividendos
 
 
 --
--- TOC entry 5103 (class 2606 OID 49458)
+-- TOC entry 5105 (class 2606 OID 49458)
 -- Name: certificadosdividendos certificadosdividendos_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2594,7 +2621,7 @@ ALTER TABLE ONLY core.certificadosdividendos
 
 
 --
--- TOC entry 5105 (class 2606 OID 49460)
+-- TOC entry 5107 (class 2606 OID 49460)
 -- Name: certificadosdividendos certificadosdividendos_verification_uuid_key; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2603,7 +2630,7 @@ ALTER TABLE ONLY core.certificadosdividendos
 
 
 --
--- TOC entry 5131 (class 2606 OID 73850)
+-- TOC entry 5133 (class 2606 OID 73850)
 -- Name: configuracion_pagos configuracion_pagos_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2612,7 +2639,7 @@ ALTER TABLE ONLY core.configuracion_pagos
 
 
 --
--- TOC entry 5133 (class 2606 OID 73852)
+-- TOC entry 5135 (class 2606 OID 73852)
 -- Name: configuracion_pagos configuracion_pagos_tenant_id_proveedor_key; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2621,7 +2648,7 @@ ALTER TABLE ONLY core.configuracion_pagos
 
 
 --
--- TOC entry 5040 (class 2606 OID 24681)
+-- TOC entry 5042 (class 2606 OID 24681)
 -- Name: consent_cookies consent_cookies_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2630,7 +2657,7 @@ ALTER TABLE ONLY core.consent_cookies
 
 
 --
--- TOC entry 5046 (class 2606 OID 24710)
+-- TOC entry 5048 (class 2606 OID 24710)
 -- Name: consent_log consent_log_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2639,7 +2666,7 @@ ALTER TABLE ONLY core.consent_log
 
 
 --
--- TOC entry 5119 (class 2606 OID 65693)
+-- TOC entry 5121 (class 2606 OID 65693)
 -- Name: cuentas_bancarias cuentas_bancarias_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2648,7 +2675,7 @@ ALTER TABLE ONLY core.cuentas_bancarias
 
 
 --
--- TOC entry 5038 (class 2606 OID 24670)
+-- TOC entry 5040 (class 2606 OID 24670)
 -- Name: data_lineage data_lineage_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2657,7 +2684,7 @@ ALTER TABLE ONLY core.data_lineage
 
 
 --
--- TOC entry 5098 (class 2606 OID 49437)
+-- TOC entry 5100 (class 2606 OID 49437)
 -- Name: dividendospagados dividendospagados_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2666,7 +2693,7 @@ ALTER TABLE ONLY core.dividendospagados
 
 
 --
--- TOC entry 5065 (class 2606 OID 24866)
+-- TOC entry 5067 (class 2606 OID 24866)
 -- Name: documentos_legales documentos_legales_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2675,7 +2702,7 @@ ALTER TABLE ONLY core.documentos_legales
 
 
 --
--- TOC entry 5059 (class 2606 OID 24830)
+-- TOC entry 5061 (class 2606 OID 24830)
 -- Name: facturas facturas_cufe_key; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2684,7 +2711,7 @@ ALTER TABLE ONLY core.facturas
 
 
 --
--- TOC entry 5061 (class 2606 OID 24828)
+-- TOC entry 5063 (class 2606 OID 24828)
 -- Name: facturas facturas_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2693,7 +2720,7 @@ ALTER TABLE ONLY core.facturas
 
 
 --
--- TOC entry 5063 (class 2606 OID 24832)
+-- TOC entry 5065 (class 2606 OID 24832)
 -- Name: facturas facturas_tenant_consecutivo_key; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2702,7 +2729,7 @@ ALTER TABLE ONLY core.facturas
 
 
 --
--- TOC entry 5109 (class 2606 OID 57474)
+-- TOC entry 5111 (class 2606 OID 57474)
 -- Name: inversiones_extranjeras inversiones_extranjeras_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2711,7 +2738,7 @@ ALTER TABLE ONLY core.inversiones_extranjeras
 
 
 --
--- TOC entry 5124 (class 2606 OID 65716)
+-- TOC entry 5126 (class 2606 OID 65716)
 -- Name: movimientos_caja movimientos_caja_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2720,7 +2747,7 @@ ALTER TABLE ONLY core.movimientos_caja
 
 
 --
--- TOC entry 5082 (class 2606 OID 41088)
+-- TOC entry 5084 (class 2606 OID 41088)
 -- Name: ordenes_pago ordenes_pago_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2729,7 +2756,7 @@ ALTER TABLE ONLY core.ordenes_pago
 
 
 --
--- TOC entry 5036 (class 2606 OID 24659)
+-- TOC entry 5038 (class 2606 OID 24659)
 -- Name: postmortems postmortems_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2738,7 +2765,7 @@ ALTER TABLE ONLY core.postmortems
 
 
 --
--- TOC entry 5115 (class 2606 OID 65666)
+-- TOC entry 5117 (class 2606 OID 65666)
 -- Name: presupuestos presupuestos_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2747,7 +2774,7 @@ ALTER TABLE ONLY core.presupuestos
 
 
 --
--- TOC entry 5117 (class 2606 OID 65668)
+-- TOC entry 5119 (class 2606 OID 65668)
 -- Name: presupuestos presupuestos_tenant_id_ano_fiscal_mes_categoria_key; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2756,7 +2783,7 @@ ALTER TABLE ONLY core.presupuestos
 
 
 --
--- TOC entry 5113 (class 2606 OID 57508)
+-- TOC entry 5115 (class 2606 OID 57508)
 -- Name: reportes_dcin reportes_dcin_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2765,7 +2792,7 @@ ALTER TABLE ONLY core.reportes_dcin
 
 
 --
--- TOC entry 5079 (class 2606 OID 32893)
+-- TOC entry 5081 (class 2606 OID 32893)
 -- Name: reportes_regulatorios reportes_regulatorios_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2774,7 +2801,7 @@ ALTER TABLE ONLY core.reportes_regulatorios
 
 
 --
--- TOC entry 5034 (class 2606 OID 24648)
+-- TOC entry 5036 (class 2606 OID 24648)
 -- Name: riesgos riesgos_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2783,7 +2810,7 @@ ALTER TABLE ONLY core.riesgos
 
 
 --
--- TOC entry 5087 (class 2606 OID 49268)
+-- TOC entry 5089 (class 2606 OID 49268)
 -- Name: roles roles_nombre_rol_key; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2792,7 +2819,7 @@ ALTER TABLE ONLY core.roles
 
 
 --
--- TOC entry 5089 (class 2606 OID 49266)
+-- TOC entry 5091 (class 2606 OID 49266)
 -- Name: roles roles_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2801,7 +2828,7 @@ ALTER TABLE ONLY core.roles
 
 
 --
--- TOC entry 5051 (class 2606 OID 24801)
+-- TOC entry 5053 (class 2606 OID 24801)
 -- Name: tenants tenants_codigo_invitacion_key; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2810,7 +2837,7 @@ ALTER TABLE ONLY core.tenants
 
 
 --
--- TOC entry 5053 (class 2606 OID 24790)
+-- TOC entry 5055 (class 2606 OID 24790)
 -- Name: tenants tenants_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2819,7 +2846,7 @@ ALTER TABLE ONLY core.tenants
 
 
 --
--- TOC entry 5055 (class 2606 OID 24794)
+-- TOC entry 5057 (class 2606 OID 24794)
 -- Name: tenants tenants_subdominio_key; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2828,7 +2855,7 @@ ALTER TABLE ONLY core.tenants
 
 
 --
--- TOC entry 5057 (class 2606 OID 24792)
+-- TOC entry 5059 (class 2606 OID 24792)
 -- Name: tenants tenants_tenant_id_key; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2837,7 +2864,7 @@ ALTER TABLE ONLY core.tenants
 
 
 --
--- TOC entry 5026 (class 2606 OID 24613)
+-- TOC entry 5028 (class 2606 OID 24613)
 -- Name: tokenizacion_legal tokenizacion_legal_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2846,7 +2873,7 @@ ALTER TABLE ONLY core.tokenizacion_legal
 
 
 --
--- TOC entry 5028 (class 2606 OID 24615)
+-- TOC entry 5030 (class 2606 OID 24615)
 -- Name: tokenizacion_legal tokenizacion_legal_token_id_key; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2855,7 +2882,7 @@ ALTER TABLE ONLY core.tokenizacion_legal
 
 
 --
--- TOC entry 5127 (class 2606 OID 65754)
+-- TOC entry 5129 (class 2606 OID 65754)
 -- Name: transacciones_bancarias_externas transacciones_bancarias_externas_pasarela_id_transaccion_key; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2864,7 +2891,7 @@ ALTER TABLE ONLY core.transacciones_bancarias_externas
 
 
 --
--- TOC entry 5129 (class 2606 OID 65752)
+-- TOC entry 5131 (class 2606 OID 65752)
 -- Name: transacciones_bancarias_externas transacciones_bancarias_externas_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2873,7 +2900,7 @@ ALTER TABLE ONLY core.transacciones_bancarias_externas
 
 
 --
--- TOC entry 5091 (class 2606 OID 49275)
+-- TOC entry 5093 (class 2606 OID 49275)
 -- Name: user_roles user_roles_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2882,7 +2909,7 @@ ALTER TABLE ONLY core.user_roles
 
 
 --
--- TOC entry 5042 (class 2606 OID 24699)
+-- TOC entry 5044 (class 2606 OID 24699)
 -- Name: users users_email_key; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2891,7 +2918,7 @@ ALTER TABLE ONLY core.users
 
 
 --
--- TOC entry 5044 (class 2606 OID 24697)
+-- TOC entry 5046 (class 2606 OID 24697)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -2900,7 +2927,7 @@ ALTER TABLE ONLY core.users
 
 
 --
--- TOC entry 5096 (class 1259 OID 49468)
+-- TOC entry 5098 (class 1259 OID 49468)
 -- Name: idx_accionistas_tenant; Type: INDEX; Schema: core; Owner: postgres
 --
 
@@ -2908,7 +2935,7 @@ CREATE INDEX idx_accionistas_tenant ON core.accionistas USING btree (tenant_id);
 
 
 --
--- TOC entry 5085 (class 1259 OID 41133)
+-- TOC entry 5087 (class 1259 OID 41133)
 -- Name: idx_auditoria_pagos_log_orden_id; Type: INDEX; Schema: core; Owner: postgres
 --
 
@@ -2916,7 +2943,7 @@ CREATE INDEX idx_auditoria_pagos_log_orden_id ON core.auditoria_pagos_log USING 
 
 
 --
--- TOC entry 5049 (class 1259 OID 24779)
+-- TOC entry 5051 (class 1259 OID 24779)
 -- Name: idx_balances_tenant_periodo; Type: INDEX; Schema: core; Owner: postgres
 --
 
@@ -2924,7 +2951,7 @@ CREATE INDEX idx_balances_tenant_periodo ON core.balances_financieros USING btre
 
 
 --
--- TOC entry 5075 (class 1259 OID 25026)
+-- TOC entry 5077 (class 1259 OID 25026)
 -- Name: idx_canal_etico_respuestas_caso; Type: INDEX; Schema: core; Owner: postgres
 --
 
@@ -2932,7 +2959,7 @@ CREATE INDEX idx_canal_etico_respuestas_caso ON core.canal_etico_respuestas USIN
 
 
 --
--- TOC entry 5072 (class 1259 OID 25025)
+-- TOC entry 5074 (class 1259 OID 25025)
 -- Name: idx_canal_etico_tenant_estado; Type: INDEX; Schema: core; Owner: postgres
 --
 
@@ -2940,7 +2967,7 @@ CREATE INDEX idx_canal_etico_tenant_estado ON core.canal_etico_casos USING btree
 
 
 --
--- TOC entry 5106 (class 1259 OID 49470)
+-- TOC entry 5108 (class 1259 OID 49470)
 -- Name: idx_certificados_uuid; Type: INDEX; Schema: core; Owner: postgres
 --
 
@@ -2948,7 +2975,7 @@ CREATE INDEX idx_certificados_uuid ON core.certificadosdividendos USING btree (v
 
 
 --
--- TOC entry 5099 (class 1259 OID 49469)
+-- TOC entry 5101 (class 1259 OID 49469)
 -- Name: idx_dividendos_accionista_ano; Type: INDEX; Schema: core; Owner: postgres
 --
 
@@ -2956,7 +2983,7 @@ CREATE INDEX idx_dividendos_accionista_ano ON core.dividendospagados USING btree
 
 
 --
--- TOC entry 5066 (class 1259 OID 24893)
+-- TOC entry 5068 (class 1259 OID 24893)
 -- Name: idx_documentos_estado; Type: INDEX; Schema: core; Owner: postgres
 --
 
@@ -2964,7 +2991,7 @@ CREATE INDEX idx_documentos_estado ON core.documentos_legales USING btree (estad
 
 
 --
--- TOC entry 5067 (class 1259 OID 24892)
+-- TOC entry 5069 (class 1259 OID 24892)
 -- Name: idx_documentos_tenant_tipo; Type: INDEX; Schema: core; Owner: postgres
 --
 
@@ -2972,7 +2999,7 @@ CREATE INDEX idx_documentos_tenant_tipo ON core.documentos_legales USING btree (
 
 
 --
--- TOC entry 5107 (class 1259 OID 57485)
+-- TOC entry 5109 (class 1259 OID 57485)
 -- Name: idx_inversiones_tenant_estado; Type: INDEX; Schema: core; Owner: postgres
 --
 
@@ -2980,7 +3007,7 @@ CREATE INDEX idx_inversiones_tenant_estado ON core.inversiones_extranjeras USING
 
 
 --
--- TOC entry 5120 (class 1259 OID 65766)
+-- TOC entry 5122 (class 1259 OID 65766)
 -- Name: idx_movimientos_caja_factura_id; Type: INDEX; Schema: core; Owner: postgres
 --
 
@@ -2988,7 +3015,7 @@ CREATE INDEX idx_movimientos_caja_factura_id ON core.movimientos_caja USING btre
 
 
 --
--- TOC entry 5121 (class 1259 OID 65767)
+-- TOC entry 5123 (class 1259 OID 65767)
 -- Name: idx_movimientos_caja_orden_pago_id; Type: INDEX; Schema: core; Owner: postgres
 --
 
@@ -2996,7 +3023,7 @@ CREATE INDEX idx_movimientos_caja_orden_pago_id ON core.movimientos_caja USING b
 
 
 --
--- TOC entry 5122 (class 1259 OID 65765)
+-- TOC entry 5124 (class 1259 OID 65765)
 -- Name: idx_movimientos_caja_tenant_fecha; Type: INDEX; Schema: core; Owner: postgres
 --
 
@@ -3004,7 +3031,7 @@ CREATE INDEX idx_movimientos_caja_tenant_fecha ON core.movimientos_caja USING bt
 
 
 --
--- TOC entry 5080 (class 1259 OID 41109)
+-- TOC entry 5082 (class 1259 OID 41109)
 -- Name: idx_ordenes_pago_tenant_estado; Type: INDEX; Schema: core; Owner: postgres
 --
 
@@ -3012,7 +3039,7 @@ CREATE INDEX idx_ordenes_pago_tenant_estado ON core.ordenes_pago USING btree (te
 
 
 --
--- TOC entry 5110 (class 1259 OID 57525)
+-- TOC entry 5112 (class 1259 OID 57525)
 -- Name: idx_reportes_dcin_inversion_id; Type: INDEX; Schema: core; Owner: postgres
 --
 
@@ -3020,7 +3047,7 @@ CREATE INDEX idx_reportes_dcin_inversion_id ON core.reportes_dcin USING btree (i
 
 
 --
--- TOC entry 5111 (class 1259 OID 57524)
+-- TOC entry 5113 (class 1259 OID 57524)
 -- Name: idx_reportes_dcin_tenant_estado; Type: INDEX; Schema: core; Owner: postgres
 --
 
@@ -3028,7 +3055,7 @@ CREATE INDEX idx_reportes_dcin_tenant_estado ON core.reportes_dcin USING btree (
 
 
 --
--- TOC entry 5076 (class 1259 OID 32910)
+-- TOC entry 5078 (class 1259 OID 32910)
 -- Name: idx_reportes_reg_entidad_periodo; Type: INDEX; Schema: core; Owner: postgres
 --
 
@@ -3036,7 +3063,7 @@ CREATE INDEX idx_reportes_reg_entidad_periodo ON core.reportes_regulatorios USIN
 
 
 --
--- TOC entry 5077 (class 1259 OID 32909)
+-- TOC entry 5079 (class 1259 OID 32909)
 -- Name: idx_reportes_reg_tenant_estado; Type: INDEX; Schema: core; Owner: postgres
 --
 
@@ -3044,7 +3071,7 @@ CREATE INDEX idx_reportes_reg_tenant_estado ON core.reportes_regulatorios USING 
 
 
 --
--- TOC entry 5125 (class 1259 OID 65768)
+-- TOC entry 5127 (class 1259 OID 65768)
 -- Name: idx_transacciones_externas_cuenta_id; Type: INDEX; Schema: core; Owner: postgres
 --
 
@@ -3052,7 +3079,7 @@ CREATE INDEX idx_transacciones_externas_cuenta_id ON core.transacciones_bancaria
 
 
 --
--- TOC entry 5161 (class 2606 OID 49418)
+-- TOC entry 5163 (class 2606 OID 49418)
 -- Name: accionistas accionistas_tenant_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3061,7 +3088,7 @@ ALTER TABLE ONLY core.accionistas
 
 
 --
--- TOC entry 5157 (class 2606 OID 41123)
+-- TOC entry 5159 (class 2606 OID 41123)
 -- Name: auditoria_pagos_log auditoria_pagos_log_orden_pago_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3070,7 +3097,7 @@ ALTER TABLE ONLY core.auditoria_pagos_log
 
 
 --
--- TOC entry 5158 (class 2606 OID 41128)
+-- TOC entry 5160 (class 2606 OID 41128)
 -- Name: auditoria_pagos_log auditoria_pagos_log_user_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3079,7 +3106,7 @@ ALTER TABLE ONLY core.auditoria_pagos_log
 
 
 --
--- TOC entry 5137 (class 2606 OID 24774)
+-- TOC entry 5139 (class 2606 OID 24774)
 -- Name: balances_financieros balances_financieros_firmado_por_contador_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3088,7 +3115,7 @@ ALTER TABLE ONLY core.balances_financieros
 
 
 --
--- TOC entry 5145 (class 2606 OID 24988)
+-- TOC entry 5147 (class 2606 OID 24988)
 -- Name: canal_etico_casos canal_etico_casos_creado_por_user_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3097,7 +3124,7 @@ ALTER TABLE ONLY core.canal_etico_casos
 
 
 --
--- TOC entry 5146 (class 2606 OID 24993)
+-- TOC entry 5148 (class 2606 OID 24993)
 -- Name: canal_etico_casos canal_etico_casos_documento_legal_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3106,7 +3133,7 @@ ALTER TABLE ONLY core.canal_etico_casos
 
 
 --
--- TOC entry 5147 (class 2606 OID 24983)
+-- TOC entry 5149 (class 2606 OID 24983)
 -- Name: canal_etico_casos canal_etico_casos_tenant_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3115,7 +3142,7 @@ ALTER TABLE ONLY core.canal_etico_casos
 
 
 --
--- TOC entry 5148 (class 2606 OID 25015)
+-- TOC entry 5150 (class 2606 OID 25015)
 -- Name: canal_etico_respuestas canal_etico_respuestas_caso_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3124,7 +3151,7 @@ ALTER TABLE ONLY core.canal_etico_respuestas
 
 
 --
--- TOC entry 5149 (class 2606 OID 25020)
+-- TOC entry 5151 (class 2606 OID 25020)
 -- Name: canal_etico_respuestas canal_etico_respuestas_user_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3133,7 +3160,7 @@ ALTER TABLE ONLY core.canal_etico_respuestas
 
 
 --
--- TOC entry 5163 (class 2606 OID 49463)
+-- TOC entry 5165 (class 2606 OID 49463)
 -- Name: certificadosdividendos certificadosdividendos_accionista_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3142,7 +3169,7 @@ ALTER TABLE ONLY core.certificadosdividendos
 
 
 --
--- TOC entry 5178 (class 2606 OID 73858)
+-- TOC entry 5180 (class 2606 OID 73858)
 -- Name: configuracion_pagos configuracion_pagos_cuenta_bancaria_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3151,7 +3178,7 @@ ALTER TABLE ONLY core.configuracion_pagos
 
 
 --
--- TOC entry 5179 (class 2606 OID 73853)
+-- TOC entry 5181 (class 2606 OID 73853)
 -- Name: configuracion_pagos configuracion_pagos_tenant_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3160,7 +3187,7 @@ ALTER TABLE ONLY core.configuracion_pagos
 
 
 --
--- TOC entry 5136 (class 2606 OID 24711)
+-- TOC entry 5138 (class 2606 OID 24711)
 -- Name: consent_log consent_log_user_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3169,7 +3196,7 @@ ALTER TABLE ONLY core.consent_log
 
 
 --
--- TOC entry 5171 (class 2606 OID 65694)
+-- TOC entry 5173 (class 2606 OID 65694)
 -- Name: cuentas_bancarias cuentas_bancarias_tenant_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3178,7 +3205,7 @@ ALTER TABLE ONLY core.cuentas_bancarias
 
 
 --
--- TOC entry 5162 (class 2606 OID 49438)
+-- TOC entry 5164 (class 2606 OID 49438)
 -- Name: dividendospagados dividendospagados_accionista_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3187,7 +3214,7 @@ ALTER TABLE ONLY core.dividendospagados
 
 
 --
--- TOC entry 5140 (class 2606 OID 24872)
+-- TOC entry 5142 (class 2606 OID 24872)
 -- Name: documentos_legales documentos_legales_creado_por_user_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3196,7 +3223,7 @@ ALTER TABLE ONLY core.documentos_legales
 
 
 --
--- TOC entry 5141 (class 2606 OID 24877)
+-- TOC entry 5143 (class 2606 OID 24877)
 -- Name: documentos_legales documentos_legales_documento_padre_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3205,7 +3232,7 @@ ALTER TABLE ONLY core.documentos_legales
 
 
 --
--- TOC entry 5142 (class 2606 OID 24882)
+-- TOC entry 5144 (class 2606 OID 24882)
 -- Name: documentos_legales documentos_legales_firmado_por_contador_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3214,7 +3241,7 @@ ALTER TABLE ONLY core.documentos_legales
 
 
 --
--- TOC entry 5143 (class 2606 OID 24887)
+-- TOC entry 5145 (class 2606 OID 24887)
 -- Name: documentos_legales documentos_legales_firmado_por_revisor_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3223,7 +3250,7 @@ ALTER TABLE ONLY core.documentos_legales
 
 
 --
--- TOC entry 5144 (class 2606 OID 24867)
+-- TOC entry 5146 (class 2606 OID 24867)
 -- Name: documentos_legales documentos_legales_tenant_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3232,7 +3259,7 @@ ALTER TABLE ONLY core.documentos_legales
 
 
 --
--- TOC entry 5138 (class 2606 OID 24833)
+-- TOC entry 5140 (class 2606 OID 24833)
 -- Name: facturas facturas_creado_por_user_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3241,7 +3268,7 @@ ALTER TABLE ONLY core.facturas
 
 
 --
--- TOC entry 5139 (class 2606 OID 24838)
+-- TOC entry 5141 (class 2606 OID 24838)
 -- Name: facturas facturas_tenant_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3250,7 +3277,7 @@ ALTER TABLE ONLY core.facturas
 
 
 --
--- TOC entry 5135 (class 2606 OID 24795)
+-- TOC entry 5137 (class 2606 OID 24795)
 -- Name: users fk_tenant; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3259,7 +3286,7 @@ ALTER TABLE ONLY core.users
 
 
 --
--- TOC entry 5164 (class 2606 OID 57480)
+-- TOC entry 5166 (class 2606 OID 57480)
 -- Name: inversiones_extranjeras inversiones_extranjeras_creado_por_user_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3268,7 +3295,7 @@ ALTER TABLE ONLY core.inversiones_extranjeras
 
 
 --
--- TOC entry 5165 (class 2606 OID 57475)
+-- TOC entry 5167 (class 2606 OID 57475)
 -- Name: inversiones_extranjeras inversiones_extranjeras_tenant_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3277,7 +3304,7 @@ ALTER TABLE ONLY core.inversiones_extranjeras
 
 
 --
--- TOC entry 5172 (class 2606 OID 65732)
+-- TOC entry 5174 (class 2606 OID 65732)
 -- Name: movimientos_caja movimientos_caja_cuenta_bancaria_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3286,7 +3313,7 @@ ALTER TABLE ONLY core.movimientos_caja
 
 
 --
--- TOC entry 5173 (class 2606 OID 65722)
+-- TOC entry 5175 (class 2606 OID 65722)
 -- Name: movimientos_caja movimientos_caja_referencia_factura_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3295,7 +3322,7 @@ ALTER TABLE ONLY core.movimientos_caja
 
 
 --
--- TOC entry 5174 (class 2606 OID 65727)
+-- TOC entry 5176 (class 2606 OID 65727)
 -- Name: movimientos_caja movimientos_caja_referencia_orden_pago_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3304,7 +3331,7 @@ ALTER TABLE ONLY core.movimientos_caja
 
 
 --
--- TOC entry 5175 (class 2606 OID 65717)
+-- TOC entry 5177 (class 2606 OID 65717)
 -- Name: movimientos_caja movimientos_caja_tenant_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3313,7 +3340,7 @@ ALTER TABLE ONLY core.movimientos_caja
 
 
 --
--- TOC entry 5153 (class 2606 OID 41094)
+-- TOC entry 5155 (class 2606 OID 41094)
 -- Name: ordenes_pago ordenes_pago_creado_por_user_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3322,7 +3349,7 @@ ALTER TABLE ONLY core.ordenes_pago
 
 
 --
--- TOC entry 5154 (class 2606 OID 41099)
+-- TOC entry 5156 (class 2606 OID 41099)
 -- Name: ordenes_pago ordenes_pago_firmado_por_user_id_1_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3331,7 +3358,7 @@ ALTER TABLE ONLY core.ordenes_pago
 
 
 --
--- TOC entry 5155 (class 2606 OID 41104)
+-- TOC entry 5157 (class 2606 OID 41104)
 -- Name: ordenes_pago ordenes_pago_firmado_por_user_id_2_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3340,7 +3367,7 @@ ALTER TABLE ONLY core.ordenes_pago
 
 
 --
--- TOC entry 5156 (class 2606 OID 41089)
+-- TOC entry 5158 (class 2606 OID 41089)
 -- Name: ordenes_pago ordenes_pago_tenant_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3349,7 +3376,7 @@ ALTER TABLE ONLY core.ordenes_pago
 
 
 --
--- TOC entry 5169 (class 2606 OID 65674)
+-- TOC entry 5171 (class 2606 OID 65674)
 -- Name: presupuestos presupuestos_creado_por_user_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3358,7 +3385,7 @@ ALTER TABLE ONLY core.presupuestos
 
 
 --
--- TOC entry 5170 (class 2606 OID 65669)
+-- TOC entry 5172 (class 2606 OID 65669)
 -- Name: presupuestos presupuestos_tenant_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3367,7 +3394,7 @@ ALTER TABLE ONLY core.presupuestos
 
 
 --
--- TOC entry 5166 (class 2606 OID 57519)
+-- TOC entry 5168 (class 2606 OID 57519)
 -- Name: reportes_dcin reportes_dcin_generado_por_user_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3376,7 +3403,7 @@ ALTER TABLE ONLY core.reportes_dcin
 
 
 --
--- TOC entry 5167 (class 2606 OID 57514)
+-- TOC entry 5169 (class 2606 OID 57514)
 -- Name: reportes_dcin reportes_dcin_inversion_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3385,7 +3412,7 @@ ALTER TABLE ONLY core.reportes_dcin
 
 
 --
--- TOC entry 5168 (class 2606 OID 57509)
+-- TOC entry 5170 (class 2606 OID 57509)
 -- Name: reportes_dcin reportes_dcin_tenant_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3394,7 +3421,7 @@ ALTER TABLE ONLY core.reportes_dcin
 
 
 --
--- TOC entry 5150 (class 2606 OID 32899)
+-- TOC entry 5152 (class 2606 OID 32899)
 -- Name: reportes_regulatorios reportes_regulatorios_balance_financiero_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3403,7 +3430,7 @@ ALTER TABLE ONLY core.reportes_regulatorios
 
 
 --
--- TOC entry 5151 (class 2606 OID 32904)
+-- TOC entry 5153 (class 2606 OID 32904)
 -- Name: reportes_regulatorios reportes_regulatorios_generado_por_user_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3412,7 +3439,7 @@ ALTER TABLE ONLY core.reportes_regulatorios
 
 
 --
--- TOC entry 5152 (class 2606 OID 32894)
+-- TOC entry 5154 (class 2606 OID 32894)
 -- Name: reportes_regulatorios reportes_regulatorios_tenant_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3421,7 +3448,7 @@ ALTER TABLE ONLY core.reportes_regulatorios
 
 
 --
--- TOC entry 5134 (class 2606 OID 82031)
+-- TOC entry 5136 (class 2606 OID 82031)
 -- Name: tokenizacion_legal tokenizacion_legal_documento_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3430,7 +3457,7 @@ ALTER TABLE ONLY core.tokenizacion_legal
 
 
 --
--- TOC entry 5176 (class 2606 OID 65755)
+-- TOC entry 5178 (class 2606 OID 65755)
 -- Name: transacciones_bancarias_externas transacciones_bancarias_externas_cuenta_bancaria_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3439,7 +3466,7 @@ ALTER TABLE ONLY core.transacciones_bancarias_externas
 
 
 --
--- TOC entry 5177 (class 2606 OID 65760)
+-- TOC entry 5179 (class 2606 OID 65760)
 -- Name: transacciones_bancarias_externas transacciones_bancarias_externas_movimiento_caja_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3448,7 +3475,7 @@ ALTER TABLE ONLY core.transacciones_bancarias_externas
 
 
 --
--- TOC entry 5159 (class 2606 OID 49281)
+-- TOC entry 5161 (class 2606 OID 49281)
 -- Name: user_roles user_roles_role_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3457,7 +3484,7 @@ ALTER TABLE ONLY core.user_roles
 
 
 --
--- TOC entry 5160 (class 2606 OID 49276)
+-- TOC entry 5162 (class 2606 OID 49276)
 -- Name: user_roles user_roles_user_id_fkey; Type: FK CONSTRAINT; Schema: core; Owner: postgres
 --
 
@@ -3465,11 +3492,11 @@ ALTER TABLE ONLY core.user_roles
     ADD CONSTRAINT user_roles_user_id_fkey FOREIGN KEY (user_id) REFERENCES core.users(id) ON DELETE CASCADE;
 
 
--- Completed on 2025-11-20 08:58:25
+-- Completed on 2025-11-20 10:10:55
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict qWTUr06Zg6pxoLDsqAGjjVMTzyoznVXKh6KQAndMLtvstNtRvGzz5UWpaRondfU
+\unrestrict LyG2pBknmbKBa3GVv6GZPbfxucxnki0CRRBZIn9qNeRVixYo6EKq5I0bac7KyYx
 
