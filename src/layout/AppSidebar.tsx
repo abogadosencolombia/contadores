@@ -63,9 +63,22 @@ const navItems: NavItem[] = [
      path: "/dashboard/canal-etico",
   },
   {
+    icon: <UserCircleIcon />, // Reusing UserCircleIcon for admin user management
+    name: "Gestión de Usuarios",
+    path: "/dashboard/usuarios",
+  },
+  {
     icon: <PaperPlaneIcon />,
     name: "Reportes Regulatorios",
     path: "/dashboard/reportes-regulatorios",
+  },
+  {
+    icon: <BoxCubeIcon />, // Ícono para Tokenización
+    name: "Tokenización",
+    subItems: [
+      { name: "Emitir Título Valor", path: "/dashboard/tokenizacion/emitir" },
+      { name: "Cap Table", path: "/dashboard/tokenizacion/cap-table" },
+    ],
   },
   {
     icon: <DollarLineIcon />,

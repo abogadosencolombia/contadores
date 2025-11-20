@@ -109,8 +109,8 @@ export async function POST(req: NextRequest) {
     // A. Registro del Título Valor Digital
     const nuevoTokenResult = await pool.query(
       `INSERT INTO core.tokenizacion_legal
-      (token_id, inversionista_id, porcentaje, valor_inicial, hash_firma, registro_cambiario, fecha, estado_blockchain, tx_hash, documento_legal_id)
-      VALUES ($1, $2, $3, $4, $5, $6, NOW(), $7, $8, $9)
+      (token_id, inversionista_id, porcentaje, valor_inicial, hash_firma, registro_cambiario, fecha, estado_blockchain, tx_hash, documento_legal_id, cantidad)
+      VALUES ($1, $2, $3, $4, $5, $6, NOW(), $7, $8, $9, $10)
       RETURNING *`,
       [
         tokenId,
@@ -121,7 +121,8 @@ export async function POST(req: NextRequest) {
         false,        // Pendiente de reporte al Banco de la República
         'CONFIRMADO', // Estado simulado
         mockTxHash,
-        documentoLegalId
+        documentoLegalId,
+        cantidadTokens // Nuevo: Guardamos la cantidad exacta
       ]
     );
 
@@ -132,14 +133,15 @@ export async function POST(req: NextRequest) {
 
     await pool.query(
       `INSERT INTO core.cap_table
-      (inversionista_id, token_id, porcentaje, fecha, lockup_hasta, calificado)
-      VALUES ($1, $2, $3, NOW(), $4, $5)`,
+      (inversionista_id, token_id, porcentaje, fecha, lockup_hasta, calificado, cantidad)
+      VALUES ($1, $2, $3, NOW(), $4, $5, $6)`,
       [
         inversionistaId,
         tokenId,
         porcentajeCalculado.toFixed(3), // Mayor precisión para el Cap Table
         fechaLockup,
-        false // Por defecto no calificado, salvo lógica adicional
+        false, // Por defecto no calificado, salvo lógica adicional
+        cantidadTokens // Nuevo: Guardamos la cantidad exacta para agregación
       ]
     );
 

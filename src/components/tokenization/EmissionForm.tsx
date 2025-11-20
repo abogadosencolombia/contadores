@@ -36,21 +36,31 @@ export default function EmissionForm() {
     lockupMeses: "12", // Default 1 año
   });
 
-  // 1. Cargar datos iniciales (Simulado o llamar a APIs reales de listado)
+  // 1. Cargar datos iniciales (Llamar a APIs reales de listado)
   useEffect(() => {
-    // AQUÍ DEBERÍAS LLAMAR A TUS ENDPOINTS REALES PARA LLENAR LAS LISTAS
-    // Ejemplo: fetch('/api/usuarios?role=inversionista')...
+    const fetchInitialData = async () => {
+      try {
+        setLoading(true);
+        // Fetch inversionistas
+        const investorsRes = await fetch('/api/users/approved-investors');
+        if (!investorsRes.ok) throw new Error('Failed to fetch approved investors');
+        const investorsData = await investorsRes.json();
+        setInversionistas(investorsData);
 
-    // Mock temporal para que veas la UI funcionando inmediatamente
-    setInversionistas([
-      { id: 2, email: "test@test.test", full_name: "Inversionista Demo", kyc_status: "aprobado" },
-      { id: 1, email: "admin@legal.com", full_name: "Admin User", kyc_status: "pendiente" }
-    ]);
+        // Fetch documentos legales (mantener el mock por ahora o crear API si es necesario)
+        setDocumentos([
+          { id: 19, titulo: "Contrato de Inversión #001 - Firmado", estado: "finalizado" },
+          { id: 20, titulo: "Acuerdo de Accionistas 2025", estado: "borrador" }
+        ]);
 
-    setDocumentos([
-      { id: 19, titulo: "Contrato de Inversión #001 - Firmado", estado: "finalizado" },
-      { id: 20, titulo: "Acuerdo de Accionistas 2025", estado: "borrador" }
-    ]);
+      } catch (err) {
+        console.error("Error loading initial data:", err);
+        setError("Error al cargar datos iniciales del formulario.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchInitialData();
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
