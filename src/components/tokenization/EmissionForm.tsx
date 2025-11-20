@@ -47,11 +47,11 @@ export default function EmissionForm() {
         const investorsData = await investorsRes.json();
         setInversionistas(investorsData);
 
-        // Fetch documentos legales (mantener el mock por ahora o crear API si es necesario)
-        setDocumentos([
-          { id: 19, titulo: "Contrato de Inversión #001 - Firmado", estado: "finalizado" },
-          { id: 20, titulo: "Acuerdo de Accionistas 2025", estado: "borrador" }
-        ]);
+        // Fetch documentos legales
+        const docsRes = await fetch('/api/documentos-legales/lista');
+        if (!docsRes.ok) throw new Error('Failed to fetch legal documents');
+        const docsData = await docsRes.json();
+        setDocumentos(docsData);
 
       } catch (err) {
         console.error("Error loading initial data:", err);
