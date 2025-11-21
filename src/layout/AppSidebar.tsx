@@ -63,6 +63,14 @@ const navItems: NavItem[] = [
      path: "/dashboard/canal-etico",
   },
   {
+    icon: <LockIcon />,
+    name: "Privacidad",
+    subItems: [
+      { name: "Derechos ARCO", path: "/dashboard/arco" },
+      // { name: "Preferencias", path: "/dashboard/privacidad/preferencias" }, // Placeholder
+    ],
+  },
+  {
     icon: <UserCircleIcon />, // Reusing UserCircleIcon for admin user management
     name: "Gestión de Usuarios",
     path: "/dashboard/usuarios",

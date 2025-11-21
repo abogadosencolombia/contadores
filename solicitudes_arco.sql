@@ -2,12 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict Kh97MgniahBOQ62VjvXadvAZAgNTKMRjcHtdntWX9MX9qfVKZjTbbwfZHZkCoCw
+\restrict wcqGu3iMkUGe1T08067lobINjEzUGN4F3309BEiYl7Gv3hSQBW53y3clWvx7WVd
 
 -- Dumped from database version 18.0
 -- Dumped by pg_dump version 18.0
 
--- Started on 2025-11-20 10:23:08
+-- Started on 2025-11-21 07:10:29
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -89,6 +89,7 @@ ALTER TABLE ONLY core.solicitudes_arco ALTER COLUMN id SET DEFAULT nextval('core
 --
 
 COPY core.solicitudes_arco (id, tenant_id, user_id, email_solicitante, tipo_solicitud, detalle_solicitud, estado, fecha_solicitud, fecha_limite_respuesta, fecha_resolucion, evidencia_respuesta, responsable_id) FROM stdin;
+1	default_tenant	1	abogadosencolombiasas@gmail.com	ACCESO	ikp0	PENDIENTE	2025-11-21 06:47:46.728504-05	\N	\N	\N	\N
 \.
 
 
@@ -98,7 +99,7 @@ COPY core.solicitudes_arco (id, tenant_id, user_id, email_solicitante, tipo_soli
 -- Name: solicitudes_arco_id_seq; Type: SEQUENCE SET; Schema: core; Owner: postgres
 --
 
-SELECT pg_catalog.setval('core.solicitudes_arco_id_seq', 1, false);
+SELECT pg_catalog.setval('core.solicitudes_arco_id_seq', 1, true);
 
 
 --
@@ -137,11 +138,11 @@ ALTER TABLE ONLY core.solicitudes_arco
     ADD CONSTRAINT solicitudes_arco_user_id_fkey FOREIGN KEY (user_id) REFERENCES core.users(id);
 
 
--- Completed on 2025-11-20 10:23:09
+-- Completed on 2025-11-21 07:10:30
 
 --
 -- PostgreSQL database dump complete
 --
 
-\unrestrict Kh97MgniahBOQ62VjvXadvAZAgNTKMRjcHtdntWX9MX9qfVKZjTbbwfZHZkCoCw
+\unrestrict wcqGu3iMkUGe1T08067lobINjEzUGN4F3309BEiYl7Gv3hSQBW53y3clWvx7WVd
 

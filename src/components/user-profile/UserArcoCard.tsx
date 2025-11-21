@@ -100,7 +100,7 @@ export default function UserArcoCard() {
             ]}
             placeholder="Seleccione el tipo de derecho"
             onChange={(value) => setFormData({ ...formData, tipo: value })}
-            defaultValue={formData.tipo} // Changed to value to control the input
+            value={formData.tipo}
             className="w-full"
             />
         </div>
@@ -113,12 +113,12 @@ export default function UserArcoCard() {
             rows={4}
             placeholder="Describa detalladamente su solicitud..."
             onChange={(e) => setFormData({ ...formData, detalle: e.target.value })}
-            defaultValue={formData.detalle} // Changed to value to control the input
+            value={formData.detalle}
           />
         </div>
 
         <div className="flex justify-end">
-          <Button size="sm" disabled={submitting}>
+          <Button size="sm" disabled={submitting} type="submit">
             {submitting ? 'Enviando...' : 'Enviar Solicitud'}
           </Button>
         </div>
