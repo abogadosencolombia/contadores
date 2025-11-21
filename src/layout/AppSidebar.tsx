@@ -67,8 +67,13 @@ const navItems: NavItem[] = [
     name: "Privacidad",
     subItems: [
       { name: "Derechos ARCO", path: "/dashboard/arco" },
-      // { name: "Preferencias", path: "/dashboard/privacidad/preferencias" }, // Placeholder
+      { name: "Preferencias", path: "/dashboard/privacidad/preferencias" },
     ],
+  },
+  {
+    name: "Gestión RNBD",
+    path: "/dashboard/rnbd",
+    icon: <InfoIcon />, // Importa un icono adecuado
   },
   {
     icon: <UserCircleIcon />, // Reusing UserCircleIcon for admin user management
