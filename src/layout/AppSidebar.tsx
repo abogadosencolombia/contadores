@@ -84,6 +84,11 @@ const navItems: NavItem[] = [
     path: "/dashboard/etica-gobernanza",
   },
   {
+    icon: <PieChartIcon />,
+    name: "Reporte ESG",
+    path: "/dashboard/esg",
+  },
+  {
     icon: <LockIcon />,
     name: "Privacidad",
     subItems: [
