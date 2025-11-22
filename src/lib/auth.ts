@@ -39,3 +39,17 @@ export function verifyAuth(req: NextRequest): UserPayload {
     throw new Error('No autenticado: Token inválido.');
   }
 }
+
+/**
+ * Verifica si el usuario autenticado tiene un rol específico.
+ * Devuelve true si el usuario tiene el rol, false en caso contrario o si no está autenticado.
+ */
+export function hasRole(req: NextRequest, roleName: string): boolean {
+  try {
+    const user = verifyAuth(req);
+    return user.roles && user.roles.includes(roleName);
+  } catch (error) {
+    // Si verifyAuth lanza un error (ej. no autenticado, token inválido), el usuario no tiene el rol.
+    return false;
+  }
+}

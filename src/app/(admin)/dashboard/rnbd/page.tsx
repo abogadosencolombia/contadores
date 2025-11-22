@@ -43,12 +43,6 @@ export default function RnbdDashboard() {
     fetchRecords();
   }, []);
 
-  const handleModalSuccess = () => {
-    alert("Renovación registrada exitosamente.");
-    router.refresh();
-    setSelectedTenant(null);
-  };
-
   if (loading) return <div className="p-6">Cargando registros RNBD...</div>;
   if (error) return <div className="p-6 text-red-500">Error: {error}</div>;
 
@@ -77,7 +71,7 @@ export default function RnbdDashboard() {
           <tbody>
             {records.map((record) => (
               <tr
-                key={record.id}
+                key={record.tenant_id}
                 className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
               >
                 <td className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
@@ -146,8 +140,11 @@ export default function RnbdDashboard() {
       <RenovacionModal
         isOpen={!!selectedTenant}
         onClose={() => setSelectedTenant(null)}
-        tenantId={selectedTenant}
-        onSuccess={handleModalSuccess}
+        tenantId={selectedTenant || ""}
+        onSuccess={() => {
+          setSelectedTenant(null);
+          router.refresh();
+        }}
       />
     </div>
   );

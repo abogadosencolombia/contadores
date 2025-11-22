@@ -15,15 +15,24 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // 1. Buscar al usuario (SELECT * ya incluye la nueva columna 'full_name')
-    const userQuery = 'SELECT * FROM core.users WHERE email = $1';
-    const userResult = await db.query(userQuery, [email]);
+    // 1. Buscar al usuario y sus roles (Optimizado con JOIN y array_agg)
+    const query = `
+      SELECT u.*, 
+             COALESCE(array_agg(r.nombre_rol) FILTER (WHERE r.nombre_rol IS NOT NULL), '{}') as roles
+      FROM core.users u
+      LEFT JOIN core.user_roles ur ON u.id = ur.user_id
+      LEFT JOIN core.roles r ON ur.role_id = r.id
+      WHERE u.email = $1
+      GROUP BY u.id
+    `;
+    
+    const result = await db.query(query, [email]);
 
-    if (userResult.rows.length === 0) {
+    if (result.rows.length === 0) {
       return NextResponse.json({ message: 'Credenciales inválidas' }, { status: 401 });
     }
 
-    const user = userResult.rows[0];
+    const user = result.rows[0];
 
     // 2. Comparar la contraseña
     const passwordMatch = await bcrypt.compare(password, user.password_hash);
@@ -32,16 +41,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'Credenciales inválidas' }, { status: 401 });
     }
 
-    // --- INICIO: Obtener roles del usuario ---
-    const rolesQuery = `
-      SELECT r.nombre_rol 
-      FROM core.user_roles ur
-      JOIN core.roles r ON ur.role_id = r.id
-      WHERE ur.user_id = $1
-    `;
-    const rolesResult = await db.query(rolesQuery, [user.id]);
-    const roles = rolesResult.rows.map(row => row.nombre_rol);
-    // --- FIN: Obtener roles del usuario ---
+    const roles = user.roles || [];
 
     // 3. Crear el Token (Sesión)
     const secret = process.env.JWT_SECRET;

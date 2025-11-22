@@ -6,7 +6,7 @@ import { writeFile } from 'fs/promises';
 
 export async function POST(req: NextRequest) {
   try {
-    // 1. Validar autenticación y permisos de admin
+    // 1. Validar autenticación y permisos
     let user;
     try {
       user = verifyAuth(req);
@@ -14,14 +14,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
 
-    const hasAllowedRole = user.roles.some(role => ['admin', 'compliance'].includes(role));
+    const hasAllowedRole = user.roles.some(role => ['admin', 'superadmin', 'compliance'].includes(role));
     if (!hasAllowedRole) {
-      return NextResponse.json({ error: 'Acceso denegado: Requiere rol de administrador o cumplimiento' }, { status: 403 });
+      return NextResponse.json({ error: 'Acceso denegado: Requiere rol de administrador, superadmin o cumplimiento' }, { status: 403 });
     }
 
     // 2. Obtener y validar body (FormData)
     const formData = await req.formData();
-    const tenantId = formData.get('tenantId') as string;
+    const tenantId = formData.get('tenantId') as string; // Tenant al que se intenta aplicar la renovación
     const numeroRadicado = formData.get('numeroRadicado') as string;
     const fechaRadicacionStr = formData.get('fechaRadicacion') as string;
     const evidenciaFile = formData.get('evidencia') as File | null;
@@ -29,6 +29,16 @@ export async function POST(req: NextRequest) {
     if (!tenantId || !numeroRadicado || !fechaRadicacionStr) {
       return NextResponse.json({ error: 'Faltan campos requeridos: tenantId, numeroRadicado o fechaRadicacion' }, { status: 400 });
     }
+
+    // --- Validación de seguridad por tenant ---
+    // Si el usuario no es superadmin Y el tenant del request NO coincide con el tenant del usuario logueado
+    if (!user.roles.includes('superadmin') && user.tenant !== tenantId) {
+        return NextResponse.json(
+            { error: 'No tienes permiso para modificar este tenant. Solo puedes renovar registros de tu propia empresa.' },
+            { status: 403 }
+        );
+    }
+    // --- Fin Validación de seguridad por tenant ---
 
     // 3. Guardar archivo localmente (simulando almacenamiento cloud)
     let urlEvidencia = '';
