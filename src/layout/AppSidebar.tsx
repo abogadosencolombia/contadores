@@ -20,6 +20,7 @@ import {
   PieChartIcon,
   PlugInIcon,
   TableIcon,
+  ShootingStarIcon,
   UserCircleIcon,
 } from "../icons/index";
 import SidebarWidget from "./SidebarWidget";
@@ -63,14 +64,6 @@ const navItems: NavItem[] = [
      path: "/dashboard/canal-etico",
   },
   {
-    icon: <LockIcon />,
-    name: "Privacidad",
-    subItems: [
-      { name: "Derechos ARCO", path: "/dashboard/arco" },
-      { name: "Preferencias", path: "/dashboard/privacidad/preferencias" },
-    ],
-  },
-  {
     name: "Gestión RNBD",
     path: "/dashboard/rnbd",
     icon: <InfoIcon />, // Importa un icono adecuado
@@ -84,6 +77,19 @@ const navItems: NavItem[] = [
     icon: <PaperPlaneIcon />,
     name: "Reportes Regulatorios",
     path: "/dashboard/reportes-regulatorios",
+  },
+  {
+    icon: <ShootingStarIcon />,
+    name: "Ética y Gobernanza IA",
+    path: "/dashboard/etica-gobernanza",
+  },
+  {
+    icon: <LockIcon />,
+    name: "Privacidad",
+    subItems: [
+      { name: "Derechos ARCO", path: "/dashboard/arco" },
+      { name: "Preferencias", path: "/dashboard/privacidad/preferencias" },
+    ],
   },
   {
     icon: <BoxCubeIcon />, // Ícono para Tokenización
