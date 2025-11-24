@@ -95,7 +95,12 @@ export async function POST(request: NextRequest) {
       await client.query(
         `INSERT INTO core.certificadosdividendos 
           (accionista_id, ano_fiscal, verification_uuid, file_path, file_hash_sha256)
-         VALUES ($1, $2, $3, $4, $5)`,
+         VALUES ($1, $2, $3, $4, $5)
+         ON CONFLICT (accionista_id, ano_fiscal)
+         DO UPDATE SET
+           verification_uuid = EXCLUDED.verification_uuid,
+           file_path = EXCLUDED.file_path,
+           file_hash_sha256 = EXCLUDED.file_hash_sha256`,
         [accionista.accionista_id, ano_fiscal, verification_uuid, storagePath, file_hash_sha256]
       );
 

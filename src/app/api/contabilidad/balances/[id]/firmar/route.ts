@@ -4,9 +4,9 @@ import { verifyAuth, UserPayload } from '@/lib/auth'; // Importamos tu helper de
 
 // Interfaz para los parámetros de la URL
 interface FirmarParams {
-  params: {
+  params: Promise<{
     id: string; // El ID del balance que viene en la URL
-  }
+  }>
 }
 
 /**
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest, { params }: FirmarParams) {
 
   // Si la autenticación es exitosa, procedemos con la lógica de la base de datos
   try {
-    const { id } = params; // ID del balance a firmar
+    const { id } = await params; // ID del balance a firmar
     const contadorId = decoded.userId; // ID del usuario (contador) que está firmando
     const tenantId = decoded.tenant; // ID del tenant del contador
     const fechaFirma = new Date();
