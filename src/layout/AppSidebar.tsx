@@ -105,6 +105,15 @@ const navItems: NavItem[] = [
     ],
   },
   {
+    icon: <LockIcon />,
+    name: "ISO-27001",
+    subItems: [
+      { name: "metricas", path: "/dashboard/iso-27001/metricas" },
+      { name: "Controles", path: "/dashboard/iso-27001/controles" },
+      { name: "Auditorias", path: "/dashboard/iso-27001/auditorias" },
+    ],
+  },
+  {
     icon: <DollarLineIcon />,
     name: "Capital Extranjero",
     // Se elimina el 'path' principal
