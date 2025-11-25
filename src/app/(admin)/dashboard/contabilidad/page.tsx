@@ -9,7 +9,7 @@ import { useModal } from "@/hooks/useModal";
 import Alert from "@/components/ui/alert/Alert";
 import Badge from '@/components/ui/badge/Badge';
 import Pagination from '@/components/tables/Pagination';
-import { PencilIcon, PlusIcon, PaperPlaneIcon } from "@/icons";
+import { PencilIcon, PlusIcon } from "@/icons";
 import GenerarCertificadosModal from '@/components/contabilidad/GenerarCertificadosModal';
 
 // 1. Definimos la interfaz para los balances
@@ -26,17 +26,6 @@ interface Balance {
   fecha_generacion: string;
 }
 
-// 2. Definimos la interfaz para los certificados
-interface Certificado {
-  id: number;
-  ano_fiscal: number;
-  verification_uuid: string;
-  fecha_emision: string;
-  file_path: string;
-  accionista_nombre: string;
-  accionista_documento: string;
-}
-
 // Constante para paginación
 const ITEMS_PER_PAGE = 10;
 
@@ -47,13 +36,6 @@ export default function ContabilidadPage() {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
-
-  // --- Estados del Componente (Certificados) ---
-  const [certificados, setCertificados] = useState<Certificado[]>([]);
-  const [isLoadingCert, setIsLoadingCert] = useState(true);
-  const [certPage, setCertPage] = useState(1);
-  const [certTotalPages, setCertTotalPages] = useState(0);
-  const [sendingId, setSendingId] = useState<number | null>(null);
 
   // --- Estados para Modales ---
   const [selectedBalance, setSelectedBalance] = useState<Balance | null>(null);
@@ -92,30 +74,8 @@ export default function ContabilidadPage() {
     }
   }, []);
 
-  // --- Carga de Certificados ---
-  const fetchCertificados = useCallback(async (page: number) => {
-    setIsLoadingCert(true);
-    const params = new URLSearchParams();
-    params.set('page', page.toString());
-    params.set('limit', ITEMS_PER_PAGE.toString());
-
-    try {
-      const res = await fetch(`/api/contabilidad/certificados-dividendos?${params.toString()}`, { cache: 'no-store' });
-      if (res.ok) {
-        const { data, total } = await res.json();
-        setCertificados(data);
-        setCertTotalPages(Math.ceil(total / ITEMS_PER_PAGE));
-      }
-    } catch (error) {
-      console.error("Error cargando certificados", error);
-    } finally {
-      setIsLoadingCert(false);
-    }
-  }, []);
-
   // --- Efectos ---
   useEffect(() => { fetchBalances(currentPage); }, [currentPage, fetchBalances]);
-  useEffect(() => { fetchCertificados(certPage); }, [certPage, fetchCertificados]);
 
   // --- Manejadores ---
   const handleOpenSignModal = (balance: Balance) => {
@@ -132,7 +92,7 @@ export default function ContabilidadPage() {
 
   const handleCloseGenerateModal = () => {
     closeGenerateModal();
-    fetchCertificados(1); // Recargar certificados al cerrar el modal (por si se generaron nuevos)
+    // fetchCertificados(1); // Ya no es necesario recargar certificados aquí
   };
 
   const handleConfirmSignature = async () => {
@@ -148,26 +108,6 @@ export default function ContabilidadPage() {
       setError(err.message);
     } finally {
       setIsSigning(false);
-    }
-  };
-
-  const handleSendEmail = async (certificadoId: number) => {
-    setSendingId(certificadoId);
-    try {
-      const res = await fetch('/api/contabilidad/certificados-dividendos/enviar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ certificado_id: certificadoId })
-      });
-      const data = await res.json();
-      
-      if (!res.ok) throw new Error(data.error || 'Error al enviar el correo');
-      
-      alert('Correo enviado exitosamente'); 
-    } catch (err: any) {
-      alert(err.message);
-    } finally {
-      setSendingId(null);
     }
   };
 
@@ -239,68 +179,6 @@ export default function ContabilidadPage() {
         {!isLoading && totalPages > 1 && (
           <div className="flex justify-center mt-6">
             <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
-          </div>
-        )}
-      </div>
-
-      {/* --- Tabla de Certificados --- */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/[0.03]">
-        <div className="flex justify-between items-center mb-4 px-2">
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">Certificados de Dividendos</h3>
-        </div>
-        <div className="max-w-full overflow-x-auto">
-          {isLoadingCert ? <p className="text-center py-10">Cargando certificados...</p> : (
-            <Table>
-              <TableHeader className="border-gray-100 dark:border-gray-800 border-y">
-                <TableRow>
-                  <TableCell isHeader className={baseHeaderClasses}>Año Fiscal</TableCell>
-                  <TableCell isHeader className={baseHeaderClasses}>Accionista</TableCell>
-                  <TableCell isHeader className={baseHeaderClasses}>Documento</TableCell>
-                  <TableCell isHeader className={baseHeaderClasses}>Fecha Emisión</TableCell>
-                  <TableCell isHeader className={baseHeaderClasses}>Verificación UUID</TableCell>
-                  <TableCell isHeader className={baseHeaderClasses}>Acciones</TableCell>
-                </TableRow>
-              </TableHeader>
-              <TableBody className="divide-y divide-gray-100 dark:divide-gray-800">
-                {certificados.length > 0 ? certificados.map((c) => (
-                  <TableRow key={c.id}>
-                    <TableCell className={baseCellClasses}>{c.ano_fiscal}</TableCell>
-                    <TableCell className={baseCellClasses}>{c.accionista_nombre}</TableCell>
-                    <TableCell className={baseCellClasses}>{c.accionista_documento}</TableCell>
-                    <TableCell className={baseCellClasses}>{new Date(c.fecha_emision).toLocaleDateString()}</TableCell>
-                    <TableCell className={`${baseCellClasses} font-mono text-xs`}>{c.verification_uuid}</TableCell>
-                    <TableCell className={baseCellClasses}>
-                      <div className="flex items-center gap-2">
-                        <a 
-                          href={`/verificar-certificado/${c.verification_uuid}`} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-brand-500 hover:underline text-sm mr-2"
-                        >
-                          Ver
-                        </a>
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          onClick={() => handleSendEmail(c.id)}
-                          disabled={sendingId === c.id}
-                          startIcon={<PaperPlaneIcon className="w-4 h-4" />}
-                        >
-                          {sendingId === c.id ? '...' : 'Enviar'}
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                )) : (
-                  <TableRow><TableCell colSpan={6} className="py-10 text-center text-gray-500">No se encontraron certificados.</TableCell></TableRow>
-                )}
-              </TableBody>
-            </Table>
-          )}
-        </div>
-        {!isLoadingCert && certTotalPages > 1 && (
-          <div className="flex justify-center mt-6">
-            <Pagination currentPage={certPage} totalPages={certTotalPages} onPageChange={setCertPage} />
           </div>
         )}
       </div>

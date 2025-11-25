@@ -6,8 +6,7 @@ import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import { v4 as uuidv4 } from 'uuid';
 import QRCode from 'qrcode';
 import { createHash } from 'crypto';
-import fs from 'fs/promises';
-import path from 'path';
+import { storageService } from '@/lib/storage';
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,7 +17,7 @@ export async function POST(request: NextRequest) {
     }
     const tenantIdString = payload.tenant;
 
-    const { ano_fiscal } = await request.json();
+    const { ano_fiscal, accionista_id } = await request.json();
     if (!ano_fiscal) {
       return NextResponse.json({ error: 'El año fiscal es requerido' }, { status: 400 });
     }
@@ -33,9 +32,9 @@ export async function POST(request: NextRequest) {
     }
     const tenantId = tenantRes.rows[0].id;
 
-    // 2. Obtener datos de la base de datos (Query corregida)
-    const accionistasData = await client.query(
-      `SELECT
+    // 2. Obtener datos de la base de datos (Query corregida y optimizada con filtro opcional)
+    let query = `
+      SELECT
           a.id as accionista_id,
           a.nombre_completo as accionista_nombre,
           a.numero_documento as accionista_identificacion,
@@ -45,9 +44,18 @@ export async function POST(request: NextRequest) {
        FROM core.accionistas a
        JOIN core.dividendospagados dp ON a.id = dp.accionista_id
        WHERE a.tenant_id = $1 AND dp.ano_fiscal = $2
-       GROUP BY a.id, a.nombre_completo, a.numero_documento`,
-      [tenantId, ano_fiscal]
-    );
+    `;
+    
+    const params = [tenantId, ano_fiscal];
+
+    if (accionista_id) {
+      query += ` AND a.id = $3`;
+      params.push(accionista_id);
+    }
+
+    query += ` GROUP BY a.id, a.nombre_completo, a.numero_documento`;
+
+    const accionistasData = await client.query(query, params);
 
     if (accionistasData.rows.length === 0) {
       client.release();
@@ -83,12 +91,10 @@ export async function POST(request: NextRequest) {
 
       const pdfBytes = await pdfDoc.save();
 
-      const dirPath = path.join(process.cwd(), 'secure_uploads', tenantIdString, 'certificados_dividendos');
-      await fs.mkdir(dirPath, { recursive: true });
       const fileName = `certificado_${ano_fiscal}_${accionista.accionista_id}.pdf`;
-      const filePath = path.join(dirPath, fileName);
-      await fs.writeFile(filePath, pdfBytes);
-      const storagePath = path.join(tenantIdString, 'certificados_dividendos', fileName).replace(/\\/g, '/');
+      const storagePath = `${tenantIdString}/certificados_dividendos/${fileName}`;
+
+      await storageService.uploadFile(storagePath, Buffer.from(pdfBytes), 'application/pdf');
 
       const file_hash_sha256 = createHash('sha256').update(pdfBytes).digest('hex');
 

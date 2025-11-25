@@ -26,10 +26,12 @@ export default function DatePicker({
   useEffect(() => {
     const flatPickr = flatpickr(`#${id}`, {
       mode: mode || "single",
-      static: true,
+      static: false,
       monthSelectorType: "static",
       dateFormat: "Y-m-d",
       defaultDate,
+      allowInput: true, // Allow manual input
+      position: "auto", // Force the calendar to open above the input
       onChange,
     });
 

@@ -40,74 +40,27 @@ const navItems: NavItem[] = [
     subItems: [{ name: "Ecommerce", path: "/dashboard", pro: false }],
   },
   {
-      icon: <GroupIcon />, // Usa un icono adecuado, ej. UserGroup o similar
-      name: "Inversionistas",
-      path: "/dashboard/inversionistas",
-  },
-  {
-    icon: <DocsIcon />, // O el ícono que prefieras
-    name: "Contabilidad",
-    path: "/dashboard/contabilidad",
-  },
-  {
-    icon: <AlertIcon />,
-    name: "Gestión de Riesgos",
-    path: "/dashboard/riesgos",
-  },
-  {
-    icon: <DollarLineIcon />, // <-- NUEVO: Ítem de Facturación
-    name: "Facturación",
-    path: "/dashboard/facturacion",
-  },
-  {
-     icon: <LockIcon />, // O un ícono de "documento firmado"
-     name: "Documentos Legales",
-     path: "/dashboard/documentos-legales",
-  },
-  {
-     icon: <InfoIcon />, // Ícono de "Información" o "Reporte"
-     name: "Canal Ético",
-     path: "/dashboard/canal-etico",
-  },
-  {
-    name: "Gestión RNBD",
-    path: "/dashboard/rnbd",
-    icon: <InfoIcon />, // Importa un icono adecuado
-  },
-  {
-    icon: <UserCircleIcon />, // Reusing UserCircleIcon for admin user management
-    name: "Gestión de Usuarios",
-    path: "/dashboard/usuarios",
-  },
-  {
-    icon: <PaperPlaneIcon />,
-    name: "Reportes Regulatorios",
-    path: "/dashboard/reportes-regulatorios",
-  },
-  {
-    icon: <ShootingStarIcon />,
-    name: "Ética y Gobernanza IA",
-    path: "/dashboard/etica-gobernanza",
-  },
-  {
-    icon: <PieChartIcon />,
-    name: "Reporte ESG",
-    path: "/dashboard/esg",
-  },
-  {
     icon: <LockIcon />,
-    name: "Privacidad",
+    name: "Finanzas y Operaciones",
     subItems: [
-      { name: "Derechos ARCO", path: "/dashboard/arco" },
-      { name: "Preferencias", path: "/dashboard/privacidad/preferencias" },
+      { name: "Contabilidad", path: "/dashboard/contabilidad" },
+      { name: "Facturacion", path: "/dashboard/facturacion" },
+      { name: "Cuentas", path: "/dashboard/tesoreria/cuentas" },
+      { name: "Caja", path: "/dashboard/caja" },
+      { name: "Pagos", path: "/dashboard/pagos" },
+      { name: "Tasas de Cambio", path: "/dashboard/tasas-cambio" },
+      { name: "Reportes", path: "/dashboard/capital-extranjero" },
+      { name: "Registrar", path: "/dashboard/capital-extranjero/registrar" },
+      { name: "Inversionistas", path: "/dashboard/inversionistas" },
     ],
   },
   {
-    icon: <BoxCubeIcon />, // Ícono para Tokenización
-    name: "Tokenización",
+    icon: <LockIcon />,
+    name: "Riesgo y Cumplimiento",
     subItems: [
-      { name: "Emitir Título Valor", path: "/dashboard/tokenizacion/emitir" },
-      { name: "Cap Table", path: "/dashboard/tokenizacion/cap-table" },
+      { name: "Gestión de Riesgos", path: "/dashboard/riegos" },
+      { name: "Documentos Legales", path: "/dashboard/documentos-legales" },
+      { name: "Reportes Regulatorios", path: "/dashboard/reportes-regulatorios" },
     ],
   },
   {
@@ -120,88 +73,23 @@ const navItems: NavItem[] = [
     ],
   },
   {
-    icon: <DollarLineIcon />,
-    name: "Capital Extranjero",
-    // Se elimina el 'path' principal
+    icon: <LockIcon />,
+    name: "Gobernanza y Datos",
     subItems: [
-      { name: "Reportes", path: "/dashboard/capital-extranjero" },
-      { name: "Registrar", path: "/dashboard/capital-extranjero/registrar" },
+      { name: "Privacidad", path: "/dashboard/" },
+      { name: "Gestión RNBD", path: "/dashboard/" },
+      { name: "Canal Ético", path: "/dashboard/" },
+      { name: "Reporte ESG", path: "/dashboard/" },
+      { name: "Ética y Gobernanza IA", path: "/dashboard/" },
+      { name: "Tokenización", path: "/dashboard/" },
     ],
   },
   {
-    icon: <PageIcon />,
-    name: "Tesoreria",
+    icon: <LockIcon />,
+    name: "Administración",
     subItems: [
-      { name: "Cuentas", path: "/dashboard/tesoreria/cuentas" },
-    ],
-  },
-  {
-    icon: <DollarLineIcon />, // Reusing DollarLineIcon, or a new one if available
-    name: "Pagos",
-    path: "/dashboard/pagos",
-  },
-  {
-    icon: <DollarLineIcon />,
-    name: "Caja",
-    path: "/dashboard/caja",
-  },
-  {
-    icon: <DollarLineIcon />,
-    name: "Tasas de Cambio",
-    path: "/dashboard/tasas-cambio",
-  },
-  {
-    icon: <UserCircleIcon />,
-    name: "User Profile",
-    path: "/profile",
-  },
-  {
-    name: "Forms",
-    icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  },
-  {
-    name: "Tables",
-    icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-  },
-  {
-    name: "Pages",
-    icon: <PageIcon />,
-    subItems: [
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
-    ],
-  },
-];
-
-const othersItems: NavItem[] = [
-  {
-    icon: <PieChartIcon />,
-    name: "Charts",
-    subItems: [
-      { name: "Line Chart", path: "/line-chart", pro: false },
-      { name: "Bar Chart", path: "/bar-chart", pro: false },
-    ],
-  },
-  {
-    icon: <BoxCubeIcon />,
-    name: "UI Elements",
-    subItems: [
-      { name: "Alerts", path: "/alerts", pro: false },
-      { name: "Avatar", path: "/avatars", pro: false },
-      { name: "Badge", path: "/badge", pro: false },
-      { name: "Buttons", path: "/buttons", pro: false },
-      { name: "Images", path: "/images", pro: false },
-      { name: "Videos", path: "/videos", pro: false },
-    ],
-  },
-  {
-    icon: <PlugInIcon />,
-    name: "Authentication",
-    subItems: [
-      { name: "Sign In", path: "/signin", pro: false },
-      { name: "Sign Up", path: "/signup", pro: false },
+      { name: "Gestión de Usuarios", path: "/dashboard/" },
+      { name: "Perfil de Usuario", path: "/dashboard/" },
     ],
   },
 ];
