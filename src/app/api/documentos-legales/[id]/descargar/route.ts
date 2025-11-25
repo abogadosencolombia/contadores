@@ -2,12 +2,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
 import { verifyAuth, UserPayload } from '@/lib/auth';
-import fs from 'fs/promises';
-import path from 'path';
+import { storageService } from '@/lib/storage'; // Importar el nuevo servicio de storage
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } } // Corregir tipo para params
 ) {
   let decoded: UserPayload;
   try {
@@ -17,8 +16,7 @@ export async function GET(
   }
 
   try {
-    // --- SOLUCIÓN: Await params antes de acceder a sus propiedades ---
-    const { id } = await params;
+    const { id } = params; // params ya no es una promesa
     const tenantId = decoded.tenant;
 
     // 1. Buscar el documento en la BD
@@ -35,30 +33,12 @@ export async function GET(
     const doc = docRes.rows[0];
     const storagePath = doc.storage_path_original; // Ej: "default_tenant/contrato.pdf"
 
-    // 2. Construir la ruta absoluta y segura
-    const filePath = path.join(process.cwd(), 'secure_uploads', storagePath);
+    // 2. Generar URL firmada de Supabase Storage
+    const signedUrl = await storageService.getSignedUrl(storagePath);
 
-    // 3. Leer el archivo del disco
-    let fileBuffer: Buffer;
-    try {
-      fileBuffer = await fs.readFile(filePath);
-    } catch (error: any) {
-      console.error('Error al leer el archivo:', error);
-      return NextResponse.json({ message: 'Archivo no encontrado en el servidor.' }, { status: 404 });
-    }
+    // 3. Redirigir al cliente a la URL firmada
+    return NextResponse.redirect(signedUrl);
 
-    // 4. Extraer el nombre del archivo
-    const filename = path.basename(storagePath);
-
-    // 5. Enviar el archivo al cliente
-    const headers = new Headers();
-    headers.append('Content-Disposition', `attachment; filename="${filename}"`);
-    headers.append('Content-Type', 'application/octet-stream');
-
-    return new NextResponse(fileBuffer, {
-      status: 200,
-      headers: headers,
-    });
   } catch (error: any) {
     console.error('Error en GET /descargar:', error);
     return NextResponse.json({ message: 'Error interno del servidor.' }, { status: 500 });

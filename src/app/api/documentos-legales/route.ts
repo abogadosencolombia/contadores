@@ -2,9 +2,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
 import { verifyAuth, UserPayload } from '@/lib/auth';
-import fs from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto';
+import { storageService } from '@/lib/storage';
 
 // --- GET (Listar Documentos) ---
 // (Función GET actualizada para incluir fechas de firma)
@@ -69,13 +69,14 @@ export async function POST(req: NextRequest) {
     const buffer = Buffer.from(bytes);
     const hash_sha256_original = crypto.createHash('sha256').update(buffer).digest('hex');
 
+    // Normalización del nombre de archivo
     const safeFilename = path.basename(file.name).replace(/[^a-z0-9_.-]/gi, '_');
-    const uploadDir = path.join(process.cwd(), 'secure_uploads', tenantId);
-    await fs.mkdir(uploadDir, { recursive: true });
-    const filePath = path.join(uploadDir, safeFilename);
-    await fs.writeFile(filePath, buffer);
+    
+    // Ruta dentro del Bucket (ej: "tenant-uuid/mi-archivo.pdf")
+    const storagePath = `${tenantId}/${Date.now()}_${safeFilename}`;
 
-    const storage_path_original = path.join(tenantId, safeFilename);
+    // --- SUBIDA A SUPABASE STORAGE ---
+    await storageService.uploadFile(storagePath, buffer, file.type);
 
     const query = `
       INSERT INTO core.documentos_legales (
@@ -93,7 +94,7 @@ export async function POST(req: NextRequest) {
       descripcion,
       tipo_documento,
       fecha_documento,
-      storage_path_original,
+      storagePath, // Guardamos la ruta relativa del bucket
       hash_sha256_original,
       documento_padre_id,
       version
@@ -104,6 +105,6 @@ export async function POST(req: NextRequest) {
 
   } catch (error: any) {
     console.error('Error en POST /api/documentos-legales:', error);
-    return NextResponse.json({ message: 'Error interno del servidor.' }, { status: 500 });
+    return NextResponse.json({ message: 'Error interno del servidor: ' + error.message }, { status: 500 });
   }
 }

@@ -1,10 +1,13 @@
-// En: contadores-copy/src/app/page.tsx
-
 import Link from "next/link";
 import Image from "next/image"; // 1. Importar Image de next/image
 import Button from "@/components/ui/button/Button";
+import { createClient } from '@/utils/supabase/server'
+import { cookies } from 'next/headers'
 
-export default function WelcomePage() {
+export default async function WelcomePage() {
+  const cookieStore = await cookies()
+  const supabase = createClient(cookieStore)
+  const { data: todos } = await supabase.from('todos').select()
   return (
     // Contenedor principal: Centrado y con fondo temático
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4 dark:bg-gray-dark sm:p-8">

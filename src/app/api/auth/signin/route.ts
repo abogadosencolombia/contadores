@@ -16,6 +16,15 @@ export async function POST(req: NextRequest) {
 
   try {
     // 1. Buscar al usuario y sus roles (Optimizado con JOIN y array_agg)
+    console.log('[DEBUG] Intento de login para:', email);
+    console.log('[DEBUG] Verificando variables de entorno DB:', {
+      DB_USER: !!process.env.DB_USER,
+      DB_HOST: !!process.env.DB_HOST,
+      DB_NAME: !!process.env.DB_NAME,
+      DB_PASSWORD_SET: !!process.env.DB_PASSWORD,
+      DATABASE_URL_SET: !!process.env.DATABASE_URL,
+    });
+
     const query = `
       SELECT u.*, 
              COALESCE(array_agg(r.nombre_rol) FILTER (WHERE r.nombre_rol IS NOT NULL), '{}') as roles
