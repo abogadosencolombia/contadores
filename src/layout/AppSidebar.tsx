@@ -1,28 +1,21 @@
 "use client";
-import React, { useEffect, useRef, useState,useCallback } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useSidebar } from "../context/SidebarContext";
 import {
   AlertIcon,
-  BoxCubeIcon,
-  DocsIcon,
   DollarLineIcon,
   LockIcon,
-  InfoIcon,
-  PaperPlaneIcon,
   ChevronDownIcon,
   GridIcon,
   HorizontaLDots,
-  ListIcon,
   PageIcon,
-  PieChartIcon,
-  PlugInIcon,
-  TableIcon,
-  ShootingStarIcon,
   UserCircleIcon,
-  GroupIcon,
+  PieChartIcon,
+  BoxCubeIcon,
+  PlugInIcon,
 } from "../icons/index";
 import SidebarWidget from "./SidebarWidget";
 
@@ -40,74 +33,27 @@ const navItems: NavItem[] = [
     subItems: [{ name: "Ecommerce", path: "/dashboard", pro: false }],
   },
   {
-      icon: <GroupIcon />, // Usa un icono adecuado, ej. UserGroup o similar
-      name: "Inversionistas",
-      path: "/dashboard/inversionistas",
-  },
-  {
-    icon: <DocsIcon />, // O el ícono que prefieras
-    name: "Contabilidad",
-    path: "/dashboard/contabilidad",
-  },
-  {
-    icon: <AlertIcon />,
-    name: "Gestión de Riesgos",
-    path: "/dashboard/riesgos",
-  },
-  {
-    icon: <DollarLineIcon />, // <-- NUEVO: Ítem de Facturación
-    name: "Facturación",
-    path: "/dashboard/facturacion",
-  },
-  {
-     icon: <LockIcon />, // O un ícono de "documento firmado"
-     name: "Documentos Legales",
-     path: "/dashboard/documentos-legales",
-  },
-  {
-     icon: <InfoIcon />, // Ícono de "Información" o "Reporte"
-     name: "Canal Ético",
-     path: "/dashboard/canal-etico",
-  },
-  {
-    name: "Gestión RNBD",
-    path: "/dashboard/rnbd",
-    icon: <InfoIcon />, // Importa un icono adecuado
-  },
-  {
-    icon: <UserCircleIcon />, // Reusing UserCircleIcon for admin user management
-    name: "Gestión de Usuarios",
-    path: "/dashboard/usuarios",
-  },
-  {
-    icon: <PaperPlaneIcon />,
-    name: "Reportes Regulatorios",
-    path: "/dashboard/reportes-regulatorios",
-  },
-  {
-    icon: <ShootingStarIcon />,
-    name: "Ética y Gobernanza IA",
-    path: "/dashboard/etica-gobernanza",
-  },
-  {
-    icon: <PieChartIcon />,
-    name: "Reporte ESG",
-    path: "/dashboard/esg",
-  },
-  {
-    icon: <LockIcon />,
-    name: "Privacidad",
+    icon: <DollarLineIcon />,
+    name: "Finanzas y Operaciones",
     subItems: [
-      { name: "Derechos ARCO", path: "/dashboard/arco" },
-      { name: "Preferencias", path: "/dashboard/privacidad/preferencias" },
+      { name: "Contabilidad", path: "/dashboard/contabilidad" },
+      { name: "Facturacion", path: "/dashboard/facturacion" },
+      { name: "Cuentas", path: "/dashboard/tesoreria/cuentas" },
+      { name: "Caja", path: "/dashboard/caja" },
+      { name: "Pagos", path: "/dashboard/pagos" },
+      { name: "Tasas de Cambio", path: "/dashboard/tasas-cambio" },
+      { name: "Reportes", path: "/dashboard/capital-extranjero" },
+      { name: "Registrar", path: "/dashboard/capital-extranjero/registrar" },
+      { name: "Inversionistas", path: "/dashboard/inversionistas" },
     ],
   },
   {
-    icon: <BoxCubeIcon />, // Ícono para Tokenización
-    name: "Tokenización",
+    icon: <AlertIcon />,
+    name: "Riesgo y Cumplimiento",
     subItems: [
-      { name: "Emitir Título Valor", path: "/dashboard/tokenizacion/emitir" },
-      { name: "Cap Table", path: "/dashboard/tokenizacion/cap-table" },
+      { name: "Gestión de Riesgos", path: "/dashboard/riesgos" },
+      { name: "Documentos Legales", path: "/dashboard/documentos-legales" },
+      { name: "Reportes Regulatorios", path: "/dashboard/reportes-regulatorios" },
     ],
   },
   {
@@ -120,57 +66,37 @@ const navItems: NavItem[] = [
     ],
   },
   {
-    icon: <DollarLineIcon />,
-    name: "Capital Extranjero",
-    // Se elimina el 'path' principal
-    subItems: [
-      { name: "Reportes", path: "/dashboard/capital-extranjero" },
-      { name: "Registrar", path: "/dashboard/capital-extranjero/registrar" },
-    ],
-  },
-  {
     icon: <PageIcon />,
-    name: "Tesoreria",
+    name: "Gobernanza y Datos",
     subItems: [
-      { name: "Cuentas", path: "/dashboard/tesoreria/cuentas" },
+      { name: "Gestión RNBD", path: "/dashboard/rnbd" },
+      { name: "Canal Ético", path: "/dashboard/canal-etico" },
+      { name: "Reporte ESG", path: "/dashboard/esg" },
+      { name: "Ética y Gobernanza IA", path: "/dashboard/etica-gobernanza" },
     ],
   },
   {
-    icon: <DollarLineIcon />, // Reusing DollarLineIcon, or a new one if available
-    name: "Pagos",
-    path: "/dashboard/pagos",
-  },
-  {
-    icon: <DollarLineIcon />,
-    name: "Caja",
-    path: "/dashboard/caja",
-  },
-  {
-    icon: <DollarLineIcon />,
-    name: "Tasas de Cambio",
-    path: "/dashboard/tasas-cambio",
+    icon: <BoxCubeIcon />, // Ícono para Tokenización
+    name: "Tokenización",
+    subItems: [
+      { name: "Emitir Título Valor", path: "/dashboard/tokenizacion/emitir" },
+      { name: "Cap Table", path: "/dashboard/tokenizacion/cap-table" },
+    ],
   },
   {
     icon: <UserCircleIcon />,
-    name: "User Profile",
-    path: "/profile",
-  },
-  {
-    name: "Forms",
-    icon: <ListIcon />,
-    subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  },
-  {
-    name: "Tables",
-    icon: <TableIcon />,
-    subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-  },
-  {
-    name: "Pages",
-    icon: <PageIcon />,
+    name: "Administración",
     subItems: [
-      { name: "Blank Page", path: "/blank", pro: false },
-      { name: "404 Error", path: "/error-404", pro: false },
+      { name: "Gestión de Usuarios", path: "/dashboard/usuarios" },
+      { name: "Perfil de Usuario", path: "/profile" },
+    ],
+  },
+  {
+    icon: <LockIcon />,
+    name: "Privacidad",
+    subItems: [
+      { name: "Derechos ARCO", path: "/dashboard/arco" },
+      { name: "Preferencias", path: "/dashboard/privacidad/preferencias" },
     ],
   },
 ];
@@ -345,8 +271,7 @@ const AppSidebar: React.FC = () => {
   );
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  // const isActive = (path: string) => path === pathname;
-   const isActive = useCallback((path: string) => path === pathname, [pathname]);
+  const isActive = useCallback((path: string) => path === pathname, [pathname]);
 
   useEffect(() => {
     // Check if the current path matches any submenu item
@@ -453,7 +378,7 @@ const AppSidebar: React.FC = () => {
           <div className="flex flex-col gap-4">
             <div>
               <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+                className={`mb-4 text-xs uppercase flex leading-5 text-gray-400 ${
                   !isExpanded && !isHovered
                     ? "lg:justify-center"
                     : "justify-start"
@@ -470,7 +395,7 @@ const AppSidebar: React.FC = () => {
 
             <div className="">
               <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+                className={`mb-4 text-xs uppercase flex leading-5 text-gray-400 ${
                   !isExpanded && !isHovered
                     ? "lg:justify-center"
                     : "justify-start"

@@ -4,7 +4,7 @@ import { db } from '@/lib/db'; // Asumiendo tu conexión a DB
 // Importa tus servicios de generación y envío
 // import { ReportesService } from '@/src/lib/services/reportesService';
 
-export async function POST(request: Request) {
+export async function GET(request: Request) {
   const headersList = headers();
   const authHeader = headersList.get('authorization');
 

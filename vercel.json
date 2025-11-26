@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/rnbd",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/reportes-regulatorios/cron/ejecutar-programados",
+      "schedule": "0 0 * * *"
     }
   ]
 }
