@@ -30,10 +30,10 @@ interface RiskScoreBarProps {
   score: number; // 0-100
 }
 const RiskScoreBar: React.FC<RiskScoreBarProps> = ({ score }) => {
-  let barColorClass = 'bg-success'; // BAJA
-  if (score >= 25 && score < 50) barColorClass = 'bg-warning'; // MEDIA
+  let barColorClass = 'bg-success-500'; // BAJA
+  if (score >= 25 && score < 50) barColorClass = 'bg-warning-500'; // MEDIA
   if (score >= 50 && score < 75) barColorClass = 'bg-orange-500'; // ALTA
-  if (score >= 75) barColorClass = 'bg-danger'; // CRÍTICA
+  if (score >= 75) barColorClass = 'bg-error-500'; // CRÍTICA
 
   return (
     <div className="h-2.5 w-full rounded-full bg-gray-200 dark:bg-strokedark">
@@ -148,10 +148,10 @@ export default function EthicsGovernanceCenter() {
           <div className="col-span-full text-center py-4 text-danger">{errorStats}</div>
         ) : (
           <>
-            <StatCard title="Crítica" count={getCriticalityCount('CRITICA')} colorClass="bg-danger-light text-danger-dark" />
-            <StatCard title="Alta" count={getCriticalityCount('ALTA')} colorClass="bg-orange-light text-orange-dark" />
-            <StatCard title="Media" count={getCriticalityCount('MEDIA')} colorClass="bg-warning-light text-warning-dark" />
-            <StatCard title="Baja" count={getCriticalityCount('BAJA')} colorClass="bg-success-light text-success-dark" />
+            <StatCard title="Crítica" count={getCriticalityCount('CRITICA')} colorClass="bg-error-50 text-error-700" />
+            <StatCard title="Alta" count={getCriticalityCount('ALTA')} colorClass="bg-orange-50 text-orange-700" />
+            <StatCard title="Media" count={getCriticalityCount('MEDIA')} colorClass="bg-warning-50 text-warning-700" />
+            <StatCard title="Baja" count={getCriticalityCount('BAJA')} colorClass="bg-success-50 text-success-700" />
           </>
         )}
       </div>

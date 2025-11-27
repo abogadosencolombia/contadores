@@ -1,25 +1,50 @@
-// En: src/lib/db.ts
+import { Pool } from 'pg';
+import dns from 'dns';
 
-import { Pool, PoolConfig } from 'pg';
+// Configuración para evitar problemas con IPv6 en Supabase/AWS
+// Esto fuerza a Node a usar IPv4 primero si está disponible.
+if (dns.setDefaultResultOrder) {
+  dns.setDefaultResultOrder('ipv4first');
+}
 
-const getPoolConfig = (): PoolConfig => {
-  if (process.env.DATABASE_URL) {
-    return {
-      connectionString: process.env.DATABASE_URL,
-      // Required for Supabase and many cloud providers
-      ssl: { rejectUnauthorized: false },
-    };
-  }
+declare global {
+  // eslint-disable-next-line no-var
+  var postgresPool: Pool | undefined;
+}
 
-  return {
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_NAME,
-    password: process.env.DB_PASSWORD || '', // Prevent crash if undefined, though auth will fail
-    port: Number(process.env.DB_PORT) || 5432,
-  };
+let pool: Pool;
+
+// Configuración de la conexión
+const config = {
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false // Necesario para conexiones seguras a Supabase
+  },
+  connectionTimeoutMillis: 10000, // Tiempo máximo de espera para conectar (10s)
+  idleTimeoutMillis: 30000,       // Tiempo antes de cerrar conexión inactiva (30s)
+  max: process.env.NODE_ENV === 'production' ? 20 : 5 // Menos conexiones en desarrollo para evitar saturación
 };
 
-const pool = new Pool(getPoolConfig());
+if (process.env.NODE_ENV === 'production') {
+  pool = new Pool(config);
+} else {
+  // En desarrollo, usamos una variable global para no crear múltiples pools
+  // cada vez que Next.js recarga los archivos (Hot Reload).
+  if (!global.postgresPool) {
+    global.postgresPool = new Pool(config);
+  }
+  pool = global.postgresPool;
+}
 
-export default pool;
+// Manejo de errores del pool para que no tumbe el backend silenciosamente
+pool.on('error', (err) => {
+  console.error('Error inesperado en el cliente de PostgreSQL', err);
+  // No salimos del proceso aquí, dejamos que el pool intente reconectar
+});
+
+// Exportamos un wrapper consistente
+export const db = {
+  query: (text: string, params?: any[]) => pool.query(text, params),
+};
+
+export default db;

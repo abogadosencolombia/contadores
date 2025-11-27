@@ -262,6 +262,17 @@ export default function FacturacionPage() {
       const resData = await res.json();
       if (!res.ok) throw new Error(resData.message || 'Error al guardar el borrador.');
 
+      // Trigger AI Governance Analysis
+      try {
+        await fetch('/api/ai-governance/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(resData.data || data),
+        });
+      } catch (aiError) {
+        console.error('Error triggering AI analysis:', aiError);
+      }
+
       setCreateSuccess('Factura guardada como borrador con éxito.');
       (event.target as HTMLFormElement).reset();
       setItems([]);

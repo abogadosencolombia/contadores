@@ -101,9 +101,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: err.message }, { status: 401 });
   }
 
+  let body: any;
+
   try {
     // 2. Obtener los datos del formulario de factura
-    const body = await req.json();
+    body = await req.json();
 
     const {
       consecutivo,
