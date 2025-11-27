@@ -45,6 +45,7 @@ pool.on('error', (err) => {
 // Exportamos un wrapper consistente
 export const db = {
   query: (text: string, params?: any[]) => pool.query(text, params),
+  connect: () => pool.connect(),
 };
 
 export default db;

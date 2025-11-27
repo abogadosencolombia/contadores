@@ -82,11 +82,15 @@ export default function InversionistasPage() {
     setLoading(true);
     try {
       const res = await fetch("/api/inversionistas");
-      const data: Inversionista[] = await res.json();
-      setInversionistas(data);
+      if (!res.ok) {
+         throw new Error("Error al cargar datos");
+      }
+      const data = await res.json();
+      setInversionistas(Array.isArray(data) ? data : []);
     } catch (_) {
       console.error(_);
       toast.error("Error al cargar inversionistas");
+      setInversionistas([]);
     } finally {
       setLoading(false);
     }

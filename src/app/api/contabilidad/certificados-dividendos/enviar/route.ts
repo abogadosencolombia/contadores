@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
 import { verifyAuth } from '@/lib/auth';
 import { sendEmail } from '@/lib/email';
-import path from 'path';
-import fs from 'fs/promises';
+import { storageService } from '@/lib/storage';
 
 export async function POST(req: NextRequest) {
   try {
@@ -48,18 +47,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'El accionista no tiene un correo electrónico registrado.' }, { status: 400 });
     }
 
-    // Construir ruta absoluta del archivo.
-    // file_path en la DB es relativo a "secure_uploads/" (según la lógica de generación observada)
-    // E.g., "TENANT_ID/certificados_dividendos/archivo.pdf"
-    const absolutePath = path.join(process.cwd(), 'secure_uploads', file_path);
-
-    // Verificar si el archivo existe antes de intentar enviarlo
+    // 1. Obtener URL firmada de Supabase Storage
+    let signedUrl: string;
     try {
-        await fs.access(absolutePath);
-    } catch (error) {
-        console.error(`Archivo no encontrado en disco: ${absolutePath}`);
-        return NextResponse.json({ error: 'El archivo del certificado no se encuentra en el servidor.' }, { status: 500 });
+       signedUrl = await storageService.getSignedUrl(file_path);
+    } catch (err) {
+       console.error("Error obteniendo URL firmada:", err);
+       return NextResponse.json({ error: 'El archivo no se encuentra en el almacenamiento.' }, { status: 404 });
     }
+
+    // 2. Descargar el archivo como Buffer para adjuntarlo
+    const fileRes = await fetch(signedUrl);
+    if (!fileRes.ok) {
+       console.error(`Error descargando archivo de ${signedUrl}: ${fileRes.statusText}`);
+       return NextResponse.json({ error: 'No se pudo descargar el archivo del certificado.' }, { status: 500 });
+    }
+    const fileBuffer = Buffer.from(await fileRes.arrayBuffer());
 
     // Enviar email
     await sendEmail({
@@ -79,7 +82,7 @@ export async function POST(req: NextRequest) {
       attachments: [
         {
           filename: `Certificado_Dividendos_${ano_fiscal}.pdf`,
-          path: absolutePath
+          content: fileBuffer
         }
       ]
     });
