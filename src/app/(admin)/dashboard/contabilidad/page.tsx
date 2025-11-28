@@ -40,6 +40,7 @@ export default function ContabilidadPage() {
   // --- Estados para Modales ---
   const [selectedBalance, setSelectedBalance] = useState<Balance | null>(null);
   const { isOpen: isSignOpen, openModal: openSignModal, closeModal: closeSignModal } = useModal();
+  const { isOpen: isViewBalanceOpen, openModal: openViewBalanceModal, closeModal: closeViewBalanceModal } = useModal();
   const [isSigning, setIsSigning] = useState(false);
   const { isOpen: isGenerateOpen, openModal: openGenerateModal, closeModal: closeGenerateModal } = useModal();
 
@@ -58,7 +59,7 @@ export default function ContabilidadPage() {
         throw new Error(errorData.message || 'No se pudo cargar los balances.');
       }
       const { data, total } = await res.json();
-      
+
       const formattedData = data.map((b: Balance) => ({
         ...b,
         periodo_fecha: new Date(b.periodo_fecha).toLocaleDateString('es-CO', { year: 'numeric', month: 'long' }),
@@ -84,9 +85,19 @@ export default function ContabilidadPage() {
     openSignModal();
   };
 
+  const handleViewBalance = (balance: Balance) => {
+    setSelectedBalance(balance);
+    openViewBalanceModal();
+  };
+
   const customCloseSignModal = () => {
     closeSignModal();
     setError(null);
+    setSelectedBalance(null);
+  };
+
+  const customCloseViewBalanceModal = () => {
+    closeViewBalanceModal();
     setSelectedBalance(null);
   };
 
@@ -115,6 +126,44 @@ export default function ContabilidadPage() {
   const baseHeaderClasses = "py-3 pr-4 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400";
   const baseCellClasses = "py-3 pr-4 text-gray-500 text-theme-sm dark:text-gray-400";
   const hashColClasses = "min-w-[150px] max-w-xs whitespace-normal font-mono text-xs";
+
+  // --- Helper para renderizar filas recursivas ---
+  const renderBalanceRows = (data: any, level = 0) => {
+    if (!data || typeof data !== 'object') return null;
+
+    return Object.entries(data).map(([key, value]) => {
+      const isObject = typeof value === 'object' && value !== null;
+      // Usamos px-4 (1rem) como base. Si hay nivel, sumamos la indentación.
+      const indentStyle = level > 0 ? { paddingLeft: `calc(1rem + ${level * 20}px)` } : {};
+
+      if (isObject) {
+        return (
+          <React.Fragment key={key}>
+            <TableRow className="bg-gray-50/50 dark:bg-white/5">
+              <TableCell colSpan={2} className="py-2 px-4 font-semibold text-gray-800 dark:text-gray-200 capitalize text-sm" style={indentStyle}>
+                {key.replace(/_/g, ' ')}
+              </TableCell>
+            </TableRow>
+            {renderBalanceRows(value, level + 1)}
+          </React.Fragment>
+        );
+      }
+
+      return (
+        <TableRow key={key}>
+          <TableCell className="py-3 px-4 text-gray-600 dark:text-gray-300 capitalize text-sm" style={indentStyle}>
+            {key.replace(/_/g, ' ')}
+          </TableCell>
+          <TableCell className="py-3 px-4 text-gray-600 dark:text-gray-300 text-right text-sm">
+            {typeof value === 'number'
+              ? new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(value)
+              : String(value)
+            }
+          </TableCell>
+        </TableRow>
+      );
+    });
+  };
 
   return (
     <>
@@ -162,6 +211,9 @@ export default function ContabilidadPage() {
                       </Badge>
                     </TableCell>
                     <TableCell className={baseCellClasses}>
+                      <Button size="sm" variant="outline" onClick={() => handleViewBalance(b)} className="mr-2">
+                        Ver
+                      </Button>
                       {b.estado_firma === 'pendiente' && (
                         <Button size="sm" variant="outline" onClick={() => handleOpenSignModal(b)} startIcon={<PencilIcon className="w-4 h-4" />}>
                           Firmar
@@ -201,6 +253,37 @@ export default function ContabilidadPage() {
         isOpen={isGenerateOpen}
         onClose={handleCloseGenerateModal}
       />
+
+      {selectedBalance && (
+        <Modal isOpen={isViewBalanceOpen} onClose={customCloseViewBalanceModal} className="max-w-[800px] p-5 lg:p-10">
+          <div className="text-center">
+            <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">Detalle del Balance</h4>
+            <p className="text-sm text-gray-500 mb-6">Periodo: {selectedBalance.periodo_fecha}</p>
+            <div className="text-left max-h-[60vh] overflow-y-auto rounded-lg border border-gray-200 dark:border-gray-700">
+              <Table>
+                <TableHeader className="bg-gray-50 dark:bg-white/5 sticky top-0 z-10">
+                  <TableRow>
+                    <TableCell isHeader className="py-3 px-4 font-medium text-gray-500 dark:text-gray-400 text-left text-sm">Concepto</TableCell>
+                    <TableCell isHeader className="py-3 px-4 font-medium text-gray-500 dark:text-gray-400 text-right text-sm">Valor (COP)</TableCell>
+                  </TableRow>
+                </TableHeader>
+                <TableBody className="divide-y divide-gray-100 dark:divide-gray-800 bg-white dark:bg-transparent">
+                  {selectedBalance.datos_balance ? (
+                     renderBalanceRows(selectedBalance.datos_balance)
+                  ) : (
+                    <TableRow>
+                       <TableCell colSpan={2} className="py-4 text-center text-gray-500">No hay datos disponibles.</TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+            <div className="flex justify-center gap-3 mt-6">
+              <Button variant="outline" onClick={customCloseViewBalanceModal}>Cerrar</Button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </>
   );
 }

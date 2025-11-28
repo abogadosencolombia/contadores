@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import crypto from 'crypto';
 import db from '@/lib/db'; // Corregido: Importación default
 import { verifyAuth, UserPayload } from '@/lib/auth'; // Corregido: Importamos UserPayload
 
@@ -68,5 +69,77 @@ export async function GET(req: NextRequest) {
       { message: 'Error interno del servidor al obtener balances.' },
       { status: 500 }
     );
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const {
+      tenant_id,
+      tipo_empresa,
+      normativa,
+      periodo_fecha,
+      datos_balance, // N8n debe enviar esto como string
+      hash_sha256
+    } = body;
+
+    // 1. VALIDACIÓN PRIMERO (Para evitar el crash 500)
+    if (!datos_balance) {
+      console.error("❌ Error: 'datos_balance' llegó undefined o null");
+      return NextResponse.json({ message: 'Falta el campo datos_balance' }, { status: 400 });
+    }
+
+    // --- ZONA DE DEPURACIÓN ---
+    console.log("🔍 INSPECCIÓN:", typeof datos_balance);
+
+    // Forzamos string para hash (si llega objeto, lo convertimos, si es string se queda igual)
+    let stringToHash = (typeof datos_balance === 'object')
+      ? JSON.stringify(datos_balance)
+      : datos_balance;
+
+    // Calculamos Hash
+    const computedHash = crypto
+      .createHash('sha256')
+      .update(stringToHash) // Ahora seguro que no es undefined
+      .digest('hex');
+
+    if (computedHash !== hash_sha256) {
+      console.log(`❌ HASH MISMATCH: \nRecibido: ${hash_sha256} \nCalculado: ${computedHash}`);
+      return NextResponse.json(
+        { message: 'Integridad comprometida: El hash no coincide.', debug_hash: computedHash },
+        { status: 400 }
+      );
+    }
+
+    // --- INSERCIÓN EN DB ---
+    // Si llegó como string, lo parseamos a JSON para guardarlo en la columna jsonb
+    const objectToSave = (typeof datos_balance === 'string')
+        ? JSON.parse(datos_balance)
+        : datos_balance;
+
+    const insertQuery = `
+      INSERT INTO core.balances_financieros (
+        tenant_id, tipo_empresa, normativa, periodo_fecha,
+        datos_balance, hash_sha256, estado_firma
+      )
+      VALUES ($1, $2, $3, $4, $5, $6, 'pendiente')
+      RETURNING *
+    `;
+
+    const result = await db.query(insertQuery, [
+      tenant_id,
+      tipo_empresa,
+      normativa,
+      periodo_fecha,
+      objectToSave,
+      hash_sha256
+    ]);
+
+    return NextResponse.json(result.rows[0], { status: 201 });
+
+  } catch (error: any) {
+    console.error('Error POST:', error);
+    return NextResponse.json({ message: error.message }, { status: 500 });
   }
 }
