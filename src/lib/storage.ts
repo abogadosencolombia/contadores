@@ -69,5 +69,24 @@ export const storageService = {
     if (error) {
       throw new Error(`Error eliminando archivo: ${error.message}`);
     }
+  },
+
+  /**
+   * Descarga un archivo del bucket y lo devuelve como Buffer.
+   * @param path Ruta del archivo en el bucket
+   */
+  async downloadFile(path: string): Promise<Buffer> {
+    const { data, error } = await supabaseAdmin
+      .storage
+      .from(BUCKET_NAME)
+      .download(path);
+
+    if (error) {
+      throw new Error(`Error descargando archivo: ${error.message}`);
+    }
+
+    // Convertir Blob a Buffer
+    const arrayBuffer = await data.arrayBuffer();
+    return Buffer.from(arrayBuffer);
   }
 };

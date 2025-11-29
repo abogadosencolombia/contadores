@@ -1,8 +1,7 @@
 // En: src/app/api/canal-etico/casos/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
-import { promises as fs } from 'fs'; // Importamos fs para guardar archivos
-import path from 'path'; // Importamos path para construir rutas
+import { storageService } from '@/lib/storage';
 
 // --- POST (Crear Nuevo Caso con Archivos) ---
 export async function POST(req: NextRequest) {
@@ -47,33 +46,25 @@ export async function POST(req: NextRequest) {
     const nuevoCaso = result.rows[0];
     casoUuid = nuevoCaso.caso_uuid; // Guardamos el UUID
 
-    // 4. Procesar y guardar archivos (si existen)
+    // 4. Procesar y guardar archivos (si existen) en Supabase Storage
     const archivosGuardados: string[] = [];
     if (archivos && archivos.length > 0) {
-      // Ruta de guardado: .../secure_uploads/tenant_id/casos_eticos/caso_uuid/
-      const savePath = path.join(
-        process.cwd(),
-        'secure_uploads', // Usamos la carpeta segura existente
-        tenant_id,
-        'casos_eticos',
-        casoUuid
-      );
-
-      // Asegurarse de que el directorio exista
-      await fs.mkdir(savePath, { recursive: true });
-
       for (const file of archivos) {
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
-        // Evitar sobreescritura y normalizar nombres
-        const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '')}`;
-        const filePath = path.join(savePath, fileName);
+        // Normalizar nombre de archivo
+        const safeFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, '');
+        const uniqueName = `${Date.now()}-${safeFileName}`;
+        
+        // Construir ruta para Storage (usando / como separador siempre)
+        const storagePath = `${tenant_id}/casos_eticos/${casoUuid}/${uniqueName}`;
 
-        await fs.writeFile(filePath, buffer);
+        // Subir a Supabase
+        await storageService.uploadFile(storagePath, buffer, file.type);
 
-        // Guardamos la ruta relativa a la carpeta 'secure_uploads'
-        archivosGuardados.push(path.join(tenant_id, 'casos_eticos', casoUuid, fileName));
+        // Guardamos la ruta relativa
+        archivosGuardados.push(storagePath);
       }
 
       // 5. Actualizar la DB con las rutas de los archivos

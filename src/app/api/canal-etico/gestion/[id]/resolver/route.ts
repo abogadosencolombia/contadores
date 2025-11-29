@@ -2,26 +2,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
 import { verifyAuth, UserPayload } from '@/lib/auth';
+import { storageService } from '@/lib/storage'; // Importar storageService
 import crypto from 'crypto';
 import path from 'path';
-import fs from 'fs/promises';
-// --- ¡NUEVO! Importamos pdf-lib ---
+// import fs from 'fs/promises'; // Removed: not used anymore
 import { PDFDocument, StandardFonts, rgb, PageSizes } from 'pdf-lib';
 
 // --- CAMBIO: Actualizada la firma de la ruta (parámetro 'params') ---
-interface ResolverParams { params: { id: string } }
+// interface ResolverParams { params: Promise<{ id: string }> } // Removed: not used anymore
 
 // --- Función GET (Actualizada para corregir warning) ---
-export async function GET(req: NextRequest, context: { params: { id: string } }) {
+export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   let decoded: UserPayload;
   try {
     decoded = verifyAuth(req);
-  } catch (err: any) {
-    return NextResponse.json({ message: err.message }, { status: 401 });
+  } catch (err: unknown) { // Changed from any
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ message }, { status: 401 });
   }
 
   try {
-    const { id } = context.params; // <-- Corregido
+    const { id } = await context.params; // <-- Corregido await
     const tenantId = decoded.tenant;
 
     const query = `
@@ -52,26 +53,28 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
 
     return NextResponse.json(caso, { status: 200 });
 
-  } catch (error: any) {
+  } catch (error: unknown) { // Changed from any
     console.error('Error en GET /api/canal-etico/gestion/[id]:', error);
-    return NextResponse.json({ message: 'Error interno del servidor.' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Error interno del servidor.';
+    return NextResponse.json({ message }, { status: 500 });
   }
 }
 // --- FIN DE GET ---
 
 
 // --- FUNCIÓN POST (MODIFICADA CON PDF-LIB) ---
-export async function POST(req: NextRequest, context: { params: { id: string } }) {
+export async function POST(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   let decoded: UserPayload;
   try {
     decoded = verifyAuth(req);
-  } catch (err: any) {
-    return NextResponse.json({ message: err.message }, { status: 401 });
+  } catch (err: unknown) { // Changed from any
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ message }, { status: 401 });
   }
 
   const client = await db.connect();
   try {
-    const { id: caso_id } = context.params;
+    const { id: caso_id } = await context.params; // Corregido await
     const tenantId = decoded.tenant;
     const { titulo_acta, descripcion_acta } = await req.json();
 
@@ -92,7 +95,7 @@ export async function POST(req: NextRequest, context: { params: { id: string } }
     }
     const caso = casoRes.rows[0];
     const evidenciaPaths: string[] = caso.archivos_evidencia || [];
-    const baseUploadPath = path.join(process.cwd(), 'secure_uploads');
+    // const baseUploadPath = path.join(process.cwd(), 'secure_uploads'); // Removed: not used anymore
 
     // --- INICIO DE GENERACIÓN DE PDF REAL ---
 
@@ -164,77 +167,81 @@ export async function POST(req: NextRequest, context: { params: { id: string } }
 
     if (evidenciaPaths.length > 0) {
       for (const relativePath of evidenciaPaths) {
-        const fullImagePath = path.join(baseUploadPath, relativePath);
-        const imageName = path.basename(relativePath);
+        // Normalizar ruta para Supabase (siempre usar /)
+        const storagePath = relativePath.replace(/\\/g, '/');
+        const imageName = path.basename(storagePath);
 
         try {
-          const imageBytes = await fs.readFile(fullImagePath);
+          // CAMBIO: Descargar de Supabase en lugar de fs.readFile
+          const imageBytes = await storageService.downloadFile(storagePath);
           let embeddedImage;
 
           // Verificar si es archivo de texto
           if (/\.(txt|md)$/i.test(imageName)) {
-            // Leer contenido del archivo de texto
-            const textContent = await fs.readFile(fullImagePath, 'utf-8');
-
-            // Verificar espacio disponible
-            if (y < 100) {
-              page = pdfDoc.addPage(PageSizes.Letter);
-              y = height - 70;
-            }
-
-            // Dibujar encabezado del archivo
-            page.drawText(`- (Archivo de texto) ${imageName}`, {
-              x: margin,
-              y,
-              size: 9,
-              font: fontBold,
-              color: rgb(0.2, 0.2, 0.5)
-            });
+            // ... (Lógica existente para TXT) ...
+            const textContent = imageBytes.toString('utf-8');
+            if (y < 100) { page = pdfDoc.addPage(PageSizes.Letter); y = height - 70; }
+            
+            page.drawText(`- (Archivo de texto) ${imageName}`, { x: margin, y, size: 9, font: fontBold, color: rgb(0.2, 0.2, 0.5) });
             y -= 18;
-
-            // Dibujar línea divisoria
-            page.drawLine({
-              start: { x: margin + 15, y },
-              end: { x: width - margin, y },
-              thickness: 0.5,
-              color: rgb(0.7, 0.7, 0.7),
-            });
+            page.drawLine({ start: { x: margin + 15, y }, end: { x: width - margin, y }, thickness: 0.5, color: rgb(0.7, 0.7, 0.7) });
             y -= 15;
 
-            // Dividir el contenido en líneas y dibujar
             const contentLines = textContent.split('\n');
             for (const line of contentLines) {
-              // Dividir líneas largas para que quepan en el ancho
+              // ... (Lógica de wrapping existente) ...
               const maxCharsPerLine = 80;
               const wrappedLines = [];
-
               if (line.length > maxCharsPerLine) {
-                for (let i = 0; i < line.length; i += maxCharsPerLine) {
-                  wrappedLines.push(line.substring(i, i + maxCharsPerLine));
-                }
-              } else {
-                wrappedLines.push(line);
-              }
+                for (let i = 0; i < line.length; i += maxCharsPerLine) { wrappedLines.push(line.substring(i, i + maxCharsPerLine)); }
+              } else { wrappedLines.push(line); }
 
               for (const wrappedLine of wrappedLines) {
-                if (y < 50) {
-                  page = pdfDoc.addPage(PageSizes.Letter);
-                  y = height - 70;
-                }
-
-                page.drawText(wrappedLine || ' ', {
-                  x: margin + 20,
-                  y,
-                  size: 8,
-                  font: font,
-                  color: rgb(0.3, 0.3, 0.3)
-                });
+                if (y < 50) { page = pdfDoc.addPage(PageSizes.Letter); y = height - 70; }
+                page.drawText(wrappedLine || ' ', { x: margin + 20, y, size: 8, font: font, color: rgb(0.3, 0.3, 0.3) });
                 y -= 12;
               }
             }
-
-            y -= 10; // Espacio adicional después del contenido
+            y -= 10;
             continue;
+          }
+
+          // --- NUEVO: FUSIÓN DE PDFs ---
+          if (/\.pdf$/i.test(imageName)) {
+             try {
+               // 1. Cargar el PDF de evidencia
+               const evidencePdf = await PDFDocument.load(imageBytes);
+               
+               // 2. Copiar todas las páginas
+               const copiedPages = await pdfDoc.copyPages(evidencePdf, evidencePdf.getPageIndices());
+
+               // 3. Añadir una página separadora en el acta principal (opcional, pero bueno para organizar)
+               if (y < 100) { 
+                 page = pdfDoc.addPage(PageSizes.Letter); 
+                 y = height - 70; 
+               }
+               
+               // Escribir en la página actual que sigue un anexo PDF
+               page.drawText(`- (Anexo PDF) ${imageName}`, { x: margin, y, size: 10, font: fontBold, color: rgb(0, 0, 0.8) });
+               page.drawText(`  (El contenido de este archivo se ha adjuntado en las páginas siguientes)`, { x: margin, y: y - 15, size: 8, font: font, color: rgb(0.5, 0.5, 0.5) });
+               y -= 40;
+
+               // 4. Pegar las páginas copiadas al final del documento actual
+               for (const copiedPage of copiedPages) {
+                 pdfDoc.addPage(copiedPage);
+               }
+               
+               // Recuperar la última página para seguir escribiendo si fuera necesario (o crear una nueva limpia)
+               // En este caso, creamos una nueva página limpia para la siguiente evidencia si quedan más
+               page = pdfDoc.addPage(PageSizes.Letter);
+               y = height - 70;
+
+             } catch (pdfErr: unknown) {
+               console.error('Error al fusionar PDF:', pdfErr);
+               const message = pdfErr instanceof Error ? pdfErr.message : 'Unknown PDF merge error';
+               drawTextWithBreaks(`- (Error al adjuntar PDF: ${imageName}: ${message})`, 9, font, 14, rgb(0.8, 0, 0));
+             }
+             continue;
           }
 
           // Incrustar JPG o PNG
@@ -243,8 +250,9 @@ export async function POST(req: NextRequest, context: { params: { id: string } }
           } else if (/\.png$/i.test(imageName)) {
             embeddedImage = await pdfDoc.embedPng(imageBytes);
           } else {
-            // Si no es imagen ni texto, solo mostrar el nombre
-            drawTextWithBreaks(`- (Archivo) ${imageName}`, 9, font, 14);
+            // Otros formatos (DOCX, XLSX, etc.)
+            drawTextWithBreaks(`- (Archivo Adjunto) ${imageName}`, 9, fontBold, 14, rgb(0, 0, 0)); // Use black for clarity
+            drawTextWithBreaks(`  Formato no visualizable directamente en PDF. Descargar desde el dashboard.`, 8, font, 14, rgb(0.5, 0.5, 0.5));
             continue;
           }
 
@@ -278,9 +286,10 @@ export async function POST(req: NextRequest, context: { params: { id: string } }
 
           y -= (dims.height + 20); // Espacio después de la imagen
 
-        } catch (imgError: any) {
-          console.error(`Error al incrustar imagen ${imageName}:`, imgError.message);
-          drawTextWithBreaks(`- (Error al cargar evidencia: ${imageName})`, 9, font, 14, rgb(0.8, 0, 0));
+        } catch (imgError: unknown) { // Changed from any
+          console.error(`Error al incrustar imagen ${imageName}:`, imgError); // Log raw error for debugging
+          const message = imgError instanceof Error ? imgError.message : 'Unknown image embedding error';
+          drawTextWithBreaks(`- (Error al cargar evidencia: ${imageName}: ${message})`, 9, font, 14, rgb(0.8, 0, 0));
         }
       }
     } else {
@@ -299,12 +308,12 @@ export async function POST(req: NextRequest, context: { params: { id: string } }
       .digest('hex');
 
     const filename = `acta_etica_${caso.id}_${Date.now()}.pdf`;
-    const storage_path_acta = path.join(tenantId, 'actas_eticas_resueltas', filename);
+    // CAMBIO CRUCIAL: Usar '/' en lugar de path.join para la ruta de Supabase
+    const storage_path_acta = `${tenantId}/actas_eticas_resueltas/${filename}`;
 
-    // 5. Guardar el archivo PDF físicamente
-    const fullFilePath = path.join(baseUploadPath, storage_path_acta);
-    await fs.mkdir(path.dirname(fullFilePath), { recursive: true });
-    await fs.writeFile(fullFilePath, pdfBytes); // Guardar los bytes del PDF
+    // 5. Subir el archivo PDF a Supabase Storage
+    const pdfBuffer = Buffer.from(pdfBytes); // Convertir Uint8Array a Buffer
+    await storageService.uploadFile(storage_path_acta, pdfBuffer, 'application/pdf');
 
     // 6. Crear el Documento Legal en estado 'borrador' (Módulo WORM)
     const docQuery = `
@@ -343,10 +352,11 @@ export async function POST(req: NextRequest, context: { params: { id: string } }
       { status: 200 }
     );
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     await client.query('ROLLBACK');
     console.error('Error al resolver caso ético:', error);
-    return NextResponse.json({ message: error.message || 'Error interno del servidor.' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Error interno del servidor.';
+    return NextResponse.json({ message }, { status: 500 });
   } finally {
     client.release();
   }

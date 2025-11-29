@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
 import { verifyAuth, UserPayload } from '@/lib/auth';
 
-interface SolicitarParams { params: { id: string } }
+interface SolicitarParams { params: Promise<{ id: string }> }
 
 /**
  * Este endpoint finaliza el borrador y lo pasa a 'pendiente_firma',
@@ -13,12 +13,13 @@ export async function POST(req: NextRequest, { params }: SolicitarParams) {
   let decoded: UserPayload;
   try {
     decoded = verifyAuth(req);
-  } catch (err: any) {
-    return NextResponse.json({ message: err.message }, { status: 401 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ message }, { status: 401 });
   }
 
   try {
-    const { id } = params;
+    const { id } = await params;
     const tenantId = decoded.tenant;
 
     // 1. Encontrar el documento y verificar el estado
@@ -45,8 +46,9 @@ export async function POST(req: NextRequest, { params }: SolicitarParams) {
 
     return NextResponse.json(result.rows[0], { status: 200 });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(`Error en POST /api/documentos-legales/[id]/solicitar-firmas:`, error);
-    return NextResponse.json({ message: 'Error interno del servidor.' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Error interno del servidor.';
+    return NextResponse.json({ message }, { status: 500 });
   }
 }

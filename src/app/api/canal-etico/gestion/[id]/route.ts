@@ -3,9 +3,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
 import { verifyAuth, UserPayload } from '@/lib/auth';
 
-// --- CAMBIO: Actualizada la firma para que coincida con Next.js 14+ ---
-// Usamos la 'context' estándar en lugar de desestructurar 'params' directamente
-export async function GET(req: NextRequest, context: { params: { id: string } }) {
+// --- CAMBIO: Actualizada la firma de la ruta (parámetro 'params' es Promesa) ---
+export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   let decoded: UserPayload;
   try {
     decoded = verifyAuth(req);
@@ -14,9 +13,8 @@ export async function GET(req: NextRequest, context: { params: { id: string } })
   }
 
   try {
-    // --- CAMBIO: Se accede a 'params' desde el objeto 'context' ---
-    // Esto elimina el warning de "await params"
-    const { id } = context.params;
+    // --- CAMBIO: Se espera la promesa 'params' ---
+    const { id } = await context.params;
     const tenantId = decoded.tenant;
 
     const query = `

@@ -54,6 +54,7 @@ export default function DocumentosLegalesPage() {
   const { isOpen: isUploadOpen, openModal: openUploadModal, closeModal: closeUploadModal } = useModal();
 
   const [modalError, setModalError] = useState<string | null>(null);
+  const [newDocumentType, setNewDocumentType] = useState<string>('contrato'); // State for the new document type
 
   // Carga de datos
   const fetchDocumentos = useCallback(async () => {
@@ -64,13 +65,13 @@ export default function DocumentosLegalesPage() {
       if (!res.ok) throw new Error('No se pudo cargar los documentos.');
       const { data } = await res.json();
 
-      const formattedData = data.map((d: any) => ({
+      const formattedData = data.map((d: DocumentoLegal) => ({
         ...d,
         fecha_documento: new Date(d.fecha_documento).toISOString().split('T')[0],
       }));
       setDocumentos(formattedData);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : String(err));
     } finally {
       setIsLoading(false);
     }
@@ -113,8 +114,8 @@ export default function DocumentosLegalesPage() {
       a.remove();
       window.URL.revokeObjectURL(url);
 
-    } catch (err: any) {
-      setError(err.message); // Mostramos el error en la alerta principal
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : String(err)); // Mostramos el error en la alerta principal
     } finally {
       setIsProcessing(null);
     }
@@ -126,6 +127,7 @@ export default function DocumentosLegalesPage() {
     setSelectedDoc(null);
     setSelectedFile(null);
     setModalError(null);
+    setNewDocumentType('contrato'); // Reset to default when opening modal
     openUploadModal();
   };
 
@@ -146,6 +148,8 @@ export default function DocumentosLegalesPage() {
     setModalError(null);
     const formData = new FormData(event.currentTarget);
     formData.append('file', selectedFile);
+    // Ensure newDocumentType is sent with the form data
+    formData.set('tipo_documento', newDocumentType);
 
     try {
       const res = await fetch(`/api/documentos-legales`, {
@@ -158,8 +162,8 @@ export default function DocumentosLegalesPage() {
 
       closeUploadModal();
       fetchDocumentos();
-    } catch (err: any) {
-      setModalError(err.message);
+    } catch (err: unknown) {
+      setModalError(err instanceof Error ? err.message : String(err));
     } finally {
       setIsProcessing(null);
     }
@@ -196,8 +200,8 @@ export default function DocumentosLegalesPage() {
 
       closeEditModal();
       fetchDocumentos();
-    } catch (err: any) {
-      setModalError(err.message);
+    } catch (err: unknown) {
+      setModalError(err instanceof Error ? err.message : String(err));
     } finally {
       setIsProcessing(null);
     }
@@ -224,8 +228,8 @@ export default function DocumentosLegalesPage() {
 
       closeDeleteModal();
       fetchDocumentos();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : String(err));
       closeDeleteModal();
     } finally {
       setIsProcessing(null);
@@ -243,8 +247,8 @@ export default function DocumentosLegalesPage() {
       const resData = await res.json();
       if (!res.ok) throw new Error(resData.message);
       fetchDocumentos();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : String(err));
     } finally {
       setIsProcessing(null);
     }
@@ -290,8 +294,8 @@ export default function DocumentosLegalesPage() {
       closeSignModal();
       fetchDocumentos();
 
-    } catch (err: any) {
-      setModalError(err.message);
+    } catch (err: unknown) {
+      setModalError(err instanceof Error ? err.message : String(err));
     } finally {
       setIsProcessing(null);
     }
@@ -537,7 +541,7 @@ export default function DocumentosLegalesPage() {
               Confirmar Eliminación
             </h4>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              ¿Está seguro de que desea eliminar el borrador "{selectedDoc.titulo}"? Esta acción no se puede deshacer.
+              ¿Está seguro de que desea eliminar el borrador &quot;{selectedDoc.titulo}&quot;? Esta acción no se puede deshacer.
             </p>
             {modalError && <Alert variant="error" title="Error" message={modalError} className="mt-4 text-left" />}
             <div className="flex items-center justify-center w-full gap-3 mt-8">
@@ -581,7 +585,8 @@ export default function DocumentosLegalesPage() {
                 <Select
                   id="tipo-subir"
                   name="tipo_documento"
-                  defaultValue="contrato"
+                  value={newDocumentType}
+                  onChange={setNewDocumentType}
                   options={tipoDocumentoOptions}
                   required
                 />

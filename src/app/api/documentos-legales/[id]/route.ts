@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
 import { verifyAuth, UserPayload } from '@/lib/auth';
 
-interface DocumentoParams { params: { id: string } }
+interface DocumentoParams { params: Promise<{ id: string }> }
 
 // --- GET (Detalle de un Documento) ---
 export async function GET(req: NextRequest, { params }: DocumentoParams) {
@@ -18,7 +18,7 @@ export async function PATCH(req: NextRequest, { params }: DocumentoParams) {
     return NextResponse.json({ message: err.message }, { status: 401 });
   }
 
-  const { id } = params;
+  const { id } = await params;
   const { titulo, descripcion, fecha_documento } = await req.json();
 
   try {
@@ -54,7 +54,7 @@ export async function DELETE(req: NextRequest, { params }: DocumentoParams) {
     return NextResponse.json({ message: err.message }, { status: 401 });
   }
 
-  const { id } = params;
+  const { id } = await params;
 
   try {
     const docRes = await db.query(

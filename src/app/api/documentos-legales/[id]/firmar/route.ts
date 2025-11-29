@@ -3,18 +3,19 @@ import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
 import { verifyAuth, UserPayload } from '@/lib/auth';
 
-interface FirmarParams { params: { id: string } }
+interface FirmarParams { params: Promise<{ id: string }> }
 
 export async function POST(req: NextRequest, { params }: FirmarParams) {
   let decoded: UserPayload;
   try {
     decoded = verifyAuth(req);
-  } catch (err: any) {
-    return NextResponse.json({ message: err.message }, { status: 401 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ message }, { status: 401 });
   }
 
   try {
-    const { id } = params;
+    const { id } = await params;
     const { rol_firma, hash_firma_externa, storage_path_firmado } = await req.json();
     const tenantId = decoded.tenant;
     const userId = decoded.userId;
@@ -40,7 +41,7 @@ export async function POST(req: NextRequest, { params }: FirmarParams) {
 
     // 2. Aplicar la firma según el rol
     let updateQuery: string;
-    let paramsUpdate: any[];
+    let paramsUpdate: (string | number)[];
 
     if (rol_firma === 'contador') {
       updateQuery = `
@@ -90,8 +91,9 @@ export async function POST(req: NextRequest, { params }: FirmarParams) {
 
     return NextResponse.json(updatedDoc, { status: 200 });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(`Error en POST /firmar:`, error);
-    return NextResponse.json({ message: 'Error interno del servidor.' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Error interno del servidor.';
+    return NextResponse.json({ message }, { status: 500 });
   }
 }

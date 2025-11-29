@@ -52,6 +52,8 @@ const navItems: NavItem[] = [
     name: "Riesgo y Cumplimiento",
     subItems: [
       { name: "Gestión de Riesgos", path: "/dashboard/riesgos" },
+      { name: "Verificación KYC", path: "/dashboard/kyc", new: true },
+      { name: "Alertas AML", path: "/dashboard/aml-alerts" },
       { name: "Documentos Legales", path: "/dashboard/documentos-legales" },
       { name: "Reportes Regulatorios", path: "/dashboard/reportes-regulatorios" },
     ],

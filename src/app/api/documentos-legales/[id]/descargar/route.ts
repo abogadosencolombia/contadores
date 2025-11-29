@@ -6,17 +6,18 @@ import { storageService } from '@/lib/storage'; // Importar el nuevo servicio de
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } } // Corregir tipo para params
+  { params }: { params: Promise<{ id: string }> } // Corregir tipo para params
 ) {
   let decoded: UserPayload;
   try {
     decoded = verifyAuth(req);
-  } catch (err: any) {
-    return NextResponse.json({ message: err.message }, { status: 401 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return NextResponse.json({ message }, { status: 401 });
   }
 
   try {
-    const { id } = params; // params ya no es una promesa
+    const { id } = await params; // params ahora es una promesa
     const tenantId = decoded.tenant;
 
     // 1. Buscar el documento en la BD
@@ -31,7 +32,10 @@ export async function GET(
     }
 
     const doc = docRes.rows[0];
-    const storagePath = doc.storage_path_original; // Ej: "default_tenant/contrato.pdf"
+    // Normalizar ruta: Supabase requiere "/" pero en Windows se puede haber guardado con "\"
+    const storagePath = doc.storage_path_original.replace(/\\/g, '/');
+
+    console.log(`[DEBUG] Intentando descargar: ID=${id}, Path=${storagePath}`);
 
     // 2. Generar URL firmada de Supabase Storage
     const signedUrl = await storageService.getSignedUrl(storagePath);
@@ -39,8 +43,9 @@ export async function GET(
     // 3. Redirigir al cliente a la URL firmada
     return NextResponse.redirect(signedUrl);
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error en GET /descargar:', error);
-    return NextResponse.json({ message: 'Error interno del servidor.' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Error interno del servidor.';
+    return NextResponse.json({ message }, { status: 500 });
   }
 }

@@ -34,11 +34,7 @@ interface CasoEticoDetalle extends CasoEtico {
   archivos_evidencia: string[]; // Esto será un array de rutas de archivo
 }
 
-// 2. Interfaz para el Acta (Modal de Resolución)
-interface ActaResolucion {
-  titulo_acta: string;
-  descripcion_acta: string;
-}
+
 
 const tiposIrregularidad = [
   { value: 'fraude', label: 'Fraude' },
@@ -76,12 +72,40 @@ export default function CanalEticoPage() {
   const { isOpen: isCrearOpen, openModal: openCrearModal, closeModal: closeCrearModal } = useModal();
   const [isProcessingCreacion, setIsProcessingCreacion] = useState(false);
   const [modalErrorCreacion, setModalErrorCreacion] = useState<string | null>(null);
-  const [archivosEvidencia, setArchivosEvidencia] = useState<FileList | null>(null);
+  const [archivosEvidencia, setArchivosEvidencia] = useState<File[]>([]);
 
+  // --- Helper para calcular tamaño total ---
+  const getTotalSize = (files: File[]) => files.reduce((acc, file) => acc + file.size, 0);
+  const MAX_SIZE_MB = 10;
+  const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
 
-  // --- fetchCasos (sin cambios) ---
+  // --- Manejador de cambios de archivo ---
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const newFiles = Array.from(event.target.files);
+      const currentTotalSize = getTotalSize(archivosEvidencia);
+      const newFilesTotalSize = getTotalSize(newFiles);
+
+      if (currentTotalSize + newFilesTotalSize > MAX_SIZE_BYTES) {
+        setModalErrorCreacion(`El tamaño total de los archivos no puede exceder ${MAX_SIZE_MB}MB.`);
+      } else {
+        setArchivosEvidencia(prev => [...prev, ...newFiles]);
+        setModalErrorCreacion(null);
+      }
+      
+      // Limpiar el input para permitir seleccionar el mismo archivo de nuevo si se desea
+      event.target.value = ''; 
+    }
+  };
+
+  // --- Manejador para remover archivo ---
+  const removeFile = (indexToRemove: number) => {
+    setArchivosEvidencia(prev => prev.filter((_, index) => index !== indexToRemove));
+    setModalErrorCreacion(null); // Limpiar error por si era de tamaño
+  };
+
+  // --- fetchCasos ---
   const fetchCasos = useCallback(async () => {
-    // ... (código existente)
     setIsLoading(true);
     setError(null);
     try {
@@ -89,13 +113,13 @@ export default function CanalEticoPage() {
       if (!res.ok) throw new Error('No se pudo cargar los casos del canal ético.');
       const { data } = await res.json();
 
-      const formattedData = data.map((d: any) => ({
+      const formattedData = data.map((d: CasoEtico) => ({
         ...d,
         fecha_creacion: new Date(d.fecha_creacion).toLocaleString('es-CO'),
       }));
       setCasos(formattedData);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError((err as Error).message);
     } finally {
       setIsLoading(false);
     }
@@ -105,9 +129,8 @@ export default function CanalEticoPage() {
     fetchCasos();
   }, [fetchCasos]);
 
-  // --- customCloseResolverModal (sin cambios) ---
+  // --- customCloseResolverModal ---
   const customCloseResolverModal = () => {
-    // ... (código existente)
     closeResolverModal();
     setSelectedCaso(null);
     setCasoDetalle(null);
@@ -117,9 +140,8 @@ export default function CanalEticoPage() {
     setIsDownloading(null);
   };
 
-  // --- handleOpenResolverModal (sin cambios) ---
+  // --- handleOpenResolverModal ---
   const handleOpenResolverModal = async (caso: CasoEtico) => {
-    // ... (código existente)
     setSelectedCaso(caso);
     setModalErrorResolucion(null);
     setIsResolverLoadingDetails(true);
@@ -133,14 +155,14 @@ export default function CanalEticoPage() {
       }
       const data: CasoEticoDetalle = await res.json();
       setCasoDetalle(data);
-    } catch (err: any) {
-      setModalErrorResolucion(err.message);
+    } catch (err: unknown) {
+      setModalErrorResolucion((err as Error).message);
     } finally {
       setIsResolverLoadingDetails(false);
     }
   };
 
-  // --- FUNCIÓN ACTUALIZADA: handleConfirmResolucion ---
+  // --- handleConfirmResolucion ---
   const handleConfirmResolucion = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!selectedCaso) return;
@@ -150,18 +172,16 @@ export default function CanalEticoPage() {
 
     const formData = new FormData(event.currentTarget);
 
-    // 1. Solo enviamos los datos del formulario
     const actaData = {
       titulo_acta: formData.get('titulo_acta') as string,
       descripcion_acta: formData.get('descripcion_acta') as string,
     };
 
     try {
-      // 2. Ya no simulamos el PDF aquí. El backend lo hace.
       const res = await fetch(`/api/canal-etico/gestion/${selectedCaso.id}/resolver`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(actaData), // Solo enviamos el título y la desc
+        body: JSON.stringify(actaData),
       });
 
       const resData = await res.json();
@@ -170,29 +190,34 @@ export default function CanalEticoPage() {
       }
 
       customCloseResolverModal();
-      fetchCasos(); // Recargar la tabla
+      fetchCasos();
 
-    } catch (err: any) {
-      setModalErrorResolucion(err.message);
+    } catch (err: unknown) {
+      setModalErrorResolucion((err as Error).message);
     } finally {
       setIsProcessingResolucion(false);
     }
   };
 
-  // --- handleCrearCaso (sin cambios) ---
+  // --- handleCrearCaso (ACTUALIZADO) ---
   const handleCrearCaso = async (event: React.FormEvent<HTMLFormElement>) => {
-    // ... (código existente)
     event.preventDefault();
     setIsProcessingCreacion(true);
     setModalErrorCreacion(null);
+
     const formData = new FormData(event.currentTarget);
     formData.append('tenant_id', 'default_tenant');
     formData.append('user_id', 'null');
-    if (archivosEvidencia) {
-      for (let i = 0; i < archivosEvidencia.length; i++) {
-        formData.append('evidencia', archivosEvidencia[i]);
-      }
+    
+    // Eliminamos la entrada 'evidencia' original del input file ya que gestionamos el array manualmente
+    formData.delete('evidencia'); 
+
+    if (archivosEvidencia.length > 0) {
+      archivosEvidencia.forEach((file) => {
+        formData.append('evidencia', file);
+      });
     }
+
     try {
       const res = await fetch(`/api/canal-etico/casos`, {
         method: 'POST',
@@ -203,10 +228,10 @@ export default function CanalEticoPage() {
         throw new Error(resData.message || 'Error al crear el caso.');
       }
       closeCrearModal();
-      setArchivosEvidencia(null);
+      setArchivosEvidencia([]); // Resetear array
       fetchCasos();
-    } catch (err: any) {
-      setModalErrorCreacion(err.message);
+    } catch (err: unknown) {
+      setModalErrorCreacion((err as Error).message);
     } finally {
       setIsProcessingCreacion(false);
     }
@@ -235,8 +260,8 @@ export default function CanalEticoPage() {
       a.remove();
       window.URL.revokeObjectURL(url);
 
-    } catch (err: any) {
-      setModalErrorResolucion(err.message);
+    } catch (err: unknown) {
+      setModalErrorResolucion((err as Error).message);
     } finally {
       setIsDownloading(null);
     }
@@ -291,7 +316,7 @@ export default function CanalEticoPage() {
                       </Badge>
                     </TableCell>
                     <TableCell className={baseCellClasses}>
-                      {caso.estado !== 'resuelto' && (
+                      {caso.estado !== 'resuelto' ? (
                         <Button
                           size="sm"
                           variant="primary"
@@ -299,10 +324,13 @@ export default function CanalEticoPage() {
                         >
                           Resolver y Generar Acta
                         </Button>
-                      )}
-                      {caso.estado === 'resuelto' && (
-                        <Button size="sm" variant="outline" disabled>
-                          Acta en WORM
+                      ) : (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleOpenResolverModal(caso)}
+                        >
+                          Ver Detalles / Evidencia
                         </Button>
                       )}
                     </TableCell>
@@ -314,7 +342,7 @@ export default function CanalEticoPage() {
         </div>
       </div>
 
-      {/* --- Modal para RESOLVER CASO (sin cambios en el JSX, solo en la lógica de envío) --- */}
+      {/* --- Modal para RESOLVER/VER CASO --- */}
       {selectedCaso && (
         <Modal
           isOpen={isResolverOpen}
@@ -323,13 +351,14 @@ export default function CanalEticoPage() {
         >
           <form onSubmit={handleConfirmResolucion} className="flex flex-col">
             <h4 className="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
-              Resolver Caso y Generar Acta
+              {selectedCaso.estado === 'resuelto' ? 'Detalles del Caso Resuelto' : 'Resolver Caso y Generar Acta'}
             </h4>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
               Caso: <strong className="text-gray-700 dark:text-gray-200">{selectedCaso.titulo}</strong>
+              {selectedCaso.estado === 'resuelto' && <span className="ml-2 text-green-600">(Finalizado - WORM)</span>}
             </p>
 
-            {modalErrorResolucion && <Alert variant="error" title="Error" message={modalErrorResolucion} className="mb-4" />}
+            {modalErrorResolucion && <div className="mb-4"><Alert variant="error" title="Error" message={modalErrorResolucion} /></div>}
 
             <div className="px-2 overflow-y-auto custom-scrollbar" style={{ maxHeight: '60vh' }}>
 
@@ -352,7 +381,8 @@ export default function CanalEticoPage() {
                       <div className="flex flex-col gap-2">
                         {casoDetalle.archivos_evidencia.map((filePath, index) => {
                           const isDownloadingThis = isDownloading === filePath;
-                          const friendlyName = `Descargar Evidencia ${index + 1}`;
+                          const filename = filePath.split(/[/\\]/).pop(); // Obtener nombre archivo
+                          const friendlyName = `Descargar: ${filename}`;
                           return (
                             <Button
                               key={index}
@@ -375,30 +405,34 @@ export default function CanalEticoPage() {
                 </fieldset>
               ) : null}
 
-
-              <div className="grid grid-cols-1 gap-y-5">
-                <div>
-                  <Label htmlFor="titulo_acta">Título del Acta de Resolución</Label>
-                  <Input type="text" id="titulo_acta" name="titulo_acta" placeholder="Ej: Acta de Resolución Caso ET-001" required />
+              {/* SOLO MOSTRAR EL FORMULARIO SI NO ESTÁ RESUELTO */}
+              {selectedCaso.estado !== 'resuelto' && (
+                <div className="grid grid-cols-1 gap-y-5 border-t pt-5 dark:border-gray-700">
+                  <div>
+                    <Label htmlFor="titulo_acta">Título del Acta de Resolución</Label>
+                    <Input type="text" id="titulo_acta" name="titulo_acta" placeholder="Ej: Acta de Resolución Caso ET-001" required />
+                  </div>
+                  <div>
+                    <Label htmlFor="descripcion_acta">Conclusión / Descripción del Acta</Label>
+                    <TextArea id="descripcion_acta" name="descripcion_acta" rows={6} placeholder="Detalle de los hallazgos, decisiones tomadas y cierre del caso. Este texto se incluirá en el documento legal." required />
+                  </div>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-4 px-2">
+                    Al confirmar, se generará un documento PDF inmutable y se enviará al módulo de Gestión Documental (WORM) para la firma conjunta del Contador y Revisor Fiscal.
+                  </p>
                 </div>
-                <div>
-                  <Label htmlFor="descripcion_acta">Conclusión / Descripción del Acta</Label>
-                  <TextArea id="descripcion_acta" name="descripcion_acta" rows={6} placeholder="Detalle de los hallazgos, decisiones tomadas y cierre del caso. Este texto se incluirá en el documento legal." required />
-                </div>
-              </div>
+              )}
             </div>
-
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-4 px-2">
-              Al confirmar, se generará un documento PDF inmutable y se enviará al módulo de Gestión Documental (WORM) para la firma conjunta del Contador y Revisor Fiscal.
-            </p>
 
             <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
               <Button size="sm" variant="outline" onClick={customCloseResolverModal} type="button" disabled={isProcessingResolucion}>
-                Cancelar
+                {selectedCaso.estado === 'resuelto' ? 'Cerrar' : 'Cancelar'}
               </Button>
-              <Button size="sm" type="submit" disabled={isProcessingResolucion || isResolverLoadingDetails}>
-                {isProcessingResolucion ? 'Procesando...' : 'Confirmar y Enviar a Firmas'}
-              </Button>
+              
+              {selectedCaso.estado !== 'resuelto' && (
+                <Button size="sm" type="submit" disabled={isProcessingResolucion || isResolverLoadingDetails}>
+                  {isProcessingResolucion ? 'Procesando...' : 'Confirmar y Enviar a Firmas'}
+                </Button>
+              )}
             </div>
           </form>
         </Modal>
@@ -418,7 +452,7 @@ export default function CanalEticoPage() {
             Complete la información para registrar una nueva irregularidad.
           </p>
 
-          {modalErrorCreacion && <Alert variant="error" title="Error" message={modalErrorCreacion} className="mb-4" />}
+          {modalErrorCreacion && <div className="mb-4"><Alert variant="error" title="Error" message={modalErrorCreacion} /></div>}
 
           <div className="px-2 overflow-y-auto custom-scrollbar" style={{ maxHeight: '60vh' }}>
             <div className="grid grid-cols-1 gap-y-5">
@@ -450,13 +484,35 @@ export default function CanalEticoPage() {
                 <FileInput
                   id="evidencia"
                   name="evidencia"
-                  // @ts-ignore
+                  // @ts-expect-error TS2322: 'multiple' does not exist on type 'IntrinsicAttributes & FileInputProps'. FileInput should handle multiple attribute internally.
                   multiple={true}
-                  onChange={(e) => setArchivosEvidencia(e.target.files)}
+                  onChange={handleFileChange}
                 />
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Puede adjuntar imágenes, PDFs o documentos como evidencia.
+                  Puede adjuntar imágenes, PDFs o documentos como evidencia. Máximo 10MB en total.
                 </p>
+
+                {/* Lista de archivos seleccionados */}
+                {archivosEvidencia.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {archivosEvidencia.map((file, index) => (
+                      <div key={`${file.name}-${index}`} className="flex items-center gap-2 bg-gray-100 dark:bg-white/5 px-3 py-1 rounded-full text-xs text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+                        <span className="truncate max-w-[150px]">{file.name}</span>
+                        <span className="text-gray-400">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                        <button
+                          type="button"
+                          onClick={() => removeFile(index)}
+                          className="ml-1 text-gray-400 hover:text-red-500 focus:outline-none"
+                          aria-label={`Eliminar archivo ${file.name}`}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
             </div>
@@ -467,7 +523,7 @@ export default function CanalEticoPage() {
           </p>
 
           <div className="flex items-center gap-3 px-2 mt-6 lg:justify-end">
-            <Button size="sm" variant="outline" onClick={() => { closeCrearModal(); setArchivosEvidencia(null); }} type="button" disabled={isProcessingCreacion}>
+            <Button size="sm" variant="outline" onClick={() => { closeCrearModal(); setArchivosEvidencia([]); }} type="button" disabled={isProcessingCreacion}>
               Cancelar
             </Button>
             <Button size="sm" type="submit" disabled={isProcessingCreacion}>

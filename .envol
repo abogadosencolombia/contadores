@@ -1,0 +1,44 @@
+NEXT_PUBLIC_URL=http://localhost:3000
+
+# BASE DE DATOS LOCAL
+# DB_USER=postgres
+# DB_PASSWORD=1234
+# DB_HOST=localhost
+# DB_PORT=5432
+# DB_NAME=contadores
+
+
+#BASE DE DATOS SUPABASE
+NEXT_PUBLIC_SUPABASE_URL=https://nrrgqajzlpaqpnnkckzy.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ycmdxYWp6bHBhcXBubmtja3p5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwNTAwNTEsImV4cCI6MjA3OTYyNjA1MX0.AG9IFIqZfT8Z4t-d-Sm9noamj_wwLZ4zFxLnMH0JE7s
+DATABASE_URL="postgresql://postgres:yosoyfeliz12*@db.nrrgqajzlpaqpnnkckzy.supabase.co:5432/postgres"
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ycmdxYWp6bHBhcXBubmtja3p5Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2NDA1MDA1MSwiZXhwIjoyMDc5NjI2MDUxfQ.5xjXirouuwsCvkbZu57_SO_MPOB4djNThm0ubfoAaxY
+
+
+NEXT_PUBLIC_WOMPI_PUBLIC_KEY=a
+
+
+JWT_SECRET=super-secret-jwt-key-change-me-in-prod-123456789
+
+
+# Encripta las credenciales de los clientes
+ENCRYPTION_KEY=hzxImFQHOlcidkvQh4oOIX1ObG7KfFbU # (32 caracteres)
+
+
+# CRON JOBS
+CRON_SECRET="Jk=b,#v0.XvT%/hekd3Hb"
+
+
+# webhook ai-governance
+N8N_AI_WEBHOOK_GOVERNANCE_URL=https://cobrocartera-n8n.hrymiz.easypanel.host/webhook/ai-governance
+
+#WF de Gestion AML/KYC/UIAF
+N8N_AML_WEBHOOK_URL="https://cobrocartera-n8n.hrymiz.easypanel.host/webhook-test/gestion-aml-kyc-uiaf"
+AML_WEBHOOK_SECRET="un_secreto_seguro"
+
+# CONFIGURACIÓN SMTP (Correo)
+SMTP_HOST=smtp.hostinger.com
+SMTP_PORT=465
+SMTP_USER=soporte@abogadosencolombiasas.com
+SMTP_PASS=Yosoyfeliz12@
+SMTP_FROM=Notificaciones <soporte@abogadosencolombiasas.com>

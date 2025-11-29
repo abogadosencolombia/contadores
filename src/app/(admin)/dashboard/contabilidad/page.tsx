@@ -13,13 +13,17 @@ import { PencilIcon, PlusIcon } from "@/icons";
 import GenerarCertificadosModal from '@/components/contabilidad/GenerarCertificadosModal';
 
 // 1. Definimos la interfaz para los balances
+type BalanceData = {
+  [key: string]: number | string | BalanceData;
+};
+
 interface Balance {
   id: number;
   tenant_id: string;
   tipo_empresa: string;
   normativa: string;
   periodo_fecha: string;
-  datos_balance: any;
+  datos_balance: BalanceData;
   hash_sha256: string;
   estado_firma: 'pendiente' | 'firmado';
   firmado_por_contador_id: number | null;
@@ -68,8 +72,8 @@ export default function ContabilidadPage() {
 
       setBalances(formattedData);
       setTotalPages(Math.ceil(total / ITEMS_PER_PAGE));
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError((err as Error).message);
     } finally {
       setIsLoading(false);
     }
@@ -115,8 +119,8 @@ export default function ContabilidadPage() {
       if (!res.ok) throw new Error('Error al firmar el balance.');
       customCloseSignModal();
       fetchBalances(currentPage);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError((err as Error).message);
     } finally {
       setIsSigning(false);
     }
@@ -128,7 +132,7 @@ export default function ContabilidadPage() {
   const hashColClasses = "min-w-[150px] max-w-xs whitespace-normal font-mono text-xs";
 
   // --- Helper para renderizar filas recursivas ---
-  const renderBalanceRows = (data: any, level = 0) => {
+  const renderBalanceRows = (data: BalanceData, level = 0) => {
     if (!data || typeof data !== 'object') return null;
 
     return Object.entries(data).map(([key, value]) => {
@@ -144,7 +148,7 @@ export default function ContabilidadPage() {
                 {key.replace(/_/g, ' ')}
               </TableCell>
             </TableRow>
-            {renderBalanceRows(value, level + 1)}
+            {renderBalanceRows(value as BalanceData, level + 1)}
           </React.Fragment>
         );
       }
