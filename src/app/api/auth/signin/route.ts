@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
       DB_HOST: !!process.env.DB_HOST,
       DB_NAME: !!process.env.DB_NAME,
       DB_PASSWORD_SET: !!process.env.DB_PASSWORD,
-      DATABASE_URL_SET: !!process.env.DATABASE_URL,
+      DATABASE_URL_SET: !!process.env.POSTGRES_HOST,
     });
 
     const query = `

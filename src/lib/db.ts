@@ -8,7 +8,7 @@ if (dns.setDefaultResultOrder) {
 }
 
 declare global {
-   
+
   var postgresPool: Pool | undefined;
 }
 
@@ -16,7 +16,7 @@ let pool: Pool;
 
 // Configuración de la conexión
 const config = {
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.POSTGRES_HOST,
   ssl: {
     rejectUnauthorized: false // Necesario para conexiones seguras a Supabase
   },
