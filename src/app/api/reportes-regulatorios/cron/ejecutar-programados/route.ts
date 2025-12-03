@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { db as _db } from '@/lib/db'; // Asumiendo tu conexión a DB
+
+export async function GET(_request: Request) {
+  const headersList = await headers();
   const authHeader = headersList.get('authorization');
 
   // 1. Proteger el Endpoint de Cron
