@@ -92,7 +92,7 @@ export default function CrearOrdenPagoModal({ isOpen, onClose, onSuccess }: Crea
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="monto">Monto</Label>
-              <Input id="monto" name="monto" type="number" step="0.01" required disabled={isCreating} />
+              <Input id="monto" name="monto" type="number" step={0.01} required disabled={isCreating} />
             </div>
             <div>
               <Label htmlFor="moneda">Moneda</Label>

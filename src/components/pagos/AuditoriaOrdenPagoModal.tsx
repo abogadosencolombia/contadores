@@ -136,7 +136,7 @@ const AuditoriaOrdenPagoModal: React.FC<AuditoriaModalProps> = ({ isOpen, onClos
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+    <Modal isOpen={isOpen} onClose={onClose} className="max-w-2xl">
       <ModalHeader title="Auditoría de Orden de Pago" onClose={onClose} />
       <ModalBody>
         {renderContent()}

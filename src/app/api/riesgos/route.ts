@@ -84,7 +84,7 @@ export async function GET(req: NextRequest) {
  */
 export async function POST(req: NextRequest) {
   try {
-    const _user = verifyAuth(req);
+    const user = verifyAuth(req);
     const body = await req.json();
     const { dominio, riesgo, probabilidad, impacto, control } = body;
 
