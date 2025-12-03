@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
     let user;
     try {
       user = verifyAuth(req);
-    } catch (e) {
+    } catch {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
 
@@ -42,10 +42,11 @@ export async function GET(req: NextRequest) {
     const result = await pool.query(query);
     return NextResponse.json(result.rows);
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching ARCO requests (admin):', error);
+    const errorMessage = error instanceof Error ? error.message : 'Error interno del servidor';
     return NextResponse.json(
-      { error: error.message || 'Error interno del servidor' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

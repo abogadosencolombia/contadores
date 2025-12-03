@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server';
 import pool from '@/lib/db';
 
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     // TODO: Reemplazar con la sesión real del usuario (Auth)
     const tenantId = 'default_tenant';
@@ -22,8 +22,12 @@ export async function GET(request: Request) {
     } finally {
       client.release();
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
+    let errorMessage = 'An unknown error occurred.';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
     console.error('Error fetching bank accounts:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

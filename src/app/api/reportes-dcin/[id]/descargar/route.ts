@@ -10,7 +10,7 @@ import path from 'path';
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const payload = verifyAuth(request);
@@ -18,7 +18,8 @@ export async function GET(
       return NextResponse.json({ error: 'No autorizado' }, { status: 403 });
     }
     const tenantId = payload.tenant;
-    const reporteId = parseInt(params.id);
+    const { id } = await context.params;
+    const reporteId = parseInt(id);
 
     if (isNaN(reporteId)) {
       return NextResponse.json({ error: 'ID de reporte inválido' }, { status: 400 });
@@ -56,16 +57,16 @@ export async function GET(
         }
         // Error si el archivo fue borrado del disco pero no de la BBDD
         if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-            console.error(`Archivo no encontrado en disco para reporte ${params.id}:`, error.message);
+            console.error(`Archivo no encontrado en disco para reporte`, error.message);
             return NextResponse.json({ error: 'Archivo no encontrado en el servidor' }, { status: 404 });
         }
-        console.error(`Error al descargar reporte DCIN ${params.id}:`, error);
+        console.error(`Error al descargar reporte DCIN`, error);
         return NextResponse.json(
             { error: 'Error interno del servidor', details: error.message },
             { status: 500 }
         );
     }
-    console.error(`Error al descargar reporte DCIN ${params.id}:`, error);
+    console.error(`Error al descargar reporte DCIN`, error);
     return NextResponse.json(
       { error: 'Error interno del servidor' },
       { status: 500 }

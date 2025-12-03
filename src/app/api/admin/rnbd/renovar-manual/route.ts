@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     let user;
     try {
       user = verifyAuth(req);
-    } catch (e) {
+    } catch {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
 
@@ -78,10 +78,11 @@ export async function POST(req: NextRequest) {
       registro: nuevoRegistro
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error en renovación manual RNBD:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Error interno al procesar la renovación manual';
     return NextResponse.json(
-      { error: error.message || 'Error interno al procesar la renovación manual' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

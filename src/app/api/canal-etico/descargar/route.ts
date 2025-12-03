@@ -13,8 +13,8 @@ export async function GET(req: NextRequest) {
   let decoded: UserPayload;
   try {
     decoded = verifyAuth(req);
-  } catch (err: any) {
-    return NextResponse.json({ message: err.message }, { status: 401 });
+  } catch (err: unknown) {
+    return NextResponse.json({ message: (err as Error).message }, { status: 401 });
   }
 
   try {
@@ -87,12 +87,12 @@ export async function GET(req: NextRequest) {
     try {
         const signedUrl = await storageService.getSignedUrl(safePath);
         return NextResponse.redirect(signedUrl);
-    } catch (storageError: any) {
+    } catch (storageError: unknown) {
         console.error("Error Storage:", storageError);
         return NextResponse.json({ message: 'No se pudo generar la descarga. El archivo puede no existir en el almacenamiento en la nube.' }, { status: 404 });
     }
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error en GET /api/canal-etico/descargar:', error);
     return NextResponse.json({ message: 'Error interno del servidor.' }, { status: 500 });
   }

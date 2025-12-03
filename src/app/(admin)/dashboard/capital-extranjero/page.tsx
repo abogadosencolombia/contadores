@@ -173,7 +173,7 @@ const CapitalExtranjeroPage = () => {
                     </Button>
                   )}
                   {user.roles.includes('admin') && (r.estado === 'GENERADO' || r.estado === 'ENVIADO') && (
-                    <Button onClick={() => handleDownloadReporte(r.id)} variant="secondary" size="sm" className="ml-2 bg-blue-500 ...">
+                    <Button onClick={() => handleDownloadReporte(r.id)} size="sm" className="ml-2 bg-blue-500 ...">
                       Descargar
                     </Button>
                   )}

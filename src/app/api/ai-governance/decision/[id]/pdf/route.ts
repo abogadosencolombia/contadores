@@ -11,9 +11,9 @@ export async function GET(
 
   try {
     decoded = verifyAuth(req);
-  } catch (err: any) {
+  } catch (err: unknown) {
     return NextResponse.json(
-      { message: err.message || 'No autorizado.' },
+      { message: (err instanceof Error) ? err.message : 'No autorizado.' },
       { status: 401 }
     );
   }
@@ -94,13 +94,14 @@ export async function GET(
     drawText(line);
 
     const pdfBytes = await pdfDoc.save();
+    const buffer = Buffer.from(pdfBytes);
 
     // Retornar PDF
     const headers = new Headers();
     headers.set('Content-Type', 'application/pdf');
     headers.set('Content-Disposition', `attachment; filename="decision-${id}.pdf"`);
 
-    return new NextResponse(pdfBytes, { status: 200, headers });
+    return new NextResponse(buffer, { status: 200, headers });
 
   } catch (error) {
     console.error(`Error en GET /api/ai-governance/decision/[id]/pdf:`, error);

@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
       pendientes
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error general en cron RNBD:', error);
     // También se podría enviar un correo en caso de un error general del cron
     if (adminEmail) {
@@ -40,17 +40,17 @@ export async function GET(request: NextRequest) {
           html: `
             <h1>Error Crítico en el Cron de Renovación RNBD</h1>
             <p>Se ha producido un error inesperado al ejecutar el cron de renovación del RNBD.</p>
-            <p><strong>Detalles del error:</strong> ${error.message}</p>
+            <p><strong>Detalles del error:</strong> ${(error as Error).message}</p>
             <p>Por favor, revisa los logs del servidor con urgencia.</p>
           `,
         });
         console.log(`Alerta por correo enviada a ${adminEmail} por error general en RNBD cron.`);
-      } catch (emailError: any) {
+      } catch (emailError: unknown) {
         console.error('Error al enviar alerta por correo de error general de RNBD cron:', emailError);
       }
     }
     return NextResponse.json(
-      { error: 'Internal Server Error', details: error.message },
+      { error: 'Internal Server Error', details: (error as Error).message },
       { status: 500 }
     );
   }

@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import pool from '@/lib/db';
 
 // GET: Listar cuentas con saldo calculado
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   try {
     const tenantId = 'default_tenant'; // TODO: Obtener de la sesión real
 
@@ -42,9 +42,13 @@ export async function GET(request: Request) {
     } finally {
       client.release();
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
+    let errorMessage = 'An unknown error occurred.';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
     console.error('Error obteniendo cuentas:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
 
@@ -81,8 +85,12 @@ export async function POST(request: Request) {
     } finally {
       client.release();
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
+    let errorMessage = 'An unknown error occurred.';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
     console.error('Error creando cuenta:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

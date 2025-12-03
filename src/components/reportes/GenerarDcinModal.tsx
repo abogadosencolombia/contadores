@@ -9,6 +9,16 @@ import Button from '@/components/ui/button/Button';
 import Alert from '@/components/ui/alert/Alert';
 import { PencilIcon } from '@/icons'; // O algún ícono de dinero/banco
 
+// Tipo para el reporte DCIN que se genera
+type ReporteDcin = {
+  id: number;
+  entidad_regulatoria: string; // 'Banco de la República'
+  tipo_reporte: string; // 'DCIN 83'
+  periodo_reportado: string;
+  fecha_generacion: string;
+  estado: string;
+};
+
 // Tipo para la data que cargamos
 type InversionPendiente = {
   id: number;
@@ -21,7 +31,7 @@ type InversionPendiente = {
 interface GenerarDcinModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmitSuccess: (nuevoReporte: any) => void;
+  onSubmitSuccess: (nuevoReporte: ReporteDcin) => void;
 }
 
 const GenerarDcinModal: React.FC<GenerarDcinModalProps> = ({
@@ -60,7 +70,8 @@ const GenerarDcinModal: React.FC<GenerarDcinModalProps> = ({
           );
         })
         .catch((err) => {
-          setError(`No se pudieron cargar las inversiones: ${err.message}`);
+          const msg = err instanceof Error ? err.message : 'Error desconocido';
+          setError(`No se pudieron cargar las inversiones: ${msg}`);
         })
         .finally(() => {
           setIsLoading(false);
@@ -91,8 +102,9 @@ const GenerarDcinModal: React.FC<GenerarDcinModalProps> = ({
         throw new Error(result.error || 'Error desconocido al generar el reporte.');
       }
       onSubmitSuccess(result);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Error desconocido';
+      setError(msg);
     } finally {
       setIsLoadingSubmit(false);
     }

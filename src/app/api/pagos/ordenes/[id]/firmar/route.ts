@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
 import { UserPayload, verifyAuth } from '@/lib/auth';
@@ -6,7 +5,7 @@ import { createHash } from 'crypto';
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   let userPayload: UserPayload;
   try {
@@ -23,7 +22,7 @@ export async function POST(
     return NextResponse.json({ message: 'Acceso denegado: Se requiere rol de administrador.' }, { status: 403 });
   }
 
-  const { id } = params;
+  const { id } = await context.params;
   const { userId, tenant } = userPayload;
 
   const client = await db.connect();

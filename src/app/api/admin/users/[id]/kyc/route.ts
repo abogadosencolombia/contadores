@@ -8,12 +8,12 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
-    
+
     // 1. Autenticación
     let user;
     try {
       user = verifyAuth(req);
-    } catch (e) {
+    } catch {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 
@@ -24,16 +24,16 @@ export async function PATCH(
 
     // 2. Parsear body
     const body = await req.json();
-    const { status, motivoRechazo } = body;
+    const { status, _motivoRechazo } = body;
 
     if (!['aprobado', 'rechazado'].includes(status)) {
       return NextResponse.json({ error: 'Estado inválido' }, { status: 400 });
     }
 
     // 3. Actualizar usuario
-    // Si es rechazado, podríamos querer guardar el motivo en algún log o campo, 
+    // Si es rechazado, podríamos querer guardar el motivo en algún log o campo,
     // por ahora solo actualizamos el estado.
-    
+
     const query = `
       UPDATE core.users
       SET kyc_status = $1

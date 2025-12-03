@@ -31,6 +31,7 @@ interface TableCellProps {
   className?: string; // Optional className for styling
   colSpan?: number; // Optional colSpan
   style?: React.CSSProperties; // Optional inline styles
+  title?: string; // Optional title attribute for tooltip on hover
 }
 
 // Table Component
@@ -60,10 +61,11 @@ const TableCell: React.FC<TableCellProps> = ({
   className,
   colSpan,
   style,
+  title, // Destructure title
 }) => {
   const CellTag = isHeader ? "th" : "td";
   return (
-    <CellTag className={` ${className}`} colSpan={colSpan} style={style}>
+    <CellTag className={` ${className}`} colSpan={colSpan} style={style} title={title}>
       {children}
     </CellTag>
   );

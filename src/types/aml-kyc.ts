@@ -6,7 +6,7 @@ export interface KycLog {
   user_id: number;
   document_url?: string | null;
   ip_address?: string | null;
-  geo_location?: Record<string, any> | null;
+  geo_location?: Record<string, unknown> | null;
   status: KycStatus;
   created_at: Date;
 }
@@ -27,4 +27,5 @@ export interface AmlScanPayload {
   userEmail?: string;
   fullName?: string;
   ipAddress?: string;
+  geoLocation?: Record<string, unknown>;
 }

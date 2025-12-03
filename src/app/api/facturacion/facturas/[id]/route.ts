@@ -4,27 +4,28 @@ import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
 import { verifyAuth, UserPayload } from '@/lib/auth';
 
-interface FacturaParams {
-  params: {
+interface FacturaContext {
+  params: Promise<{
     id: string; // El ID de la factura que viene en la URL
-  }
+  }>
 }
 
 /**
  * OBTIENE los detalles (incluyendo XMLs) de una factura específica.
  */
-export async function GET(req: NextRequest, { params }: FacturaParams) {
+export async function GET(req: NextRequest, context: FacturaContext) {
 
   let decoded: UserPayload;
   try {
     // 1. Verificar la autenticación
     decoded = verifyAuth(req);
-  } catch (err: any) {
-    return NextResponse.json({ message: err.message }, { status: 401 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unauthorized';
+    return NextResponse.json({ message }, { status: 401 });
   }
 
   try {
-    const { id } = params; // ID de la factura
+    const { id } = await context.params; // ID de la factura
     const tenantId = decoded.tenant; // ID del tenant del usuario
 
         // 2. Consultar la base de datos por los campos específicos
@@ -65,10 +66,11 @@ export async function GET(req: NextRequest, { params }: FacturaParams) {
     // 4. Devolver los datos
     return NextResponse.json(result.rows[0], { status: 200 });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(`Error en GET /api/facturacion/facturas/[id]:`, error);
+    const message = error instanceof Error ? error.message : 'Error interno del servidor al obtener el detalle de la factura.';
     return NextResponse.json(
-      { message: 'Error interno del servidor al obtener el detalle de la factura.' },
+      { message },
       { status: 500 }
     );
   }

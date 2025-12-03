@@ -16,13 +16,17 @@ export async function GET() {
       timestamp: result.rows[0].now,
     }, { status: 200 });
 
-  } catch (err: any) {
+  } catch (err: unknown) {
     // 3. Devolvemos un error si falla
+    let errorMessage = 'An unknown error occurred.';
+    if (err instanceof Error) {
+      errorMessage = err.message;
+    }
     console.error('Error al conectar con la base de datos:', err);
     return NextResponse.json({
       success: false,
       message: 'Error al conectar con la base de datos',
-      error: err.message,
+      error: errorMessage,
     }, { status: 500 });
   }
 }

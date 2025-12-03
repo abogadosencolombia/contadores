@@ -89,8 +89,8 @@ export async function POST(req: NextRequest) {
     response.headers.set('Set-Cookie', cookie);
     return response;
 
-  } catch (err: any) {
-    console.error('Error en /api/auth/signin:', err);
+  } catch (error) {
+    console.error('Error en /api/auth/signin:', error);
     return NextResponse.json({ message: 'Error interno del servidor' }, { status: 500 });
   }
 }

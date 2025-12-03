@@ -34,7 +34,7 @@ export function verifyAuth(req: NextRequest): UserPayload {
     // Verificar el token y devolver los datos del usuario
     const payload = jwt.verify(token, secret) as UserPayload;
     return payload;
-  } catch (err) {
+  } catch (_err) {
     // Token inválido o expirado
     throw new Error('No autenticado: Token inválido.');
   }
@@ -48,7 +48,7 @@ export function hasRole(req: NextRequest, roleName: string): boolean {
   try {
     const user = verifyAuth(req);
     return user.roles && user.roles.includes(roleName);
-  } catch (error) {
+  } catch (_error) {
     // Si verifyAuth lanza un error (ej. no autenticado, token inválido), el usuario no tiene el rol.
     return false;
   }

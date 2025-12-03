@@ -1,5 +1,5 @@
 import db from '@/lib/db';
-import { AiDecision, AiIncident } from '@/types/ai-governance';
+import { AiDecision } from '@/types/ai-governance';
 
 export class AiGovernanceService {
   /**

@@ -17,15 +17,15 @@ export async function POST(req: NextRequest) {
     }
 
     const client = await db.connect();
-    
+
     // Obtener datos del certificado, accionista y verificar tenant por seguridad
     // Asumimos que verifyAuth devuelve el tenant_id string en payload.tenant
     // Necesitamos hacer JOIN con accionistas para verificar que el certificado pertenece a un accionista de este tenant
     const query = `
-      SELECT 
-        cd.file_path, 
+      SELECT
+        cd.file_path,
         cd.ano_fiscal,
-        a.email, 
+        a.email,
         a.nombre_completo,
         a.tenant_id as acc_tenant_id
       FROM core.certificadosdividendos cd
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
       JOIN core.tenants t ON a.tenant_id = t.id
       WHERE cd.id = $1 AND t.tenant_id = $2
     `;
-    
+
     const result = await client.query(query, [certificado_id, payload.tenant]);
     client.release();
 
@@ -89,7 +89,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ message: 'Correo enviado exitosamente.' });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error enviando certificado:', error);
     return NextResponse.json({ error: 'Error interno al enviar el correo.' }, { status: 500 });
   }

@@ -165,7 +165,7 @@ export default function AuditoriaDetailPage() {
         <div className="lg:col-span-2 space-y-6">
             
             {/* Auditoria Info */}
-            <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/[0.05] dark:bg-white/[0.03]">
+            <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/[0.05] dark:bg-white/3">
               <div className="flex items-center justify-between mb-4">
                  <h3 className="text-xl font-semibold text-gray-800 dark:text-white">Información General</h3>
                  <Badge
@@ -200,7 +200,7 @@ export default function AuditoriaDetailPage() {
 
                 <div className="border-t border-gray-100 pt-4 dark:border-gray-700">
                     <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Alcance de la Auditoría</p>
-                    <div className="bg-gray-50 dark:bg-white/[0.03] p-4 rounded-lg text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
+                    <div className="bg-gray-50 dark:bg-white/3 p-4 rounded-lg text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
                         {auditoria.alcance || 'No definido'}
                     </div>
                 </div>
@@ -214,7 +214,7 @@ export default function AuditoriaDetailPage() {
             </div>
 
             {/* Hallazgos Section */}
-            <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/[0.05] dark:bg-white/[0.03]">
+            <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/[0.05] dark:bg-white/3">
                 <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-semibold text-gray-800 dark:text-white">Hallazgos (No Conformidades)</h3>
                     <Button variant="primary" size="sm" onClick={() => setIsHallazgoModalOpen(true)}>
@@ -292,7 +292,7 @@ export default function AuditoriaDetailPage() {
 
         {/* Panel Lateral */}
         <div className="space-y-6">
-            <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/[0.05] dark:bg-white/[0.03]">
+            <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/[0.05] dark:bg-white/3">
               <h3 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white">Resumen</h3>
               <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
@@ -310,7 +310,7 @@ export default function AuditoriaDetailPage() {
               </div>
             </div>
             
-            <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/[0.05] dark:bg-white/[0.03]">
+            <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/[0.05] dark:bg-white/3">
                 <Button variant="outline" className="w-full" onClick={() => router.push('/dashboard/iso-27001/auditorias')}>
                     ← Volver al Listado
                 </Button>

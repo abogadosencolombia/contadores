@@ -10,8 +10,8 @@ interface AmlAlert {
   userId: number;
   riskScore: number;
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
-  analysisSummary?: string;
-  rosReportDraft?: string;
+  analysisSummary: string | null;
+  rosReportDraft: string | null;
   createdAt: string; // Changed from Date | string to string
   user: {
     fullName: string;
@@ -67,7 +67,7 @@ export default function AmlAlertsTable({ initialAlerts }: AmlAlertsTableProps) {
     const splitText = doc.splitTextToSize(selectedAlert.rosReportDraft, pageWidth - 40);
     doc.text(splitText, 20, 95);
 
-    doc.save(`ROS_DRAFT_${selectedAlert.user.fullName.replace(/\s+/g, '_')}_${selectedAlert.id.substring(0,8)}.pdf`);
+    doc.save(`ROS_DRAFT_${selectedAlert.user.fullName.replace(/\s+/g, '_')}_${selectedAlert.id}.pdf`);
   };
 
   const downloadText = () => {

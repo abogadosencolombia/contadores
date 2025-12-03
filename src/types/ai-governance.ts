@@ -5,7 +5,7 @@ export interface AiDecision {
   model_name: string;
   decision_type: string;
   risk_score: number;
-  input_variables: Record<string, any>;
+  input_variables: Record<string, unknown>;
   explanation: string;
   is_vetoed: boolean;
   created_at: string;

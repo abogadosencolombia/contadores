@@ -2,7 +2,7 @@
 'use client';
 
 import React from 'react';
-import Select, { OnChangeValue } from 'react-select';
+import Select, { OnChangeValue, StylesConfig } from 'react-select';
 import { useTheme } from '@/context/ThemeContext'; // Importar el hook del tema
 
 interface OptionType {
@@ -41,8 +41,8 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
   };
 
   // Estilos personalizados para el componente Select
-  const customStyles = {
-    control: (base: any) => ({
+  const customStyles: StylesConfig<OptionType, false> = {
+    control: (base) => ({
       ...base,
       backgroundColor: theme === 'dark' ? '#1D2939' : '#FFFFFF',
       borderColor: theme === 'dark' ? '#4A5568' : '#D1D5DB',
@@ -50,20 +50,20 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
         borderColor: theme === 'dark' ? '#6366F1' : '#A5B4FC',
       },
     }),
-    input: (base: any) => ({
+    input: (base) => ({
       ...base,
       color: theme === 'dark' ? '#FFFFFF' : '#1F2937',
     }),
-    singleValue: (base: any) => ({
+    singleValue: (base) => ({
       ...base,
       color: theme === 'dark' ? '#FFFFFF' : '#1F2937',
     }),
-    menu: (base: any) => ({
+    menu: (base) => ({
       ...base,
       backgroundColor: theme === 'dark' ? '#1D2939' : '#FFFFFF',
       zIndex: 9999, // Asegurar que el menú se superponga
     }),
-    option: (base: any, { isFocused, isSelected }: any) => ({
+    option: (base, { isFocused, isSelected }) => ({
       ...base,
       backgroundColor: isSelected
         ? theme === 'dark' ? '#4F46E5' : '#6366F1'
@@ -77,7 +77,7 @@ const SearchableSelect: React.FC<SearchableSelectProps> = ({
         backgroundColor: theme === 'dark' ? '#4338CA' : '#4F46E5',
       },
     }),
-    placeholder: (base: any) => ({
+    placeholder: (base) => ({
       ...base,
       color: theme === 'dark' ? '#9CA3AF' : '#6B7280',
     }),

@@ -8,7 +8,7 @@ if (dns.setDefaultResultOrder) {
 }
 
 declare global {
-  // eslint-disable-next-line no-var
+   
   var postgresPool: Pool | undefined;
 }
 
@@ -44,7 +44,7 @@ pool.on('error', (err) => {
 
 // Exportamos un wrapper consistente
 export const db = {
-  query: (text: string, params?: any[]) => pool.query(text, params),
+  query: (text: string, params?: unknown[]) => pool.query(text, params),
   connect: () => pool.connect(),
 };
 

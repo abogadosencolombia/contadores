@@ -4,28 +4,28 @@ import { verifyAuth, UserPayload } from '@/lib/auth'; // Importamos tu helper de
 import crypto from 'crypto'; // Usaremos 'crypto' de Node.js para generar hashes
 
 // Interfaz para los parámetros de la URL
-interface EnviarDianParams {
-  params: {
+interface EnviarDianContext {
+  params: Promise<{
     id: string; // El ID de la factura que viene en la URL
-  }
+  }>
 }
 
 /**
  * Endpoint para SIMULAR el envío de una factura a la DIAN.
  * Cambia el estado de 'borrador' a 'aprobada' y genera datos falsos (CUFE, XML).
  */
-export async function POST(req: NextRequest, { params }: EnviarDianParams) {
+export async function POST(req: NextRequest, context: EnviarDianContext) {
 
   let decoded: UserPayload;
   try {
     // 1. Verificar la autenticación del usuario (contador)
     decoded = verifyAuth(req);
-  } catch (err: any) {
-    return NextResponse.json({ message: err.message }, { status: 401 });
-  }
-
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Unauthorized';
+        return NextResponse.json({ message }, { status: 401 });
+      }
   try {
-    const { id } = params; // ID de la factura a enviar
+    const { id } = await context.params; // ID de la factura a enviar
     const tenantId = decoded.tenant; // ID del tenant del contador
 
     // 2. Obtener la factura de la BD (solo si es un 'borrador' de este tenant)
@@ -139,11 +139,12 @@ export async function POST(req: NextRequest, { params }: EnviarDianParams) {
     // 6. Devolver la factura actualizada
     return NextResponse.json(result.rows[0], { status: 200 });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Capturar errores de base de datos
     console.error(`Error en POST /api/facturacion/facturas/[id]/enviar-dian:`, error);
+    const message = error instanceof Error ? error.message : 'Error interno del servidor al simular el envío a la DIAN.';
     return NextResponse.json(
-      { message: 'Error interno del servidor al simular el envío a la DIAN.' },
+      { message },
       { status: 500 }
     );
   }

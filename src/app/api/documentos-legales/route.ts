@@ -12,8 +12,8 @@ export async function GET(req: NextRequest) {
   let decoded: UserPayload;
   try {
     decoded = verifyAuth(req);
-  } catch (err: any) {
-    return NextResponse.json({ message: err.message }, { status: 401 });
+  } catch (err: unknown) {
+    return NextResponse.json({ message: (err as Error).message }, { status: 401 });
   }
 
   try {
@@ -44,8 +44,8 @@ export async function POST(req: NextRequest) {
   let decoded: UserPayload;
   try {
     decoded = verifyAuth(req);
-  } catch (err: any) {
-    return NextResponse.json({ message: err.message }, { status: 401 });
+  } catch (err: unknown) {
+    return NextResponse.json({ message: (err as Error).message }, { status: 401 });
   }
 
   try {
@@ -103,8 +103,8 @@ export async function POST(req: NextRequest) {
     const result = await db.query(query, params);
     return NextResponse.json(result.rows[0], { status: 201 });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error en POST /api/documentos-legales:', error);
-    return NextResponse.json({ message: 'Error interno del servidor: ' + error.message }, { status: 500 });
+    return NextResponse.json({ message: 'Error interno del servidor: ' + (error as Error).message }, { status: 500 });
   }
 }

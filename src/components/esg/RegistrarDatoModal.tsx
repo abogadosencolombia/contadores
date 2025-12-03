@@ -96,8 +96,12 @@ export default function RegistrarDatoModal({
       // Éxito
       if (onSuccess) onSuccess();
       onClose();
-    } catch (err: any) {
-      setError(err.message || "Ocurrió un error inesperado.");
+    } catch (err: unknown) {
+      let errorMessage = "Ocurrió un error inesperado.";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      }
+      setError(errorMessage);
     } finally {
       setSubmitting(false);
     }

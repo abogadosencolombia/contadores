@@ -119,8 +119,8 @@ export default function RiesgosPage() {
 
         setRiesgos(data); // <-- CAMBIO: Usar 'data' directamente
         setTotalPages(Math.ceil(total / ITEMS_PER_PAGE));
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : "Error desconocido al cargar riesgos");
       } finally {
         setIsLoading(false);
       }
@@ -175,7 +175,7 @@ export default function RiesgosPage() {
       const res = await fetch('/api/riesgos', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
       if (!res.ok) { const errorData = await res.json(); throw new Error(errorData.message || 'Error al crear el riesgo'); }
       closeCreateModal(); fetchRiesgos(1, debouncedSearchTerm, activeFilters); setCurrentPage(1); (event.target as HTMLFormElement).reset();
-    } catch (err: any) { setError(err.message); }
+    } catch (err: unknown) { setError(err instanceof Error ? err.message : "Error desconocido al crear riesgo"); }
   };
   const handleUpdate = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault(); if (!selectedRiesgo) return;
@@ -193,7 +193,7 @@ export default function RiesgosPage() {
       const res = await fetch(`/api/riesgos/${selectedRiesgo.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
       if (!res.ok) { const errorData = await res.json(); throw new Error(errorData.message || 'Error al actualizar el riesgo'); }
       closeEditModal(); fetchRiesgos(currentPage, debouncedSearchTerm, activeFilters); setSelectedRiesgo(null);
-    } catch (err: any) { setError(err.message); }
+    } catch (err: unknown) { setError(err instanceof Error ? err.message : "Error desconocido al actualizar riesgo"); }
   };
   const handleDelete = async () => {
     if (!selectedRiesgo) return;
@@ -202,7 +202,7 @@ export default function RiesgosPage() {
       const res = await fetch(`/api/riesgos/${selectedRiesgo.id}`, { method: 'DELETE' });
       if (!res.ok) { const errorData = await res.json(); throw new Error(errorData.message || 'Error al eliminar el riesgo'); }
       closeDeleteModal(); fetchRiesgos(1, debouncedSearchTerm, activeFilters); setCurrentPage(1); setSelectedRiesgo(null);
-    } catch (err: any) { setError(err.message); closeDeleteModal(); }
+    } catch (err: unknown) { setError(err instanceof Error ? err.message : "Error desconocido al eliminar riesgo"); closeDeleteModal(); }
   };
 
 
@@ -217,7 +217,7 @@ export default function RiesgosPage() {
       <PageBreadcrumb pageTitle="Gestión de Riesgos (ERM)" />
 
       {/* --- Barra de Filtros --- */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/[0.03] mb-4">
+      <div className="rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/3 mb-4">
         <div className="flex flex-col md:flex-row gap-4">
           {/* Filtro 1: Búsqueda (Dinámico) */}
           <div className="flex-1">
@@ -287,7 +287,7 @@ export default function RiesgosPage() {
       )}
 
       {/* --- Tabla de Riesgos (CON ACCIONES) --- */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/[0.03]">
+      <div className="rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/3">
         <div className="max-w-full overflow-x-auto">
           {isLoading ? (
             <p>Cargando riesgos...</p>
@@ -518,7 +518,7 @@ export default function RiesgosPage() {
               Confirmar Eliminación
             </h4>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              ¿Está seguro de que desea eliminar el riesgo "{selectedRiesgo.riesgo}"? Esta acción no se puede deshacer.
+              ¿Está seguro de que desea eliminar el riesgo `&quot;{selectedRiesgo.riesgo}`&quot;? Esta acción no se puede deshacer.
             </p>
             <div className="flex items-center justify-center w-full gap-3 mt-8">
               <Button size="sm" variant="outline" onClick={closeDeleteModal} type="button">

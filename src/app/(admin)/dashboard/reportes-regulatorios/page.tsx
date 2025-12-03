@@ -57,7 +57,7 @@ const ReportesPage = () => {
     }
   }, [user, fetchReportes]);
 
-  const handleGenerarSuccess = (nuevoReporte: any) => {
+  const handleGenerarSuccess = (nuevoReporte: unknown) => {
     console.log('Reporte generado exitosamente:', nuevoReporte);
     setIsModalOpen(false);
     fetchReportes();
@@ -200,7 +200,7 @@ const ReportesPage = () => {
                       onClick={() => handleDownloadReporte(r.id)}
                       variant="secondary"
                       size="sm"
-                      className="ml-2 bg-blue-500 hover:bg-blue-600 dark:bg-blue-500 dark:hover:bg-blue-600"
+                      className="ml-2"
                     >
                       Descargar
                     </Button>

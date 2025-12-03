@@ -112,11 +112,11 @@ export class DcinService {
 
     // 3. Leer el archivo
     const filePath = path.join(process.cwd(), 'secure_uploads', reporte.storage_path_reporte);
-    const fileContent = await fs.readFile(filePath, 'utf-8');
+    const _fileContent = await fs.readFile(filePath, 'utf-8');
 
     // 4. Enviar a la API del BanRep (Simulación)
-    const API_URL = 'https://api-simulada.banrep.gov.co/v1/recepcion_dcin';
-    let apiResponse: any;
+    const _API_URL = 'https://api-simulada.banrep.gov.co/v1/recepcion_dcin';
+    let apiResponse: { message?: string; traceId?: string; radicado?: string; error?: string };
     let nuevoEstado: string;
     const traceId = crypto.randomUUID();
 
@@ -131,8 +131,9 @@ export class DcinService {
       nuevoEstado = 'ENVIADO';
       // -- FIN SIMULACIÓN DE ENVÍO --
 
-    } catch (error: any) {
-      apiResponse = { error: error.message || 'Error en la conexión con la entidad.' };
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+      apiResponse = { error: errorMessage || 'Error en la conexión con la entidad.' };
       nuevoEstado = 'RECHAZADO';
     }
 

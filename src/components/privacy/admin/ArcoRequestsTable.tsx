@@ -60,7 +60,7 @@ export default function ArcoRequestsTable() {
   };
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/3">
         <div className="p-5 border-b border-gray-100 dark:border-white/[0.05]">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
                 Solicitudes ARCO
@@ -94,13 +94,13 @@ export default function ArcoRequestsTable() {
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
               {loading ? (
                 <TableRow>
-                  <TableCell className="px-5 py-4 text-center text-gray-500" className="col-span-6">
+                  <TableCell className="px-5 py-4 text-center text-gray-500" colSpan={6}>
                     Cargando...
                   </TableCell>
                 </TableRow>
               ) : requests.length === 0 ? (
                 <TableRow>
-                    <TableCell className="px-5 py-4 text-center text-gray-500">
+                    <TableCell className="px-5 py-4 text-center text-gray-500" colSpan={6}>
                         No hay solicitudes registradas.
                     </TableCell>
                 </TableRow>

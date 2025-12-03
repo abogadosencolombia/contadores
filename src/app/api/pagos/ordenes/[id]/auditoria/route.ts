@@ -6,7 +6,7 @@ import { verifyAuth } from '@/lib/auth';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const payload = verifyAuth(request);
@@ -14,27 +14,27 @@ export async function GET(
       return NextResponse.json({ error: 'No autorizado' }, { status: 403 });
     }
 
-    const { id } = params;
+    const { id } = await context.params;
     const tenantId = payload.tenant;
 
     // 1. Obtener los detalles principales de la orden de pago
     const ordenQuery = db.query(
-      `SELECT 
+      `SELECT
          id, monto, moneda, monto_equivalente_cop, requiere_doble_firma,
          firmado_por_user_id_1, fecha_firma_1, hash_firma_1,
          firmado_por_user_id_2, fecha_firma_2, hash_firma_2
-       FROM core.ordenes_pago 
+       FROM core.ordenes_pago
        WHERE id = $1 AND tenant_id = $2`,
       [id, tenantId]
     );
 
     // 2. Obtener el log de auditoría con los nombres de los usuarios
     const logQuery = db.query(
-      `SELECT 
-         log.accion, 
-         log.detalles, 
-         log.hash_evidencia, 
-         log.fecha, 
+      `SELECT
+         log.accion,
+         log.detalles,
+         log.hash_evidencia,
+         log.fecha,
          u.full_name as usuario
        FROM core.auditoria_pagos_log log
        LEFT JOIN core.users u ON log.user_id = u.id
@@ -58,13 +58,13 @@ export async function GET(
 
     return NextResponse.json(auditoriaCompleta);
 
-  } catch (error: any) {
-    if (error.message.includes('No autenticado') || error.message.includes('Token inválido')) {
-      return NextResponse.json({ error: error.message }, { status: 401 });
+  } catch (error: unknown) {
+    if (((error as Error).message.includes('No autenticado') || (error as Error).message.includes('Token inválido'))) {
+      return NextResponse.json({ error: (error as Error) }, { status: 401 });
     }
-    console.error(`Error al obtener auditoría para la orden ${params.id}:`, error);
+    console.error(`Error al obtener auditoría para la orden`, error);
     return NextResponse.json(
-      { error: 'Error interno del servidor', details: error.message },
+      { error: 'Error interno del servidor', details: (error as Error) },
       { status: 500 }
     );
   }

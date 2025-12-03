@@ -123,11 +123,11 @@ export async function POST(request: NextRequest) {
       certificados: certificadosGenerados,
     });
 
-  } catch (error: any) {
-    if (error.message.includes('No autenticado') || error.message.includes('Token inválido')) {
-      return NextResponse.json({ error: error.message }, { status: 401 });
+  } catch (error: unknown) {
+    if ((error as Error).message.includes('No autenticado') || (error as Error).message.includes('Token inválido')) {
+      return NextResponse.json({ error: (error as Error).message }, { status: 401 });
     }
     console.error('Error al generar certificados de dividendos:', error);
-    return NextResponse.json({ error: 'Error interno del servidor', details: error.message }, { status: 500 });
+    return NextResponse.json({ error: 'Error interno del servidor', details: (error as Error).message }, { status: 500 });
   }
 }

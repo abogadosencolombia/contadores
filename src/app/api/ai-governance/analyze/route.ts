@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
       const user = verifyAuth(request);
       userId = user.userId;
       tenantId = user.tenant;
-    } catch (authError) {
+    } catch (_authError) {
       console.warn('No se pudo obtener usuario autenticado en ai-governance/analyze, usando ID temporal 1');
     }
 
@@ -68,10 +68,10 @@ export async function POST(request: NextRequest) {
       message: 'Factura enviada a auditoría de IA correctamente.',
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error en API AI Governance:', error);
     return NextResponse.json(
-      { error: error.message || 'Error interno' },
+      { error: (error instanceof Error) ? error.message : 'Error interno' },
       { status: 500 }
     );
   }

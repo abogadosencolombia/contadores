@@ -68,7 +68,7 @@ export async function GET(req: NextRequest) {
       totalPages: Math.ceil(total / limit)
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error al obtener certificados:', error);
     return NextResponse.json(
       { message: 'Error interno al obtener certificados' },

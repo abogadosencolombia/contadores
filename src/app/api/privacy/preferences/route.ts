@@ -8,14 +8,14 @@ export async function GET(req: NextRequest) {
     let user;
     try {
       user = verifyAuth(req);
-    } catch (error) {
+    } catch (_error) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // 2. Obtener preferencias
     const query = `
-      SELECT id, canal, finalidad, autorizado 
-      FROM core.preferencias_contacto 
+      SELECT id, canal, finalidad, autorizado
+      FROM core.preferencias_contacto
       WHERE user_id = $1
     `;
     const { rows } = await db.query(query, [user.userId]);
@@ -33,7 +33,7 @@ export async function PUT(req: NextRequest) {
     let user;
     try {
       user = verifyAuth(req);
-    } catch (error) {
+    } catch (_error) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -50,8 +50,8 @@ export async function PUT(req: NextRequest) {
     const query = `
       INSERT INTO core.preferencias_contacto (user_id, tenant_id, canal, finalidad, autorizado, ip_origen)
       VALUES ($1, $2, $3, $4, $5, $6)
-      ON CONFLICT (user_id, canal, finalidad) 
-      DO UPDATE SET 
+      ON CONFLICT (user_id, canal, finalidad)
+      DO UPDATE SET
         autorizado = EXCLUDED.autorizado,
         fecha_actualizacion = NOW(),
         ip_origen = EXCLUDED.ip_origen
@@ -59,7 +59,7 @@ export async function PUT(req: NextRequest) {
     `;
 
     // Obtenemos la IP de origen (si está disponible en los headers, sino un valor por defecto)
-    const ip = req.headers.get('x-forwarded-for') || req.ip || 'unknown';
+    const ip = req.headers.get('x-forwarded-for') || 'unknown';
 
     const { rows } = await db.query(query, [
       user.userId,

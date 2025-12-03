@@ -6,8 +6,8 @@ export async function GET() {
     const client = await pool.connect();
     try {
       const query = `
-        SELECT id, titulo, estado 
-        FROM core.documentos_legales 
+        SELECT id, titulo, estado
+        FROM core.documentos_legales
         ORDER BY fecha_creacion DESC
       `;
       const result = await client.query(query);
@@ -15,10 +15,10 @@ export async function GET() {
     } finally {
       client.release();
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching legal documents:', error);
     return NextResponse.json(
-      { error: 'Error fetching legal documents', details: error.message },
+      { error: 'Error fetching legal documents', details: (error as Error) },
       { status: 500 }
     );
   }

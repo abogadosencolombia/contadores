@@ -4,6 +4,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db'; // <-- MOVIMOS LOS IMPORTS AQUÍ ARRIBA
 import { verifyAuth, UserPayload } from '@/lib/auth'; // <-- MOVIMOS LOS IMPORTS AQUÍ ARRIBA
 
+interface PgError extends Error {
+  code?: string;
+  constraint?: string;
+  detail?: string;
+}
+
 /**
  * OBTIENE una lista paginada de facturas para el tenant del usuario.
  */
@@ -15,13 +21,13 @@ export async function GET(req: NextRequest) {
     // 1. Verificar la autenticación del usuario (contador)
     decoded = verifyAuth(req);
 
-  } catch (err: any) {
-    // Captura 'No autenticado: Token no encontrado' o 'Token inválido'
-    return NextResponse.json(
-      { message: err.message || 'No autorizado. Token inválido o expirado.' },
-      { status: 401 }
-    );
-  }
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'No autorizado. Token inválido o expirado.';
+        // Captura 'No autenticado: Token no encontrado' o 'Token inválido'
+        return NextResponse.json(
+          { message },
+          { status: 401 }
+        );  }
 
   // Si la autenticación fue exitosa, 'decoded' tiene el payload.
   try {
@@ -97,11 +103,12 @@ export async function POST(req: NextRequest) {
   try {
     // 1. Verificar la autenticación
     decoded = verifyAuth(req);
-  } catch (err: any) {
-    return NextResponse.json({ message: err.message }, { status: 401 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unauthorized';
+    return NextResponse.json({ message }, { status: 401 });
   }
 
-  let body: any;
+  let body;
 
   try {
     // 2. Obtener los datos del formulario de factura
@@ -176,21 +183,26 @@ export async function POST(req: NextRequest) {
     // 7. Devolver la factura recién creada
     return NextResponse.json(result.rows[0], { status: 201 }); // 201 Created
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error en POST /api/facturacion/facturas:', error);
 
-    // 8. Manejo de Errores Específicos
-    if (error.code === '23505') { // Error de violación de unicidad
-      if (error.constraint === 'facturas_tenant_consecutivo_key') {
-         return NextResponse.json({ message: `El consecutivo de factura '${body.consecutivo}' ya existe para este tenant.` }, { status: 409 });
+    if (error instanceof Error) {
+      const pgError = error as PgError; // Asserting type for specific pg error properties
+
+      // 8. Manejo de Errores Específicos
+      if (pgError.code === '23505') { // Error de violación de unicidad
+        if (pgError.constraint === 'facturas_tenant_consecutivo_key') {
+           return NextResponse.json({ message: `El consecutivo de factura '${body.consecutivo}' ya existe para este tenant.` }, { status: 409 });
+        }
+        return NextResponse.json({ message: 'Error de unicidad: ' + pgError.detail }, { status: 409 });
       }
-      return NextResponse.json({ message: 'Error de unicidad: ' + error.detail }, { status: 409 });
+
+      if (pgError.code === '23502') { // Not-null violation
+          return NextResponse.json({ message: `Error de base de datos: ${pgError.message}.` }, { status: 500 });
+      }
     }
 
-    if (error.code === '23502') { // Not-null violation
-        return NextResponse.json({ message: `Error de base de datos: ${error.message}.` }, { status: 500 });
-    }
-
-    return NextResponse.json({ message: 'Error interno del servidor al crear la factura.' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Error interno del servidor al crear la factura.';
+    return NextResponse.json({ message }, { status: 500 });
   }
 }

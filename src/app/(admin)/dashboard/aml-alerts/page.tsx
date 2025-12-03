@@ -8,8 +8,8 @@ interface AmlAlert {
   userId: number;
   riskScore: number;
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
-  analysisSummary?: string;
-  rosReportDraft?: string;
+  analysisSummary: string | null;
+  rosReportDraft: string | null;
   createdAt: string;
   user: {
     fullName: string;

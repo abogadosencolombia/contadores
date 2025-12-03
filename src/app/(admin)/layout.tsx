@@ -4,7 +4,7 @@ import { useSidebar } from "@/context/SidebarContext";
 import AppHeader from "@/layout/AppHeader";
 import AppSidebar from "@/layout/AppSidebar";
 import Backdrop from "@/layout/Backdrop";
-import React, { ReactNode } from "react";
+import React from "react";
 import { useAuth } from '@/hooks/useAuth';
 import Alert from '@/components/ui/alert/Alert';
 
@@ -21,9 +21,11 @@ const AccessDenied = () => (
     <div className="min-h-screen">
         <AppHeader />
         <div className="p-4 mx-auto max-w-screen-2xl md:p-6 mt-10">
-            <Alert variant="error" title="Acceso Denegado">
-            No tienes los permisos necesarios para acceder a esta sección. Por favor, contacta a un administrador.
-            </Alert>
+            <Alert
+              variant="error"
+              title="Acceso Denegado"
+              message="No tienes los permisos necesarios para acceder a esta sección. Por favor, contacta a un administrador."
+            />
         </div>
     </div>
 );

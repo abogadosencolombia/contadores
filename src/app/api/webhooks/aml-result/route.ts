@@ -93,10 +93,14 @@ export async function POST(req: NextRequest) {
       client.release();
     }
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    let errorMessage = 'An unknown error occurred.';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
     console.error('Error en webhook aml-result:', error);
     return NextResponse.json(
-      { error: 'Internal Server Error', details: error.message },
+      { error: 'Internal Server Error', details: errorMessage },
       { status: 500 }
     );
   }

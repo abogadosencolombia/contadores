@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ReportesService } from '@/lib/reportesService';
-import { verifyAuth, UserPayload } from '@/lib/auth';
+import { verifyAuth, UserPayload as _UserPayload } from '@/lib/auth';
 
 /**
  * POST /api/reportes-regulatorios/[id]/enviar
@@ -8,7 +8,7 @@ import { verifyAuth, UserPayload } from '@/lib/auth';
  */
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const payload = verifyAuth(request);
@@ -17,7 +17,8 @@ export async function POST(
     }
     const tenantId = payload.tenant;
 
-    const reporteId = parseInt(params.id);
+    const { id } = await context.params;
+    const reporteId = parseInt(id);
 
     if (isNaN(reporteId)) {
       return NextResponse.json({ error: 'ID de reporte inválido' }, { status: 400 });
@@ -28,13 +29,17 @@ export async function POST(
 
     return NextResponse.json(resultadoEnvio);
 
-  } catch (error: any) {
-    if (error.message.includes('No autenticado') || error.message.includes('Token inválido')) {
-      return NextResponse.json({ error: error.message }, { status: 401 });
+  } catch (error: unknown) {
+    let errorMessage = 'An unknown error occurred.';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+      if (errorMessage.includes('No autenticado') || errorMessage.includes('Token inválido')) {
+        return NextResponse.json({ error: errorMessage }, { status: 401 });
+      }
     }
-    console.error(`Error al enviar reporte ${params.id}:`, error);
+    console.error(`Error al enviar reporte`, error);
     return NextResponse.json(
-      { error: 'Error interno del servidor', details: error.message },
+      { error: 'Error interno del servidor', details: errorMessage },
       { status: 500 }
     );
   }

@@ -23,7 +23,7 @@ type BalanceDisponible = {
 interface GenerarReporteModalProps {
   isOpen: boolean; // <--- 1. ACEPTAR LA PROP 'isOpen'
   onClose: () => void;
-  onSubmitSuccess: (nuevoReporte: any) => void;
+  onSubmitSuccess: (nuevoReporte: unknown) => void;
 }
 
 // Opciones para los Selects
@@ -85,7 +85,8 @@ const GenerarReporteModal: React.FC<GenerarReporteModalProps> = ({
           );
         })
         .catch((err) => {
-          setError(`No se pudieron cargar los balances: ${err.message}`);
+          const msg = err instanceof Error ? err.message : 'Error desconocido';
+          setError(`No se pudieron cargar los balances: ${msg}`);
         })
         .finally(() => {
           setIsLoadingBalances(false);
@@ -123,8 +124,9 @@ const GenerarReporteModal: React.FC<GenerarReporteModalProps> = ({
       }
 
       onSubmitSuccess(result);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Error desconocido';
+      setError(msg);
     } finally {
       setIsLoadingSubmit(false);
     }

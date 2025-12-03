@@ -81,14 +81,14 @@ export async function POST(req: NextRequest) {
     // Devolvemos el UUID para que el usuario anónimo pueda consultar
     return NextResponse.json(nuevoCaso, { status: 201 });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error en POST /api/canal-etico/casos:', error);
 
     // Rollback manual (muy simplificado): Si falló al guardar archivos, borramos el caso
     if (casoUuid) {
       try {
         await db.query('DELETE FROM core.canal_etico_casos WHERE caso_uuid = $1', [casoUuid]);
-      } catch (rollbackError) {
+      } catch (rollbackError: unknown) {
         console.error('Error en rollback de caso ético:', rollbackError);
       }
     }

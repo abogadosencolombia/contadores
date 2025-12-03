@@ -128,8 +128,8 @@ export default function InversionistasPage() {
       });
       setIsConfigOpen(false);
       toast.success("Configuración guardada");
-      // Recalcular si hay un modal de pago abierto (opcional, pero buena práctica)
-    } catch (_) {
+    } catch (error) {
+      console.error(error);
       toast.error("Error guardando configuración");
     }
   };
@@ -207,8 +207,8 @@ export default function InversionistasPage() {
       if (!res.ok) throw new Error(data.error || 'Error al enviar el correo');
 
       toast.success('Correo enviado exitosamente');
-    } catch (err: any) {
-      toast.error(err.message);
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Error desconocido al enviar el correo.");
     } finally {
       setSendingId(null);
     }
@@ -310,9 +310,9 @@ export default function InversionistasPage() {
          toast.warning("El proceso terminó pero no se obtuvo el certificado en la respuesta.");
       }
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
-      toast.error(error.message || "Ocurrió un error en el proceso");
+      toast.error(error instanceof Error ? error.message : "Ocurrió un error en el proceso");
     }
   };
 
@@ -347,9 +347,9 @@ export default function InversionistasPage() {
          toast.warning("No se encontró información para generar el certificado.");
       }
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
-      toast.error(error.message || "Error en el proceso");
+      toast.error(error instanceof Error ? error.message : "Error en el proceso");
     }
   };
 
@@ -358,7 +358,7 @@ export default function InversionistasPage() {
 
   return (
     <div>
-      <Breadcrumb pageName="Gestión de Inversionistas" />
+      <Breadcrumb pageTitle="Gestión de Inversionistas" />
 
       <div className="grid grid-cols-1 gap-9 sm:grid-cols-1">
         <div className="flex flex-col gap-9">
@@ -389,11 +389,11 @@ export default function InversionistasPage() {
               {loading ? (
                   <div className="text-center py-10">Cargando inversionistas...</div>
               ) : (
-                <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+                <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/5 dark:bg-white/3">
                   <div className="max-w-full overflow-x-auto">
                     <div className="min-w-[1000px]">
                       <Table>
-                        <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
+                        <TableHeader className="border-b border-gray-100 dark:border-white/5">
                           <TableRow>
                             <TableCell isHeader className={baseHeaderClasses}>Nombre</TableCell>
                             <TableCell isHeader className={baseHeaderClasses}>Documento</TableCell>
@@ -402,7 +402,7 @@ export default function InversionistasPage() {
                             <TableCell isHeader className={baseHeaderClasses}>Acciones</TableCell>
                           </TableRow>
                         </TableHeader>
-                        <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
+                        <TableBody className="divide-y divide-gray-100 dark:border-white/5">
                           {inversionistas.length === 0 ? (
                              <TableRow>
                                <TableCell className="px-5 py-8 text-center text-gray-500" colSpan={5}>
@@ -464,12 +464,12 @@ export default function InversionistasPage() {
                 <h3 className="font-medium text-black dark:text-white">Certificados de Dividendos Inversionistas</h3>
             </div>
             <div className="p-6.5">
-              <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+              <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/5 dark:bg-white/3">
                 <div className="max-w-full overflow-x-auto">
                   <div className="min-w-[1000px]">
                     {isLoadingCert ? <p className="text-center py-10">Cargando certificados...</p> : (
                       <Table>
-                        <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
+                        <TableHeader className="border-b border-gray-100 dark:border-white/5">
                           <TableRow>
                             <TableCell isHeader className={baseHeaderClasses}>Año Fiscal</TableCell>
                             <TableCell isHeader className={baseHeaderClasses}>Accionista</TableCell>
@@ -479,7 +479,7 @@ export default function InversionistasPage() {
                             <TableCell isHeader className={baseHeaderClasses}>Acciones</TableCell>
                           </TableRow>
                         </TableHeader>
-                        <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
+                        <TableBody className="divide-y divide-gray-100 dark:border-white/5">
                           {certificados.length > 0 ? certificados.map((c) => (
                             <TableRow key={c.id}>
                               <TableCell className={baseCellClasses}>{c.ano_fiscal}</TableCell>

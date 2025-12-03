@@ -8,9 +8,9 @@ export async function GET(req: NextRequest) {
 
   try {
     decoded = verifyAuth(req);
-  } catch (err: any) {
+  } catch (err: unknown) {
     return NextResponse.json(
-      { message: err.message || 'No autorizado. Token inválido o expirado.' },
+      { message: (err instanceof Error) ? err.message : 'No autorizado. Token inválido o expirado.' },
       { status: 401 }
     );
   }

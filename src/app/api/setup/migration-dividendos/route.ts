@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
 
-export async function GET(req: NextRequest) {
+export async function GET(_req: NextRequest) {
   try {
     const client = await db.connect();
 
@@ -28,8 +28,12 @@ export async function GET(req: NextRequest) {
 
     client.release();
     return NextResponse.json({ message: 'Migración completada exitosamente' });
-  } catch (error: any) {
-    console.error(error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    let errorMessage = 'An unknown error occurred.';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    console.error(error); // Keep original error for full context in logs
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

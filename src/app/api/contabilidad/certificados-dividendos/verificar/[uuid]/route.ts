@@ -2,9 +2,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
 
-export async function GET(request: NextRequest, { params }: { params: { uuid: string } }) {
+export async function GET(request: NextRequest, context: { params: Promise<{ uuid: string }> }) {
   try {
-    const { uuid } = params;
+    const { uuid } = await context.params;
 
     // Basic UUID validation
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -28,7 +28,7 @@ export async function GET(request: NextRequest, { params }: { params: { uuid: st
         JOIN core.accionistas a ON cd.accionista_id = a.id
         WHERE cd.verification_uuid = $1;
       `;
-      
+
       const result = await client.query(query, [uuid]);
 
       if (result.rows.length > 0) {
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest, { params }: { params: { uuid: st
     } finally {
       client.release();
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error al verificar certificado:', error);
     return NextResponse.json({ valido: false, error: 'Error interno del servidor' }, { status: 500 });
   }

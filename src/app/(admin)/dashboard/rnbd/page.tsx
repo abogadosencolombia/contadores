@@ -32,8 +32,8 @@ export default function RnbdDashboard() {
       }
       const data = await response.json();
       setRecords(data);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Error desconocido al cargar registros RNBD");
     } finally {
       setLoading(false);
     }

@@ -4,19 +4,19 @@ import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
 import { verifyAuth } from '@/lib/auth'; // Importamos nuestro helper
 
-interface RiesgoParams {
-  params: {
+interface RiesgoContext {
+  params: Promise<{
     id: string;
-  }
+  }>
 }
 
 /**
  * ACTUALIZA (Edita) un riesgo específico por ID
  */
-export async function PATCH(req: NextRequest, { params }: RiesgoParams) {
+export async function PATCH(req: NextRequest, context: RiesgoContext) {
   try {
-    const user = verifyAuth(req); // 1. Verificar autenticación
-    const { id } = params;         // 2. Obtener ID de la URL
+    const _user = verifyAuth(req); // 1. Verificar autenticación
+    const { id } = await context.params;         // 2. Obtener ID de la URL
     const body = await req.json(); // 3. Obtener datos del formulario
 
     const { dominio, riesgo, probabilidad, impacto, control, estado } = body;
@@ -56,9 +56,13 @@ export async function PATCH(req: NextRequest, { params }: RiesgoParams) {
     // 6. Devolver el riesgo actualizado
     return NextResponse.json(result.rows[0], { status: 200 });
 
-  } catch (err: any) {
-    if (err.message.includes('No autenticado')) {
-      return NextResponse.json({ message: err.message }, { status: 401 });
+  } catch (err: unknown) {
+    let errorMessage = 'An unknown error occurred.';
+    if (err instanceof Error) {
+      errorMessage = err.message;
+      if (errorMessage.includes('No autenticado')) {
+        return NextResponse.json({ message: errorMessage }, { status: 401 });
+      }
     }
     console.error('Error en PATCH /api/riesgos/[id]:', err);
     return NextResponse.json({ message: 'Error interno del servidor.' }, { status: 500 });
@@ -68,10 +72,10 @@ export async function PATCH(req: NextRequest, { params }: RiesgoParams) {
 /**
  * ELIMINA un riesgo específico por ID
  */
-export async function DELETE(req: NextRequest, { params }: RiesgoParams) {
+export async function DELETE(req: NextRequest, context: RiesgoContext) {
   try {
-    const user = verifyAuth(req); // 1. Verificar autenticación
-    const { id } = params;         // 2. Obtener ID de la URL
+    const _user = verifyAuth(req); // 1. Verificar autenticación
+    const { id } = await context.params;         // 2. Obtener ID de la URL
 
     // 3. Ejecutar la eliminación en la BD
     const query = 'DELETE FROM core.riesgos WHERE id = $1 RETURNING *;';
@@ -84,9 +88,13 @@ export async function DELETE(req: NextRequest, { params }: RiesgoParams) {
     // 4. Devolver confirmación
     return NextResponse.json({ message: 'Riesgo eliminado exitosamente' }, { status: 200 });
 
-  } catch (err: any) {
-    if (err.message.includes('No autenticado')) {
-      return NextResponse.json({ message: err.message }, { status: 401 });
+  } catch (err: unknown) {
+    let errorMessage = 'An unknown error occurred.';
+    if (err instanceof Error) {
+      errorMessage = err.message;
+      if (errorMessage.includes('No autenticado')) {
+        return NextResponse.json({ message: errorMessage }, { status: 401 });
+      }
     }
     console.error('Error en DELETE /api/riesgos/[id]:', err);
     return NextResponse.json({ message: 'Error interno del servidor.' }, { status: 500 });

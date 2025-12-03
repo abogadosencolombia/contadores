@@ -1,11 +1,6 @@
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
-import { db } from '@/lib/db'; // Asumiendo tu conexión a DB
-// Importa tus servicios de generación y envío
-// import { ReportesService } from '@/src/lib/services/reportesService';
-
-export async function GET(request: Request) {
-  const headersList = headers();
+import { db as _db } from '@/lib/db'; // Asumiendo tu conexión a DB
   const authHeader = headersList.get('authorization');
 
   // 1. Proteger el Endpoint de Cron

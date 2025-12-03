@@ -55,7 +55,7 @@ export default function IsoAuditoriasPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  
+
   // Form state for new audit
   const [newAudit, setNewAudit] = useState<IsoAuditoriaInput>({
     nombreAuditoria: '',
@@ -145,11 +145,11 @@ export default function IsoAuditoriasPage() {
       {error && <p className="mb-4 text-red-500">Error: {error}</p>}
       {loading && <p className="mb-4">Cargando datos...</p>}
 
-      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
+      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/5 dark:bg-white/3">
         <div className="max-w-full overflow-x-auto">
           <div className="min-w-[700px]">
             <Table>
-              <TableHeader className="border-b border-gray-100 dark:border-white/[0.05]">
+              <TableHeader className="border-b border-gray-100 dark:border-white/5">
                 <TableRow>
                   <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Nombre</TableCell>
                   <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Tipo</TableCell>
@@ -159,9 +159,9 @@ export default function IsoAuditoriasPage() {
                   <TableCell isHeader className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400">Acciones</TableCell>
                 </TableRow>
               </TableHeader>
-              <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
+              <TableBody className="divide-y divide-gray-100 dark:border-white/5">
                 {auditorias.map((auditoria) => (
-                  <TableRow key={auditoria.id} className="hover:bg-gray-50 dark:hover:bg-white/[0.02]">
+                  <TableRow key={auditoria.id} className="hover:bg-gray-50 dark:hover:bg-white/2">
                     <TableCell className="px-5 py-4 text-theme-sm text-gray-800 dark:text-white/90">{auditoria.nombreAuditoria}</TableCell>
                     <TableCell className="px-5 py-4 text-theme-sm text-gray-800 dark:text-white/90">{auditoria.tipoAuditoria}</TableCell>
                     <TableCell className="px-5 py-4 text-theme-sm text-gray-800 dark:text-white/90">{formatDate(auditoria.fechaProgramada)}</TableCell>
@@ -220,7 +220,7 @@ export default function IsoAuditoriasPage() {
                 required
               />
             </div>
-            
+
             <div className="mb-4">
               <label htmlFor="tipoAuditoria" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Tipo Auditoría</label>
               <Select

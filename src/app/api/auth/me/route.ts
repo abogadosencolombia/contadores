@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
       roles: payload.roles,
     }, { status: 200 });
 
-  } catch (err) {
+  } catch (_err) {
     return NextResponse.json({ message: 'Token inválido' }, { status: 401 });
   }
 }

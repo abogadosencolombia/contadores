@@ -62,7 +62,10 @@ export class ReportesService {
     // ¡CORRECCIÓN! Las claves de entidad y tipoReporte son sensibles a mayúsculas.
     const entidadKey = entidad.toUpperCase() as keyof typeof TAXONOMIAS;
     const tipoReporteKey = tipoReporte.toUpperCase();
-    const etiquetas = (TAXONOMIAS[entidadKey] as any)?.[tipoReporteKey] || TAXONOMIAS.SUPERSOCIEDADES['42-EMPRESARIAL'];
+    
+    type TaxonomiaLabels = { Activos: string; Pasivos: string; Patrimonio: string };
+    const taxonomiasEntidad = TAXONOMIAS[entidadKey] as Record<string, TaxonomiaLabels>;
+    const etiquetas = taxonomiasEntidad?.[tipoReporteKey] || TAXONOMIAS.SUPERSOCIEDADES['42-EMPRESARIAL'];
 
     const root = create({ version: '1.0', encoding: 'UTF-8' })
       .ele('xbrli:xbrl', {
@@ -121,25 +124,25 @@ export class ReportesService {
 
     // 3. Leer el archivo
     const filePath = path.join(process.cwd(), 'secure_uploads', reporte.storage_path_reporte);
-    const fileContent = await fs.readFile(filePath, 'utf-8');
+    const _fileContent = await fs.readFile(filePath, 'utf-8');
 
     // 4. Enviar a la API de la entidad (Simulación)
     // (Esta URL y body son ficticios, debes reemplazarlos con los reales de la entidad)
-    const API_URL = 'https://api-simulada.supersociedades.gov.co/v1/sirem/recibir';
-    let apiResponse: any;
+    const _API_URL = 'https://api-simulada.supersociedades.gov.co/v1/sirem/recibir';
+    let apiResponse: { message?: string; traceId?: string; radicado?: string; error?: string };
     let nuevoEstado: string;
     const traceId = crypto.randomUUID();
 
     try {
       // -- INICIO SIMULACIÓN DE ENVÍO --
       // En un caso real, aquí iría el 'fetch'
-      // const response = await fetch(API_URL, {
+      // const response = await fetch(_API_URL, {
       //   method: 'POST',
       //   headers: {
       //     'Content-Type': 'application/xml',
       //     'Authorization': `Bearer ${process.env.SUPERSOCIEDADES_API_KEY}`
       //   },
-      //   body: fileContent
+      //   body: _fileContent
       // });
       // apiResponse = await response.json();
       // if (!response.ok) throw new Error(apiResponse.message);
@@ -155,8 +158,9 @@ export class ReportesService {
       nuevoEstado = 'ENVIADO';
       // -- FIN SIMULACIÓN DE ENVÍO --
 
-    } catch (error: any) {
-      apiResponse = { error: error.message || 'Error en la conexión con la entidad.' };
+    } catch (error: unknown) {
+      const errMsg = error instanceof Error ? error.message : 'Error en la conexión con la entidad.';
+      apiResponse = { error: errMsg };
       nuevoEstado = 'RECHAZADO'; // O 'FALLIDO'
     }
 

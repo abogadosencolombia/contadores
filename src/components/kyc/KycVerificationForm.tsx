@@ -102,9 +102,13 @@ export default function KycVerificationForm() {
       }
 
       setStatus('success');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setErrorMessage(err.message || 'Ocurrió un error inesperado.');
+      let message = 'Ocurrió un error inesperado.';
+      if (err instanceof Error) {
+        message = err.message;
+      }
+      setErrorMessage(message);
       setStatus('error');
     }
   };

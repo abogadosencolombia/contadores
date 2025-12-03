@@ -7,7 +7,7 @@ import { cookies } from 'next/headers'
 export default async function WelcomePage() {
   const cookieStore = await cookies()
   const supabase = createClient(cookieStore)
-  const { data: todos } = await supabase.from('todos').select()
+  const { data: _todos } = await supabase.from('todos').select()
   return (
     // Contenedor principal: Centrado y con fondo temático
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4 dark:bg-gray-dark sm:p-8">

@@ -9,7 +9,7 @@ import { verifyAuth } from '@/lib/auth'; // Importamos nuestro helper
  */
 export async function GET(req: NextRequest) {
   try {
-    const user = verifyAuth(req);
+    const _user = verifyAuth(req);
 
     // --- Lógica de Paginación ---
     const page = parseInt(req.nextUrl.searchParams.get('page') || '1', 10);
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
     const dominio = req.nextUrl.searchParams.get('dominio');
     const estado = req.nextUrl.searchParams.get('estado');
 
-    const params: any[] = [];
+    const params: (string | number)[] = [];
     const whereClauses: string[] = [];
 
     if (search) {
@@ -66,9 +66,13 @@ export async function GET(req: NextRequest) {
       total,
     }, { status: 200 });
 
-  } catch (err: any) {
-    if (err.message.includes('No autenticado')) {
-      return NextResponse.json({ message: err.message }, { status: 401 });
+  } catch (err: unknown) {
+    let errorMessage = 'An unknown error occurred.';
+    if (err instanceof Error) {
+      errorMessage = err.message;
+      if (errorMessage.includes('No autenticado')) {
+        return NextResponse.json({ message: errorMessage }, { status: 401 });
+      }
     }
     console.error('Error en GET /api/riesgos:', err);
     return NextResponse.json({ message: 'Error interno del servidor.' }, { status: 500 });
@@ -80,7 +84,7 @@ export async function GET(req: NextRequest) {
  */
 export async function POST(req: NextRequest) {
   try {
-    const user = verifyAuth(req);
+    const _user = verifyAuth(req);
     const body = await req.json();
     const { dominio, riesgo, probabilidad, impacto, control } = body;
 
@@ -109,9 +113,13 @@ export async function POST(req: NextRequest) {
     const result = await db.query(query, params);
     return NextResponse.json(result.rows[0], { status: 201 });
 
-  } catch (err: any) {
-    if (err.message.includes('No autenticado')) {
-      return NextResponse.json({ message: err.message }, { status: 401 });
+  } catch (err: unknown) {
+    let errorMessage = 'An unknown error occurred.';
+    if (err instanceof Error) {
+      errorMessage = err.message;
+      if (errorMessage.includes('No autenticado')) {
+        return NextResponse.json({ message: errorMessage }, { status: 401 });
+      }
     }
     console.error('Error en POST /api/riesgos:', err);
     return NextResponse.json({ message: 'Error interno del servidor.' }, { status: 500 });

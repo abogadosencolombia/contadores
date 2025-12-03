@@ -49,7 +49,7 @@ export default function SignInForm() {
         // ¡Éxito! Redirigir al dashboard
         router.push('/dashboard');
       }
-    } catch (err) {
+    } catch (_err) {
       setError('No se pudo conectar al servidor. Inténtelo más tarde.');
     } finally {
       setIsLoading(false);

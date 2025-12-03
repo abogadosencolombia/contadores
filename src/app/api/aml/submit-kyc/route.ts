@@ -5,6 +5,10 @@ import { verifyAuth } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { AmlScanPayload } from '@/types/aml-kyc';
 
+interface RequestWithIP extends NextRequest {
+  ip?: string;
+}
+
 export async function POST(req: NextRequest) {
   try {
     // 1. Validar autenticación
@@ -24,13 +28,18 @@ export async function POST(req: NextRequest) {
 
     // 3. Detectar IP
     let ipAddress = req.headers.get('x-forwarded-for') || 'unknown';
+
     // x-forwarded-for puede contener múltiples IPs (client, proxy1, proxy2...)
     if (ipAddress.includes(',')) {
       ipAddress = ipAddress.split(',')[0].trim();
     }
+
     // Fallback si no hay x-forwarded-for (ej. desarrollo local)
-    if (ipAddress === 'unknown' && (req as any).ip) {
-        ipAddress = (req as any).ip;
+    if (ipAddress === 'unknown') {
+      const requestIP = (req as RequestWithIP).ip;
+      if (requestIP) {
+        ipAddress = requestIP;
+      }
     }
 
     // 4. Insertar registro en base de datos
@@ -92,16 +101,16 @@ export async function POST(req: NextRequest) {
       message: 'KYC log created and processing started',
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error en API submit-kyc:', error);
 
     // Manejo específico para errores de auth conocidos
-    if (error.message && (error.message.includes('No autenticado') || error.message.includes('Token'))) {
+    if (error instanceof Error && (error.message.includes('No autenticado') || error.message.includes('Token'))) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 
     return NextResponse.json(
-      { error: 'Error interno del servidor' },
+      { error: (error instanceof Error) ? error.message : 'Error interno del servidor' },
       { status: 500 }
     );
   }

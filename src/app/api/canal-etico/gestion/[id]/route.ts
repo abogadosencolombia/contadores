@@ -8,8 +8,8 @@ export async function GET(req: NextRequest, context: { params: Promise<{ id: str
   let decoded: UserPayload;
   try {
     decoded = verifyAuth(req);
-  } catch (err: any) {
-    return NextResponse.json({ message: err.message }, { status: 401 });
+  } catch (err: unknown) {
+    return NextResponse.json({ message: (err as Error).message }, { status: 401 });
   }
 
   try {
@@ -47,25 +47,25 @@ export async function GET(req: NextRequest, context: { params: Promise<{ id: str
 
     return NextResponse.json(caso, { status: 200 });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error en GET /api/canal-etico/gestion/[id]:', error);
     return NextResponse.json({ message: 'Error interno del servidor.' }, { status: 500 });
   }
 }
 
 // --- CAMBIO: Actualizada la firma de POST ---
-export async function POST(req: NextRequest, context: { params: { id: string } }) {
+export async function POST(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   let decoded: UserPayload;
   try {
     decoded = verifyAuth(req);
-  } catch (err: any) {
-    return NextResponse.json({ message: err.message }, { status: 401 });
+  } catch (err: unknown) {
+    return NextResponse.json({ message: (err as Error).message }, { status: 401 });
   }
 
   const client = await db.connect(); // <--- Corregido
   try {
     // --- CAMBIO: Acceso a 'params' desde 'context' ---
-    const { id: caso_id } = context.params;
+    const { id: caso_id } = await context.params;
     const tenantId = decoded.tenant;
     const { titulo_acta, descripcion_acta, hash_acta, storage_path_acta } = await req.json();
 
@@ -84,7 +84,7 @@ export async function POST(req: NextRequest, context: { params: { id: string } }
     if (casoRes.rows.length === 0) {
       throw new Error('Caso no encontrado o ya resuelto.');
     }
-    const caso = casoRes.rows[0];
+    const _caso = casoRes.rows[0];
 
     // 2. Crear el Documento Legal en estado 'borrador' (Módulo WORM)
     const docQuery = `
@@ -126,10 +126,10 @@ export async function POST(req: NextRequest, context: { params: { id: string } }
       { status: 200 }
     );
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     await client.query('ROLLBACK');
     console.error('Error al resolver caso ético:', error);
-    return NextResponse.json({ message: error.message || 'Error interno del servidor.' }, { status: 500 });
+    return NextResponse.json({ message: (error as Error).message || 'Error interno del servidor.' }, { status: 500 });
   } finally {
     client.release();
   }

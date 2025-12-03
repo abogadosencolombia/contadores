@@ -76,8 +76,9 @@ export default function EthicsGovernanceCenter() {
         }
         const data = await res.json();
         setIncidentStats(data);
-      } catch (err: any) {
-        setErrorStats(err.message || 'Error fetching incident stats');
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : 'Error fetching incident stats';
+        setErrorStats(errorMessage);
         console.error(err);
       } finally {
         setLoadingStats(false);
@@ -100,8 +101,9 @@ export default function EthicsGovernanceCenter() {
         setDecisionHistory(data);
         setTotalDecisions(meta.total);
         setTotalPages(meta.totalPages);
-      } catch (err: any) {
-        setErrorHistory(err.message || 'Error fetching decision history');
+      } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : 'Error fetching decision history';
+        setErrorHistory(errorMessage);
         console.error(err);
       } finally {
         setLoadingHistory(false);
@@ -134,7 +136,7 @@ export default function EthicsGovernanceCenter() {
 
   return (
     <div className="mx-auto max-w-7xl">
-      <PageBreadCrumb pageName="Ethics & Governance Center" />
+      <PageBreadCrumb pageTitle="Ethics & Governance Center" />
 
       <h2 className="text-title-md2 mb-6 font-semibold text-black dark:text-white">
         Resumen de IA y Gobernanza

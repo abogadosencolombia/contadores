@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
 import bcrypt from 'bcrypt';
 
+function isDbError(error: unknown): error is { code: string } {
+  return typeof error === 'object' && error !== null && 'code' in error && typeof (error as { code: unknown }).code === 'string';
+}
+
 export async function POST(req: NextRequest) {
   try {
     // 1. Leer los datos del body (claves de 'SignUpForm.tsx')
@@ -67,8 +71,6 @@ export async function POST(req: NextRequest) {
     // --- INICIO: Asignar rol de admin por defecto ---
     const adminRoleQuery = await db.query(`SELECT id FROM core.roles WHERE nombre_rol = 'admin'`);
     if (adminRoleQuery.rows.length === 0) {
-      // Manejo de error si el rol 'admin' no existe
-      await client.query('ROLLBACK');
       return NextResponse.json({ message: "El rol 'admin' no está configurado en el sistema." }, { status: 500 });
     }
     const adminRoleId = adminRoleQuery.rows[0].id;
@@ -79,7 +81,7 @@ export async function POST(req: NextRequest) {
     );
     // --- FIN: Asignar rol de admin por defecto ---
 
-    const userIp = req.headers.get('x-forwarded-for') || req.ip || '127.0.0.1';
+    const userIp = req.headers.get('x-forwarded-for') || '127.0.0.1';
 
 
     // 6. Registrar consentimientos (Ley 1581 y Ley 2300)
@@ -99,9 +101,9 @@ export async function POST(req: NextRequest) {
     // 7. Devolver el usuario creado
     return NextResponse.json(newUser, { status: 201 });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error en API de registro:', error);
-    if (error.code === '23505') {
+    if (isDbError(error) && error.code === '23505') {
       return NextResponse.json({ message: 'El correo electrónico ya está registrado.' }, { status: 409 });
     }
     return NextResponse.json({ message: 'Error interno del servidor.' }, { status: 500 });

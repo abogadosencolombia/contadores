@@ -6,7 +6,7 @@ import { verifyAuth, UserPayload } from '@/lib/auth';
 interface DocumentoParams { params: Promise<{ id: string }> }
 
 // --- GET (Detalle de un Documento) ---
-export async function GET(req: NextRequest, { params }: DocumentoParams) {
+export async function GET(_req: NextRequest, { params: _params }: DocumentoParams) {
   // ... (Implementar lógica GET similar a api/facturacion/facturas/[id]/route.ts)
 }
 
@@ -14,8 +14,9 @@ export async function GET(req: NextRequest, { params }: DocumentoParams) {
 // --- PATCH (Actualizar metadatos SÓLO SI ES BORRADOR) ---
 export async function PATCH(req: NextRequest, { params }: DocumentoParams) {
   let decoded: UserPayload;
-  try { decoded = verifyAuth(req); } catch (err: any) {
-    return NextResponse.json({ message: err.message }, { status: 401 });
+  try { decoded = verifyAuth(req); } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unauthorized';
+    return NextResponse.json({ message }, { status: 401 });
   }
 
   const { id } = await params;
@@ -50,8 +51,9 @@ export async function PATCH(req: NextRequest, { params }: DocumentoParams) {
 // --- DELETE (Eliminar SÓLO SI ES BORRADOR) ---
 export async function DELETE(req: NextRequest, { params }: DocumentoParams) {
   let decoded: UserPayload;
-  try { decoded = verifyAuth(req); } catch (err: any) {
-    return NextResponse.json({ message: err.message }, { status: 401 });
+  try { decoded = verifyAuth(req); } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Unauthorized';
+    return NextResponse.json({ message }, { status: 401 });
   }
 
   const { id } = await params;

@@ -2,10 +2,24 @@ import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
 import { verifyAuth } from '@/lib/auth';
 
+interface ArcoRequestBody {
+  tipo?: string;
+  tipo_solicitud?: string;
+  detalle?: string;
+}
+
+interface ArcoRow {
+  id: number;
+  tipo_solicitud: string;
+  detalle: string;
+  estado: string;
+  fecha_solicitud: Date;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const user = verifyAuth(req);
-    const body = await req.json();
+    const body = (await req.json()) as ArcoRequestBody;
     
     // El frontend service envía 'tipo', pero soportamos 'tipo_solicitud' por compatibilidad
     const tipo_solicitud = body.tipo || body.tipo_solicitud;
@@ -34,14 +48,16 @@ export async function POST(req: NextRequest) {
     ];
 
     const result = await pool.query(query, values);
-    return NextResponse.json(result.rows[0], { status: 201 });
+    const newRequest = result.rows[0] as ArcoRow;
+    return NextResponse.json(newRequest, { status: 201 });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating ARCO request:', error);
-    if (error.message && (error.message.includes('No autenticado') || error.message.includes('Token'))) {
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    if (errorMessage.includes('No autenticado') || errorMessage.includes('Token')) {
         return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
-    return NextResponse.json({ error: error.message || 'Error interno del servidor' }, { status: 500 });
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
 
@@ -62,13 +78,14 @@ export async function GET(req: NextRequest) {
         `;
         
         const result = await pool.query(query, [user.userId]);
-        return NextResponse.json(result.rows);
+        return NextResponse.json(result.rows as ArcoRow[]);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Error fetching ARCO requests:', error);
-        if (error.message && (error.message.includes('No autenticado') || error.message.includes('Token'))) {
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        if (errorMessage.includes('No autenticado') || errorMessage.includes('Token')) {
             return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
         }
-        return NextResponse.json({ error: error.message || 'Error interno del servidor' }, { status: 500 });
+        return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 }

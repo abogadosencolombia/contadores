@@ -3,6 +3,28 @@ import pool from '@/lib/db';
 import { verifyAuth } from '@/lib/auth';
 import { sendEmail } from '@/lib/email';
 
+interface ArcoResolveRequestBody {
+  estado: 'RESUELTO' | 'RECHAZADO';
+  evidencia_respuesta?: string;
+  detalle_resolucion?: string;
+}
+
+interface ArcoRow {
+  id: number;
+  tenant_id: string;
+  user_id: number;
+  email_solicitante: string;
+  tipo_solicitud: string;
+  detalle: string; // This was detalle_solicitud as detalle in query
+  estado: string;
+  fecha_solicitud: Date;
+  fecha_limite_respuesta: Date | null;
+  fecha_resolucion: Date | null;
+  evidencia_respuesta: string | null;
+  responsable_id: number | null;
+  nombre_solicitante: string | null; // From LEFT JOIN
+}
+
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -14,7 +36,7 @@ export async function PUT(
     let user;
     try {
       user = verifyAuth(req);
-    } catch (e) {
+    } catch {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
 
@@ -25,7 +47,7 @@ export async function PUT(
     }
 
     // 3. Parse Body
-    const body = await req.json();
+    const body = (await req.json()) as ArcoResolveRequestBody;
     const { estado, evidencia_respuesta, detalle_resolucion } = body;
 
     // Validation
@@ -67,7 +89,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Solicitud no encontrada' }, { status: 404 });
     }
 
-    const updatedRequest = result.rows[0];
+    const updatedRequest = result.rows[0] as ArcoRow;
 
     // 5. Send Email Notification (Async - Fire and forget logic within the request context)
     // We wrap it in a separate try/catch so it doesn't block the response if it fails
@@ -94,17 +116,18 @@ export async function PUT(
             subject: `Actualización Solicitud ARCO: ${estado}`,
             html: emailHtml
         });
-    } catch (emailError) {
+    } catch (emailError: unknown) {
         console.error('FAILED TO SEND EMAIL NOTIFICATION:', emailError);
         // We proceed to return the response even if email fails
     }
 
     return NextResponse.json(updatedRequest);
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error resolving ARCO request:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Error interno del servidor';
     return NextResponse.json(
-      { error: error.message || 'Error interno del servidor' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

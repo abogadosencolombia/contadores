@@ -83,8 +83,9 @@ export const RenovacionModal: React.FC<RenovacionModalProps> = ({
       setArchivo(null);
       onSuccess();
       onClose();
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Error desconocido';
+      setError(msg);
     } finally {
       setLoading(false);
     }

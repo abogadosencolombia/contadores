@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
     client.release();
 
     return NextResponse.json(res.rows);
-  } catch (_error) { // eslint-disable-line @typescript-eslint/no-unused-vars
+  } catch (_error) {
     return NextResponse.json({ error: 'Error interno' }, { status: 500 });
   }
 }

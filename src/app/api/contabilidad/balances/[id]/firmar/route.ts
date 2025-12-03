@@ -21,10 +21,10 @@ export async function POST(req: NextRequest, { params }: FirmarParams) {
     // 1. Verificar la autenticación del usuario (el contador)
     decoded = verifyAuth(req);
 
-  } catch (err: any) {
+  } catch (err: unknown) {
     // Si el token es inválido o no existe
     return NextResponse.json(
-      { message: err.message || 'No autorizado. Token inválido o expirado.' },
+      { message: (err as Error).message || 'No autorizado. Token inválido o expirado.' },
       { status: 401 }
     );
   }
@@ -75,12 +75,12 @@ export async function POST(req: NextRequest, { params }: FirmarParams) {
     // 4. Devolver el balance actualizado
     return NextResponse.json(result.rows[0], { status: 200 });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Capturar errores de base de datos
     console.error(`Error en POST /api/contabilidad/balances/[id]/firmar:`, error);
 
     // Manejar error de llave duplicada (aunque en un UPDATE es raro)
-    if (error.code === '23505') {
+    if ((error as { code?: string }).code === '23505') {
         return NextResponse.json({ message: 'Error de integridad de datos.' }, { status: 409 });
     }
 

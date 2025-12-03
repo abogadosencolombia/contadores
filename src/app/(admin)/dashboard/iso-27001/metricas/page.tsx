@@ -37,9 +37,9 @@ export default function IsoMetricasPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 mb-6">
-        
+
         {/* Total Controles */}
-        <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/[0.05] dark:bg-white/[0.03]">
+        <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/5 dark:bg-white/3">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400">Controles Aplicables</p>
@@ -54,7 +54,7 @@ export default function IsoMetricasPage() {
         </div>
 
         {/* % Implementación */}
-        <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/[0.05] dark:bg-white/[0.03]">
+        <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/5 dark:bg-white/3">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400">Implementación Global</p>
@@ -69,7 +69,7 @@ export default function IsoMetricasPage() {
         </div>
 
         {/* Hallazgos Abiertos */}
-        <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/[0.05] dark:bg-white/[0.03]">
+        <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/5 dark:bg-white/3">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400">Hallazgos Abiertos</p>
@@ -84,7 +84,7 @@ export default function IsoMetricasPage() {
         </div>
 
         {/* Próxima Auditoría */}
-        <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/[0.05] dark:bg-white/[0.03]">
+        <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/5 dark:bg-white/3">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-500 dark:text-gray-400">Próxima Auditoría</p>
@@ -101,18 +101,18 @@ export default function IsoMetricasPage() {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Chart Section */}
-        <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/[0.05] dark:bg-white/[0.03] lg:col-span-2">
+        <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/5 dark:bg-white/3 lg:col-span-2">
           <h3 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white">Estado del SoA (Statement of Applicability)</h3>
           <IsoMetricsChart series={stats.estadoSoA.series} labels={stats.estadoSoA.labels} />
         </div>
 
         {/* Summary / Actions */}
-        <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/[0.05] dark:bg-white/[0.03]">
+        <div className="rounded-xl border border-gray-200 bg-white p-6 dark:border-white/5 dark:bg-white/3">
            <h3 className="mb-4 text-lg font-semibold text-gray-800 dark:text-white">Acciones Recomendadas</h3>
            <ul className="space-y-3 text-sm text-gray-500 dark:text-gray-400">
              <li className="flex items-start gap-2">
                <span className="mt-1 block h-2 w-2 rounded-full bg-brand-500"></span>
-               Revisar controles en estado "No Iniciado" prioritarios.
+               Revisar controles en estado &#34;No Iniciado&#34; prioritarios.
              </li>
              <li className="flex items-start gap-2">
                <span className="mt-1 block h-2 w-2 rounded-full bg-warning-500"></span>

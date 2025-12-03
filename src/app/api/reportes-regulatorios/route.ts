@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import  db  from '@/lib/db';
 import { ReportesService } from '@/lib/reportesService';
-import { verifyAuth, UserPayload } from '@/lib/auth';
+import { verifyAuth, UserPayload as _UserPayload } from '@/lib/auth';
 
 // GET /api/reportes-regulatorios
 export async function GET(request: NextRequest) {
@@ -18,8 +18,12 @@ export async function GET(request: NextRequest) {
       [tenantId]
     );
     return NextResponse.json(rows);
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 401 });
+  } catch (err: unknown) {
+    let errorMessage = 'An unknown error occurred.';
+    if (err instanceof Error) {
+      errorMessage = err.message;
+    }
+    return NextResponse.json({ error: errorMessage }, { status: 401 });
   }
 }
 
@@ -49,14 +53,18 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(nuevoReporte, { status: 201 });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     // El error de verifyAuth se captura aquí
-    if (error.message.includes('No autenticado') || error.message.includes('Token inválido')) {
-      return NextResponse.json({ error: error.message }, { status: 401 });
+    let errorMessage = 'An unknown error occurred.';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+      if (errorMessage.includes('No autenticado') || errorMessage.includes('Token inválido')) {
+        return NextResponse.json({ error: errorMessage }, { status: 401 });
+      }
     }
     console.error('Error al generar el reporte:', error);
     return NextResponse.json(
-      { error: 'Error interno del servidor', details: error.message },
+      { error: 'Error interno del servidor', details: errorMessage },
       { status: 500 }
     );
   }

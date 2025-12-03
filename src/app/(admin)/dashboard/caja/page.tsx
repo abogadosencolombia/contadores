@@ -59,7 +59,7 @@ export default function CajaPage() {
     <>
       <PageBreadCrumb pageTitle="Gestión de Caja" />
 
-      <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/[0.03]">
+      <div className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-white/3]">
         <h2 className="text-lg font-semibold mb-4">Flujo de Caja y Presupuestos</h2>
         <p className="text-gray-600 dark:text-gray-400 mb-6">
           Este módulo permitirá gestionar el flujo de caja, controlar vencimientos de cuentas por pagar y por cobrar, y recibir alertas de mora.

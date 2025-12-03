@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
-import { verifyAuth, UserPayload } from '@/lib/auth';
+import { verifyAuth, UserPayload as _UserPayload } from '@/lib/auth';
 import fs from 'fs/promises';
 import path from 'path';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     const payload = verifyAuth(req);
@@ -14,7 +14,7 @@ export async function GET(
       return NextResponse.json({ message: 'No autorizado' }, { status: 403 });
     }
     const tenantId = payload.tenant;
-    const { id } = params;
+    const { id } = await context.params;
 
     // 1. Buscar el reporte en la BD
     const docRes = await db.query(
@@ -38,7 +38,7 @@ export async function GET(
     let fileBuffer: Buffer;
     try {
       fileBuffer = await fs.readFile(filePath);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error al leer el archivo:', error);
       return NextResponse.json({ message: 'Archivo no encontrado en el servidor.' }, { status: 404 });
     }
@@ -52,13 +52,18 @@ export async function GET(
     headers.append('Content-Type', 'application/xml');
     headers.append('Content-Disposition', `attachment; filename="${filename}"`);
 
-    return new NextResponse(fileBuffer, {
+    const fileBlob = new Blob([new Uint8Array(fileBuffer)], { type: 'application/xml' });
+    return new NextResponse(fileBlob, {
       status: 200,
       headers: headers,
     });
-  } catch (error: any) {
-    if (error.message.includes('No autenticado') || error.message.includes('Token inválido')) {
-      return NextResponse.json({ message: error.message }, { status: 401 });
+  } catch (error: unknown) {
+    let errorMessage = 'An unknown error occurred.';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+      if (errorMessage.includes('No autenticado') || errorMessage.includes('Token inválido')) {
+        return NextResponse.json({ message: errorMessage }, { status: 401 });
+      }
     }
     console.error('Error en GET /descargar reporte:', error);
     return NextResponse.json({ message: 'Error interno del servidor.' }, { status: 500 });

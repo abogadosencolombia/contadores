@@ -8,8 +8,8 @@ export async function GET(req: NextRequest) {
   let decoded: UserPayload;
   try {
     decoded = verifyAuth(req);
-  } catch (err: any) {
-    return NextResponse.json({ message: err.message }, { status: 401 });
+  } catch (err: unknown) {
+    return NextResponse.json({ message: (err as Error).message }, { status: 401 });
   }
 
   try {

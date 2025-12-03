@@ -3,12 +3,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
 import { verifyAuth } from '@/lib/auth';
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
     const payload = verifyAuth(req);
     if (!payload) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
 
-    const { id } = params;
+    const { id } = await context.params;
     const body = await req.json();
     const { nombre_completo, email, numero_acciones } = body;
 
@@ -35,7 +35,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     client.release();
 
     return NextResponse.json({ message: 'Inversionista actualizado' });
-  } catch (_error) { // eslint-disable-line @typescript-eslint/no-unused-vars
+  } catch (_error) {
     return NextResponse.json({ error: 'Error interno' }, { status: 500 });
   }
 }

@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useCallback, FormEvent, useMemo } from 'react';
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
-// ... (imports de UI sin cambios) ...
 import { Table, TableBody, TableCell, TableHeader, TableRow } from "@/components/ui/table";
 import Button from "@/components/ui/button/Button";
 import { Modal } from "@/components/ui/modal";
@@ -13,7 +12,6 @@ import Pagination from '@/components/tables/Pagination';
 import Label from '@/components/form/Label';
 import Input from '@/components/form/input/InputField';
 import Select from '@/components/form/Select';
-import TextArea from '@/components/form/input/TextArea';
 import Switch from '@/components/form/switch/Switch';
 import { PlusIcon, TrashBinIcon } from "@/icons";
 
@@ -79,9 +77,9 @@ export default function FacturacionPage() {
   // --- Estados para el formulario de Ítems ---
   const [items, setItems] = useState<ItemFactura[]>([]);
   const [newItemDesc, setNewItemDesc] = useState("");
-  const [newItemQty, setNewItemQty] = useState<number | string>(1);
-  const [newItemValor, setNewItemValor] = useState<number | string>("");
-  const [newItemIVATasa, setNewItemIVATasa] = useState<number | string>(19);
+  const [newItemQty, setNewItemQty] = useState<number>(1);
+  const [newItemValor, setNewItemValor] = useState<number | "">("");
+  const [newItemIVATasa, setNewItemIVATasa] = useState<number>(19);
 
   // --- NUEVO: Estado para el envío a la DIAN ---
   const [isSending, setIsSending] = useState<number | null>(null); // Almacena el ID de la factura que se está enviando
@@ -124,8 +122,9 @@ export default function FacturacionPage() {
       }));
       setFacturas(formattedData);
       setTotalPages(Math.ceil(total / ITEMS_PER_PAGE));
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Error desconocido al cargar facturas';
+      setError(errorMessage);
       setFacturas([]);
     } finally {
       setIsLoading(false);
@@ -212,9 +211,10 @@ export default function FacturacionPage() {
         ubl: data.xml_ubl_generado,
         dian: data.dian_xml_respuesta,
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       // Muestra el error en la alerta principal de la página
-      setError(err.message);
+      const errorMessage = err instanceof Error ? err.message : 'Error al cargar detalle';
+      setError(errorMessage);
       // Cierra el modal si falla la carga
       closeDetailModal();
     } finally {
@@ -236,7 +236,14 @@ export default function FacturacionPage() {
 
     setIsCreating(true);
     const formData = new FormData(event.currentTarget);
-    const itemsParaAPI = items.map(({ id, ...resto }) => resto);
+    const itemsParaAPI = items.map(item => ({
+      descripcion: item.descripcion,
+      cantidad: item.cantidad,
+      valor_unitario: item.valor_unitario,
+      iva_tasa: item.iva_tasa,
+      total_iva: item.total_iva,
+      total_con_iva: item.total_con_iva,
+    }));
 
     const data = {
       consecutivo: formData.get('consecutivo') as string,
@@ -283,8 +290,9 @@ export default function FacturacionPage() {
         setCurrentPage(1);
       }, 1500);
 
-    } catch (err: any) {
-      setCreateError(err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Error al crear factura';
+      setCreateError(errorMessage);
     } finally {
       setIsCreating(false);
     }
@@ -308,8 +316,9 @@ export default function FacturacionPage() {
       // Éxito: recargar la lista de facturas
       fetchFacturas(currentPage);
 
-    } catch (err: any) {
-      setError(err.message); // Muestra el error en la alerta de la página
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Error al enviar a la DIAN';
+      setError(errorMessage); // Muestra el error en la alerta de la página
     } finally {
       setIsSending(null); // Desbloquea el botón
     }
@@ -484,7 +493,7 @@ export default function FacturacionPage() {
       </div>
 
       {/* --- Tabla de Facturas --- */}
-      <div className="rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/[0.03]">
+      <div className="rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/3">
         <div className="max-w-full overflow-x-auto">
           {isLoading ? (
             <p className="text-center py-10">Cargando facturas...</p>
@@ -662,15 +671,15 @@ export default function FacturacionPage() {
                   </div>
                   <div className="md:col-span-2">
                     <Label htmlFor="item_qty">Cantidad</Label>
-                    <Input type="number" id="item_qty" value={newItemQty} onChange={(e) => setNewItemQty(Number(e.target.value))} min="1" step="1" />
+                    <Input type="number" id="item_qty" value={newItemQty} onChange={(e) => setNewItemQty(parseInt(e.target.value, 10) || 1)} min="1" step={1} />
                   </div>
                   <div className="md:col-span-3">
                     <Label htmlFor="item_valor">Valor Unitario</Label>
-                    <Input type="number" id="item_valor" value={newItemValor} onChange={(e) => setNewItemValor(Number(e.target.value))} min="0" step="0.01" placeholder="100000" />
+                    <Input type="number" id="item_valor" value={newItemValor} onChange={(e) => setNewItemValor(e.target.value === "" ? "" : Number(e.target.value))} min="0" step={0.01} placeholder="100000" />
                   </div>
                   <div className="md:col-span-2">
                     <Label htmlFor="item_iva">IVA (%)</Label>
-                    <Input type="number" id="item_iva" value={newItemIVATasa} onChange={(e) => setNewItemIVATasa(Number(e.target.value))} min="0" step="1" placeholder="19" />
+                    <Input type="number" id="item_iva" value={newItemIVATasa} onChange={(e) => setNewItemIVATasa(Number(e.target.value))} min="0" step={1} placeholder="19" />
                   </div>
                   <div className="md:col-span-1">
                     <Button size="sm" type="button" onClick={handleAddItem} disabled={isCreating} className="w-full">
@@ -689,7 +698,6 @@ export default function FacturacionPage() {
                           <TableCell isHeader className={baseHeaderClasses}>Cant.</TableCell>
                           <TableCell isHeader className={baseHeaderClasses}>Vlr. Unit.</TableCell>
                           <TableCell isHeader className={baseHeaderClasses}>Total Ítem</TableCell>
-                          <TableCell isHeader className={baseHeaderClasses}></TableCell>
                         </TableRow>
                       </TableHeader>
                       <TableBody className="divide-y divide-gray-100 dark:divide-gray-700">

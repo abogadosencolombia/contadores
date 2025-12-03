@@ -18,6 +18,8 @@ interface ConversorProps {
 }
 
 export default function Conversor({ rates }: ConversorProps) {
+  const [copAmount, setCopAmount] = useState(100000);
+
   // Si no hay tasas (porque están cargando o hubo un error),
   // mostramos un estado de carga.
   if (!rates) {
@@ -29,14 +31,10 @@ export default function Conversor({ rates }: ConversorProps) {
       </ComponentCard>
     );
   }
-
-  // El resto del componente sigue igual...
-  const [copAmount, setCopAmount] = useState(100000);
-
   const usdAmount = copAmount / rates.USD_TO_COP;
   const eurAmount = copAmount / rates.EUR_TO_COP;
 
-  const copFormatter = new Intl.NumberFormat('es-CO', {
+  const _copFormatter = new Intl.NumberFormat('es-CO', {
     style: 'currency',
     currency: 'COP',
     maximumFractionDigits: 0,

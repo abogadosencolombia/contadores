@@ -74,7 +74,7 @@ export default function ResolveArcoModal({
       <ModalBody>
         <div className="space-y-5">
           {/* Request Details */}
-          <div className="bg-gray-50 dark:bg-white/[0.03] p-4 rounded-lg space-y-2">
+          <div className="bg-gray-50 dark:bg-white/3 p-4 rounded-lg space-y-2">
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <span className="text-gray-500 dark:text-gray-400 block">Solicitante:</span>
@@ -115,7 +115,7 @@ export default function ResolveArcoModal({
                         { value: "RECHAZADO", label: "Rechazar" }
                     ]}
                     value={status}
-                    onChange={(val) => setStatus(val as any)}
+                    onChange={(val) => setStatus(val as "RESUELTO" | "RECHAZADO")}
                     className="w-full"
                 />
              </div>

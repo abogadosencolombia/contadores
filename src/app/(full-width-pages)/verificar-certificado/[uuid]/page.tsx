@@ -37,7 +37,7 @@ export default function VerificarCertificadoPage() {
           const res = await fetch(`/api/contabilidad/certificados-dividendos/verificar/${uuid}`);
           const data: ApiResponse = await res.json();
           setApiResponse(data);
-        } catch (error) {
+        } catch (_error) {
           setApiResponse({ valido: false, error: 'No se pudo conectar con el servidor.' });
         } finally {
           setIsLoading(false);

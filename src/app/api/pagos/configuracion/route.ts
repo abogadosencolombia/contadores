@@ -24,13 +24,13 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({ success: true, message: 'Configuración guardada correctamente' });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: (error as Error) }, { status: 500 });
   }
 }
 
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   // Mismo mock de tenant
   const tenantId = 'default_tenant';
 

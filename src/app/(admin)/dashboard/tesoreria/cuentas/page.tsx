@@ -3,6 +3,14 @@ import { useState, useEffect } from 'react';
 import Breadcrumb from '@/components/common/PageBreadCrumb';
 import CrearCuentaModal from '@/components/tesoreria/CrearCuentaModal';
 
+interface Cuenta {
+  id: string;
+  nombre_banco: string;
+  moneda: string;
+  numero_cuenta_display: string;
+  saldo_actual: number;
+}
+
 // Función auxiliar para formatear dinero
 const formatCurrency = (amount: number, currency: string) => {
   return new Intl.NumberFormat('es-CO', {
@@ -14,7 +22,7 @@ const formatCurrency = (amount: number, currency: string) => {
 };
 
 export default function TesoreriaPage() {
-  const [cuentas, setCuentas] = useState<any[]>([]);
+  const [cuentas, setCuentas] = useState<Cuenta[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -41,7 +49,7 @@ export default function TesoreriaPage() {
 
   return (
     <div className="mx-auto max-w-7xl">
-      <Breadcrumb pageName="Gestión de Tesorería" />
+      <Breadcrumb pageTitle="Gestión de Tesorería" />
 
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>

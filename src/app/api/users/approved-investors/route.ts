@@ -8,7 +8,7 @@ export async function GET(req: NextRequest) {
     let user;
     try {
       user = verifyAuth(req);
-    } catch (e) {
+    } catch (_e) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 

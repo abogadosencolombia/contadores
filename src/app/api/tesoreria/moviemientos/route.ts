@@ -43,8 +43,12 @@ export async function POST(request: Request) {
     } finally {
       client.release();
     }
-  } catch (error: any) {
-    console.error(error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    let errorMessage = 'An unknown error occurred.';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    console.error(error); // Keep original error for full context in logs
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

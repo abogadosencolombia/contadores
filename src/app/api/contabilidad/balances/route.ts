@@ -12,10 +12,10 @@ export async function GET(req: NextRequest) {
     // verifyAuth es síncrona y lanza un error si el token es inválido
     decoded = verifyAuth(req);
 
-  } catch (err: any) {
+  } catch (err: unknown) {
     // Esto captura 'No autenticado: Token no encontrado' o 'Token inválido' de auth.ts
     return NextResponse.json(
-      { message: err.message || 'No autorizado. Token inválido o expirado.' },
+      { message: (err as Error).message || 'No autorizado. Token inválido o expirado.' },
       { status: 401 }
     );
   }
@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
     console.log("🔍 INSPECCIÓN:", typeof datos_balance);
 
     // Forzamos string para hash (si llega objeto, lo convertimos, si es string se queda igual)
-    let stringToHash = (typeof datos_balance === 'object')
+    const stringToHash = (typeof datos_balance === 'object')
       ? JSON.stringify(datos_balance)
       : datos_balance;
 
@@ -138,8 +138,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(result.rows[0], { status: 201 });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error POST:', error);
-    return NextResponse.json({ message: error.message }, { status: 500 });
+    return NextResponse.json({ message: (error as Error) }, { status: 500 });
   }
 }

@@ -21,7 +21,7 @@ export function useAuth() {
     async function fetchUser() {
       try {
         const res = await fetch('/api/auth/me');
-        
+
         if (!res.ok) {
           // Si la respuesta no es OK (ej. 401 No autenticado), redirigimos a signin
           router.push('/signin');
@@ -30,7 +30,7 @@ export function useAuth() {
 
         const data: User = await res.json();
         setUser(data);
-      } catch (err) {
+      } catch (_err) {
         setError('No se pudo obtener la información del usuario.');
         // Opcional: redirigir también en caso de error de red
         router.push('/signin');

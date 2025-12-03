@@ -35,13 +35,22 @@ export default function UserConsentsCard() {
       newPreferences[existingPrefIndex] = { ...newPreferences[existingPrefIndex], autorizado: checked };
     } else {
         // Mock ID for optimistic update, backend will return real one
-      newPreferences = [...preferences, { id: Date.now(), canal: channel as any, finalidad: purpose as any, autorizado: checked }];
+      newPreferences = [...preferences, { 
+          id: Date.now(), 
+          canal: channel as Preference['canal'], 
+          finalidad: purpose as Preference['finalidad'], 
+          autorizado: checked 
+      }];
     }
     setPreferences(newPreferences);
 
     try {
       // Send partial preference, backend should handle upsert based on channel+purpose
-      await updatePreference({ canal: channel as any, finalidad: purpose as any, autorizado: checked });
+      await updatePreference({ 
+          canal: channel as Preference['canal'], 
+          finalidad: purpose as Preference['finalidad'], 
+          autorizado: checked 
+      });
       // Ideally, re-fetch to get the real ID if created, but for toggling visual state, this is enough.
       // Or better: updatePreference returns the saved object, so we could update state with that.
     } catch (error) {

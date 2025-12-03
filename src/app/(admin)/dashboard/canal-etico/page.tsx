@@ -92,9 +92,9 @@ export default function CanalEticoPage() {
         setArchivosEvidencia(prev => [...prev, ...newFiles]);
         setModalErrorCreacion(null);
       }
-      
+
       // Limpiar el input para permitir seleccionar el mismo archivo de nuevo si se desea
-      event.target.value = ''; 
+      event.target.value = '';
     }
   };
 
@@ -208,9 +208,9 @@ export default function CanalEticoPage() {
     const formData = new FormData(event.currentTarget);
     formData.append('tenant_id', 'default_tenant');
     formData.append('user_id', 'null');
-    
+
     // Eliminamos la entrada 'evidencia' original del input file ya que gestionamos el array manualmente
-    formData.delete('evidencia'); 
+    formData.delete('evidencia');
 
     if (archivosEvidencia.length > 0) {
       archivosEvidencia.forEach((file) => {
@@ -289,7 +289,7 @@ export default function CanalEticoPage() {
         <div className="mb-4"><Alert variant="error" title="Error" message={error} /></div>
       )}
 
-      <div className="rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/[0.03]">
+      <div className="rounded-2xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-white/3">
         <div className="max-w-full overflow-x-auto">
           {isLoading ? (
             <p className="text-center py-10">Cargando casos...</p>
@@ -427,7 +427,7 @@ export default function CanalEticoPage() {
               <Button size="sm" variant="outline" onClick={customCloseResolverModal} type="button" disabled={isProcessingResolucion}>
                 {selectedCaso.estado === 'resuelto' ? 'Cerrar' : 'Cancelar'}
               </Button>
-              
+
               {selectedCaso.estado !== 'resuelto' && (
                 <Button size="sm" type="submit" disabled={isProcessingResolucion || isResolverLoadingDetails}>
                   {isProcessingResolucion ? 'Procesando...' : 'Confirmar y Enviar a Firmas'}
@@ -484,7 +484,6 @@ export default function CanalEticoPage() {
                 <FileInput
                   id="evidencia"
                   name="evidencia"
-                  // @ts-expect-error TS2322: 'multiple' does not exist on type 'IntrinsicAttributes & FileInputProps'. FileInput should handle multiple attribute internally.
                   multiple={true}
                   onChange={handleFileChange}
                 />

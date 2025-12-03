@@ -2,13 +2,24 @@ import { NextRequest, NextResponse } from 'next/server';
 import pool from '@/lib/db';
 import { verifyAuth } from '@/lib/auth';
 
+interface RnbdRecord {
+  tenant_id: string;
+  nombre_empresa: string;
+  id: number | null;
+  numero_radicado: string | null;
+  tipo_novedad: string | null;
+  fecha_registro: Date | null;
+  fecha_vencimiento: Date | null;
+  estado: string | null;
+}
+
 export async function GET(req: NextRequest) {
   try {
     // 1. Auth check
     let user;
     try {
       user = verifyAuth(req);
-    } catch (e) {
+    } catch {
       return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
 
@@ -41,7 +52,7 @@ export async function GET(req: NextRequest) {
       ) r ON true
     `;
 
-    const queryParams: any[] = [];
+    const queryParams: string[] = [];
 
     if (!isSuperAdmin) {
       // Si NO es superadmin, filtrar por su tenant
@@ -53,12 +64,13 @@ export async function GET(req: NextRequest) {
     query += ` ORDER BY t.nombre_empresa ASC`;
 
     const result = await pool.query(query, queryParams);
-    return NextResponse.json(result.rows);
+    return NextResponse.json(result.rows as RnbdRecord[]);
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching RNBD records (admin):', error);
+    const errorMessage = error instanceof Error ? error.message : 'Error interno del servidor';
     return NextResponse.json(
-      { error: error.message || 'Error interno del servidor' },
+      { error: errorMessage },
       { status: 500 }
     );
   }
