@@ -16,13 +16,11 @@ let pool: Pool;
 
 // Configuración de la conexión
 const config = {
-  connectionString: process.env.POSTGRES_HOST,
-  ssl: {
-    rejectUnauthorized: false // Necesario para conexiones seguras a Supabase
-  },
-  connectionTimeoutMillis: 10000, // Tiempo máximo de espera para conectar (10s)
-  idleTimeoutMillis: 30000,       // Tiempo antes de cerrar conexión inactiva (30s)
-  max: process.env.NODE_ENV === 'production' ? 20 : 5 // Menos conexiones en desarrollo para evitar saturación
+  connectionString: process.env.POSTGRES_URL, // <-- o POSTGRES_PRISMA_URL
+  ssl: { rejectUnauthorized: false },
+  connectionTimeoutMillis: 10000,
+  idleTimeoutMillis: 30000,
+  max: process.env.NODE_ENV === 'production' ? 20 : 5
 };
 
 if (process.env.NODE_ENV === 'production') {
