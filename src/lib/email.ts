@@ -1,10 +1,11 @@
-import nodemailer, { Attachment } from 'nodemailer';
+import nodemailer from 'nodemailer';
+import type { AttachmentLike } from 'nodemailer/lib/mailer';
 
 interface EmailPayload {
   to: string;
   subject: string;
   html: string;
-  attachments?: Attachment[];
+  attachments?: AttachmentLike[];
 }
 
 // Configuración del transportador SMTP para Hostinger (o cualquier SMTP seguro)
