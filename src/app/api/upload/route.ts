@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile } from 'fs/promises';
-import path from 'path';
 import { verifyAuth } from '@/lib/auth';
+import { storageService } from '@/lib/storage';
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,12 +15,15 @@ export async function POST(req: NextRequest) {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
+    // Sanitize filename
     const filename = Date.now() + '_' + file.name.replace(/\s/g, '_');
-    const uploadDir = path.join(process.cwd(), 'public/uploads/iso');
     
-    await writeFile(path.join(uploadDir, filename), buffer);
+    const bucketName = 'kyc';
+    // Upload to Supabase 'kyc' bucket
+    await storageService.uploadFile(filename, buffer, file.type, bucketName);
 
-    const url = `/uploads/iso/${filename}`;
+    // Get public URL
+    const url = storageService.getPublicUrl(filename, bucketName);
 
     return NextResponse.json({ url });
   } catch (error: unknown) {
