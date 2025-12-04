@@ -1,8 +1,8 @@
 // src/app/(admin)/dashboard/tasas-cambio/page.tsx
-
 import PageBreadCrumb from '@/components/common/PageBreadCrumb';
 import ComponentCard from '@/components/common/ComponentCard';
 import Conversor from './Conversor'; // Importamos el nuevo componente
+import { headers } from 'next/headers';
 
 // Definimos la estructura de la respuesta de nuestra API
 interface RatesData {
@@ -16,9 +16,13 @@ interface RatesData {
 // 1. Función para obtener las tasas desde TU API interna
 async function getRates(): Promise<RatesData | null> {
   try {
+    const headersList = await headers();
+    const host = headersList.get('host') || 'localhost:3000';
+    const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https';
+    const baseUrl = `${protocol}://${host}`;
+
     // Para fetch en Server Components, usamos la URL absoluta.
     // ¡Asegúrate de tener NEXT_PUBLIC_URL en tus archivos .env!
-    const baseUrl = process.env.NEXT_PUBLIC_URL || 'http://localhost:3000';
     const res = await fetch(`${baseUrl}/api/tasas-cambio`, {
       // Revalidamos esta página cada hora. El API route tiene su propio cache de 24h.
       next: { revalidate: 3600 },
@@ -78,7 +82,7 @@ export default async function TasasCambioPage() {
             <p className="text-red-500">No se pudo cargar la tasa.</p>
           )}
         </ComponentCard>
-        
+
         {/* Aquí agregamos el conversor en la misma fila en pantallas grandes */}
         <div className="md:col-span-2 xl:col-span-1">
           <Conversor rates={rates} />
