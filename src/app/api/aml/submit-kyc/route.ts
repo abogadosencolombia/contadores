@@ -42,24 +42,44 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 4. Insertar registro en base de datos
+    // 4. Insertar registro en base de datos y actualizar usuario
     // Aseguramos que geoLocation sea un JSON válido para la columna jsonb
     const geoLocationJson = geoLocation ? JSON.stringify(geoLocation) : '{}';
 
-    const insertQuery = `
-      INSERT INTO core.kyc_logs (user_id, document_url, ip_address, geo_location, status)
-      VALUES ($1, $2, $3, $4, 'pending')
-      RETURNING id;
-    `;
+    const client = await db.connect();
+    let kycLogId;
 
-    const result = await db.query(insertQuery, [
-      user.userId,
-      documentUrl,
-      ipAddress,
-      geoLocationJson,
-    ]);
+    try {
+      await client.query('BEGIN');
 
-    const kycLogId = result.rows[0].id;
+      const insertQuery = `
+        INSERT INTO core.kyc_logs (user_id, document_url, ip_address, geo_location, status)
+        VALUES ($1, $2, $3, $4, 'pendiente')
+        RETURNING id;
+      `;
+
+      const result = await client.query(insertQuery, [
+        user.userId,
+        documentUrl,
+        ipAddress,
+        geoLocationJson,
+      ]);
+
+      kycLogId = result.rows[0].id;
+
+      // Actualizar estado del usuario a 'pendiente'
+      await client.query(
+        `UPDATE core.users SET kyc_status = 'pendiente' WHERE id = $1`,
+        [user.userId]
+      );
+
+      await client.query('COMMIT');
+    } catch (err) {
+      await client.query('ROLLBACK');
+      throw err;
+    } finally {
+      client.release();
+    }
 
     // 5. Llamada al Webhook (N8N)
     const n8nWebhookUrl = process.env.N8N_AML_WEBHOOK_URL;

@@ -52,8 +52,6 @@ const navItems: NavItem[] = [
     name: "Riesgo y Cumplimiento",
     subItems: [
       { name: "Gestión de Riesgos", path: "/dashboard/riesgos" },
-      { name: "Verificación KYC", path: "/dashboard/kyc", new: true },
-      { name: "Alertas AML", path: "/dashboard/aml-alerts" },
       { name: "Documentos Legales", path: "/dashboard/documentos-legales" },
       { name: "Reportes Regulatorios", path: "/dashboard/reportes-regulatorios" },
     ],
@@ -65,6 +63,15 @@ const navItems: NavItem[] = [
       { name: "metricas", path: "/dashboard/iso-27001/metricas" },
       { name: "Controles", path: "/dashboard/iso-27001/controles" },
       { name: "Auditorias", path: "/dashboard/iso-27001/auditorias" },
+    ],
+  },
+  {
+    icon: <AlertIcon />,
+    name: "AML y KYC",
+    subItems: [
+      { name: "Solicitudes", path: "/dashboard/solicitudes-kyc" },
+      { name: "Verificación KYC", path: "/dashboard/kyc", new: true },
+      { name: "Alertas AML", path: "/dashboard/aml-alerts" },
     ],
   },
   {
@@ -89,7 +96,6 @@ const navItems: NavItem[] = [
     icon: <UserCircleIcon />,
     name: "Administración",
     subItems: [
-      { name: "Gestión de Usuarios", path: "/dashboard/usuarios" },
       { name: "Perfil de Usuario", path: "/profile" },
     ],
   },

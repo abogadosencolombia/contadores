@@ -3,6 +3,7 @@ import PageBreadCrumb from '@/components/common/PageBreadCrumb';
 import ComponentCard from '@/components/common/ComponentCard';
 import Conversor from './Conversor'; // Importamos el nuevo componente
 import { headers } from 'next/headers';
+export const dynamic = 'force-dynamic';
 
 // Definimos la estructura de la respuesta de nuestra API
 interface RatesData {
