@@ -32,12 +32,12 @@ export default function UserKYCTable({ users, refreshData }: UserKYCTableProps) 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedAction, setSelectedAction] = useState<{
     userId: number;
-    status: 'aprobado' | 'rechazado';
+    status: 'approved' | 'rejected';
     userName: string;
   } | null>(null);
 
   // Abrir modal
-  const confirmAction = (user: UserKYC, status: 'aprobado' | 'rechazado') => {
+  const confirmAction = (user: UserKYC, status: 'approved' | 'rejected') => {
     setSelectedAction({
       userId: user.id,
       status,
@@ -147,7 +147,7 @@ export default function UserKYCTable({ users, refreshData }: UserKYCTableProps) 
                       <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                         <Badge
                           size="sm"
-                          color={user.kyc_status === "aprobado" ? "success" : user.kyc_status === "pendiente" ? "warning" : "error"}
+                          color={user.kyc_status === "approved" ? "success" : user.kyc_status === "pending" ? "warning" : "error"}
                         >
                           {user.kyc_status.toUpperCase()}
                         </Badge>
@@ -157,14 +157,14 @@ export default function UserKYCTable({ users, refreshData }: UserKYCTableProps) 
                         <div className="flex gap-3">
                           <button
                             className="inline-flex items-center justify-center gap-2 font-medium rounded-lg transition px-3 py-1 text-xs bg-green-500 hover:bg-green-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                            onClick={() => confirmAction(user, 'aprobado')}
+                            onClick={() => confirmAction(user, 'approved')}
                             disabled={processingId === user.id}
                           >
                             Aprobar
                           </button>
                           <button
                             className="inline-flex items-center justify-center gap-2 font-medium rounded-lg transition px-3 py-1 text-xs bg-red-500 hover:bg-red-600 text-white disabled:opacity-50 disabled:cursor-not-allowed"
-                            onClick={() => confirmAction(user, 'rechazado')}
+                            onClick={() => confirmAction(user, 'rejected')}
                             disabled={processingId === user.id}
                           >
                             Rechazar
@@ -186,14 +186,14 @@ export default function UserKYCTable({ users, refreshData }: UserKYCTableProps) 
           isOpen={modalOpen}
           onClose={() => setModalOpen(false)}
           onConfirm={executeAction}
-          title={selectedAction.status === 'aprobado' ? "Aprobar Usuario" : "Rechazar Usuario"}
+          title={selectedAction.status === 'approved' ? "Aprobar Usuario" : "Rechazar Usuario"}
           message={
-            selectedAction.status === 'aprobado' 
+            selectedAction.status === 'approved' 
               ? `¿Estás seguro de que deseas aprobar el KYC de ${selectedAction.userName}? Esto permitirá al usuario invertir en la plataforma.`
               : `¿Estás seguro de que deseas rechazar el KYC de ${selectedAction.userName}? El usuario no podrá invertir hasta corregir sus documentos.`
           }
-          confirmText={selectedAction.status === 'aprobado' ? "Sí, Aprobar" : "Sí, Rechazar"}
-          variant={selectedAction.status === 'aprobado' ? "success" : "danger"}
+          confirmText={selectedAction.status === 'approved' ? "Sí, Aprobar" : "Sí, Rechazar"}
+          variant={selectedAction.status === 'approved' ? "success" : "danger"}
           isLoading={processingId === selectedAction.userId}
         />
       )}

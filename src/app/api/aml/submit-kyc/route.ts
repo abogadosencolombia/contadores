@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
 
       const insertQuery = `
         INSERT INTO core.kyc_logs (user_id, document_url, ip_address, geo_location, status)
-        VALUES ($1, $2, $3, $4, 'pendiente')
+        VALUES ($1, $2, $3, $4, 'pending')
         RETURNING id;
       `;
 
@@ -67,9 +67,9 @@ export async function POST(req: NextRequest) {
 
       kycLogId = result.rows[0].id;
 
-      // Actualizar estado del usuario a 'pendiente'
+      // Actualizar estado del usuario a 'pending'
       await client.query(
-        `UPDATE core.users SET kyc_status = 'pendiente' WHERE id = $1`,
+        `UPDATE core.users SET kyc_status = 'pending' WHERE id = $1`,
         [user.userId]
       );
 

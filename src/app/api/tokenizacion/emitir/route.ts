@@ -43,14 +43,14 @@ export async function POST(req: NextRequest) {
     // 2. Validaciones Previas (KYC y Documento)
     // ----------------------------------------------------------------------
 
-    // Verificar si el usuario tiene estado 'aprobado' en KYC
+    // Verificar si el usuario tiene estado 'approved' en KYC
     const inversionistaResult = await pool.query(
       `SELECT id, kyc_status, email FROM core.users WHERE id = $1`,
       [inversionistaId]
     );
     const inversionista = inversionistaResult.rows[0];
 
-    if (!inversionista || inversionista.kyc_status !== 'aprobado') {
+    if (!inversionista || inversionista.kyc_status !== 'approved') {
       return NextResponse.json(
         { error: 'El inversionista no ha completado el proceso KYC/AML' },
         { status: 400 }

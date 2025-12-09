@@ -92,7 +92,7 @@ export default function KycVerificationForm() {
 
     // Prevent submission if already pending or approved (double check)
     const normalizedStatus = currentKycStatus?.toLowerCase();
-    if (normalizedStatus === 'pendiente' || normalizedStatus === 'aprobado') {
+    if (normalizedStatus === 'pending' || normalizedStatus === 'approved') {
       setErrorMessage('No es posible subir documentos en este estado.');
       return;
     }
@@ -174,29 +174,31 @@ export default function KycVerificationForm() {
     // Display message if KYC is pending or approved
     const normalizedStatus = currentKycStatus?.toLowerCase();
 
-    if (normalizedStatus === 'pendiente' || normalizedStatus === 'aprobado') {
+    if (normalizedStatus === 'pending' || normalizedStatus === 'approved') {
       let message = '';
       let bgColor = '';
       let textColor = '';
       let icon = '';
-
-      if (normalizedStatus === 'pendiente') {
+      if (normalizedStatus === 'pending') {
               message = 'Tu verificación de identidad está en revisión. Te notificaremos el resultado pronto.';
               bgColor = 'bg-yellow-50 dark:bg-yellow-900/20';
               textColor = 'text-yellow-700 dark:text-yellow-400';
-              icon = '<svg className="w-8 h-8 mx-auto text-yellow-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
-            } else if (normalizedStatus === 'aprobado') {
+              icon = '⏳';
+            } else if (normalizedStatus === 'approved') {
               message = 'Tu verificación de identidad ha sido aprobada. No necesitas subir más documentos.';
               bgColor = 'bg-green-50 dark:bg-green-900/20';
               textColor = 'text-green-700 dark:text-green-400';
-              icon = '<svg className="w-8 h-8 mx-auto text-green-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>';
+              icon = '✓';
             }
-
             return (
-              <div className={`p-8 ${bgColor} border rounded-xl shadow-sm text-center`}>
-                <div dangerouslySetInnerHTML={{ __html: icon }} />
-                <h3 className={`text-xl font-bold ${textColor} mb-2`}>Estado de KYC: {currentKycStatus?.toUpperCase()}</h3>
-                <p className="text-gray-600 dark:text-gray-300">{message}</p>
+              <div className={`p-4 ${bgColor} border rounded-lg shadow-sm`}>
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">{icon}</span>
+                  <div className="flex-1">
+                    <h3 className={`text-sm font-bold ${textColor} mb-1`}>KYC {currentKycStatus?.toUpperCase()}</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">{message}</p>
+                  </div>
+                </div>
               </div>
             );
     }
@@ -219,7 +221,7 @@ export default function KycVerificationForm() {
   return (
     <div className="w-full max-w-md mx-auto p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700">
 
-      {currentKycStatus?.toLowerCase() === 'rechazado' && (
+      {currentKycStatus?.toLowerCase() === 'rejected' && (
         <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex items-start gap-3">
           <svg className="w-6 h-6 text-red-600 dark:text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

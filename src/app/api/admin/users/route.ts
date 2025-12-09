@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
         'https://placehold.co/600x400?text=Cedula+Frontal' as doc_front_url, -- Placeholder o columna real
         'https://placehold.co/600x400?text=RUT' as doc_rut_url           -- Placeholder o columna real
       FROM core.users 
-      WHERE kyc_status = 'pendiente'
+      WHERE kyc_status = 'pending'
       ORDER BY created_at DESC
     `;
 

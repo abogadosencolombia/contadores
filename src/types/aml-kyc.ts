@@ -1,4 +1,4 @@
-export type KycStatus = 'pendiente' | 'aprobado' | 'rechazado';
+export type KycStatus = 'pending' | 'approved' | 'rejected';
 export type AmlRiskLevel = 'low' | 'medium' | 'high' | 'critical';
 
 export interface KycLog {

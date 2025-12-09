@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
         full_name, 
         kyc_status
       FROM core.users 
-      WHERE kyc_status = 'aprobado'
+      WHERE kyc_status = 'approved'
       ORDER BY full_name ASC
     `;
 

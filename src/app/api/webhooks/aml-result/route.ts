@@ -67,24 +67,24 @@ export async function POST(req: NextRequest) {
       if (riskLevel === 'critical') {
         // Actualizar estado del usuario a rejected (bloquear acceso futuro si la app lo usa)
         await client.query(
-          `UPDATE core.users SET kyc_status = 'rechazado' WHERE id = $1`,
+          `UPDATE core.users SET kyc_status = 'rejected' WHERE id = $1`,
           [userId]
         );
 
         // Rechazar todos los logs de KYC pendientes para este usuario
         await client.query(
-          `UPDATE core.kyc_logs SET status = 'rechazado' WHERE user_id = $1 AND status = 'pendiente'`,
+          `UPDATE core.kyc_logs SET status = 'rejected' WHERE user_id = $1 AND status = 'pending'`,
           [userId]
         );
       } else {
         // Si el riesgo no es crítico, se considera aprobado
         await client.query(
-          `UPDATE core.users SET kyc_status = 'aprobado' WHERE id = $1`,
+          `UPDATE core.users SET kyc_status = 'approved' WHERE id = $1`,
           [userId]
         );
         // Actualizar todos los logs de KYC pendientes a 'approved' para este usuario
         await client.query(
-          `UPDATE core.kyc_logs SET status = 'aprobado' WHERE user_id = $1 AND status = 'pendiente'`,
+          `UPDATE core.kyc_logs SET status = 'approved' WHERE user_id = $1 AND status = 'pending'`,
           [userId]
         );
       }

@@ -122,8 +122,8 @@ export default function EmissionForm() {
             >
               <option value="">Seleccione...</option>
               {inversionistas.map((inv) => (
-                <option key={inv.id} value={inv.id} disabled={inv.kyc_status !== 'aprobado'}>
-                  {inv.full_name} ({inv.email}) {inv.kyc_status !== 'aprobado' ? '- KYC Pendiente ⚠️' : '✅'}
+                <option key={inv.id} value={inv.id} disabled={inv.kyc_status !== 'approved'}>
+                  {inv.full_name} ({inv.email}) {inv.kyc_status !== 'approved' ? '- KYC Pendiente ⚠️' : '✅'}
                 </option>
               ))}
             </select>
