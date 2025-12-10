@@ -36,8 +36,9 @@ const navItems: NavItem[] = [
     icon: <DollarLineIcon />,
     name: "Finanzas y Operaciones",
     subItems: [
-      { name: "Contabilidad", path: "/dashboard/contabilidad" },
+      { name: "Balances", path: "/dashboard/balances" },
       { name: "Facturacion", path: "/dashboard/facturacion" },
+      { name: "Conciliación", path: "/dashboard/conciliacion" },
       { name: "Cuentas", path: "/dashboard/tesoreria/cuentas" },
       { name: "Caja", path: "/dashboard/caja" },
       { name: "Pagos", path: "/dashboard/pagos" },
