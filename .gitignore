@@ -40,5 +40,6 @@ next-env.d.ts
 
 /secure_uploads/
 
+/supabase
 
 /sidebar.md
