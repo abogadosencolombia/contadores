@@ -36,6 +36,11 @@ const nextConfig: NextConfig = {
       },
     },
   },
-};
 
+experimental: {
+    serverActions: {
+      allowedOrigins: ['cef61c8413bc.ngrok-free.app', 'localhost:3000'],
+    },
+  },
+};
 export default nextConfig;

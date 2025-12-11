@@ -37,6 +37,7 @@ const navItems: NavItem[] = [
     name: "Finanzas y Operaciones",
     subItems: [
       { name: "Balances", path: "/dashboard/balances" },
+      { name: "auditoria interna", path: "/dashboard/auditoria-interna" },
       { name: "Facturacion", path: "/dashboard/facturacion" },
       { name: "Conciliación", path: "/dashboard/conciliacion" },
       { name: "Cuentas", path: "/dashboard/tesoreria/cuentas" },
