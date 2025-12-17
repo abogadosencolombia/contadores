@@ -1,19 +1,40 @@
 import { db } from '../db';
 import { MockBankProvider } from './MockBankProvider';
-import { StandardBankTransaction } from './types';
+import { PrometeoBankProvider } from './PrometeoBankProvider';
+import { BankProviderAdapter, StandardBankTransaction } from './types';
 
 export class BankSyncService {
-  private provider: MockBankProvider;
-
-  constructor() {
-    this.provider = new MockBankProvider();
-  }
 
   async syncAccount(cuentaId: number) {
+    // 1. Obtener configuración de la cuenta
+    const accountResult = await db.query(
+      'SELECT * FROM core.cuentas_bancarias WHERE id = $1',
+      [cuentaId]
+    );
+
+    if (accountResult.rows.length === 0) {
+      console.error(`Cuenta bancaria ${cuentaId} no encontrada.`);
+      return;
+    }
+
+    const account = accountResult.rows[0];
+    
+    // 2. Factory Pattern: Instanciar proveedor según configuración
+    let provider: BankProviderAdapter;
+
+    if (account.proveedor_externo === 'PROMETEO') {
+      // Usamos la key de la BD o una por defecto/variable de entorno
+      const apiKey = account.api_key_externa || process.env.PROMETEO_API_KEY || '';
+      provider = new PrometeoBankProvider(apiKey);
+    } else {
+      // Default / Fallback
+      provider = new MockBankProvider();
+    }
+
     const startDate = new Date('2025-12-10T00:00:00Z');
     const endDate = new Date('2026-01-10T00:00:00Z');
 
-    const transactions = await this.provider.fetchTransactions(startDate, endDate);
+    const transactions = await provider.fetchTransactions(startDate, endDate);
 
     for (const tx of transactions) {
       const exists = await this.checkTransactionExists(cuentaId, tx.id_externo);
