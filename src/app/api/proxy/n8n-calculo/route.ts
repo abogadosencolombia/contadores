@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(req: NextRequest) {
   try {
-    // CAMBIO IMPORTANTE: Usa la URL de Producción (sin -test)
+    // URL de Producción de n8n
     const n8nUrl = 'https://cobrocartera-n8n.hrymiz.easypanel.host/webhook/calcular-dividendos';
 
     const response = await fetch(n8nUrl, {
@@ -14,14 +14,29 @@ export async function GET(req: NextRequest) {
     });
 
     if (!response.ok) {
-      // Leemos el error que devuelve n8n para saber qué pasa
       const errorText = await response.text();
-      console.error('Error n8n response:', errorText);
-      throw new Error(`Error n8n: ${response.status} ${response.statusText}`);
+      throw new Error(`Error n8n: ${response.status} ${errorText}`);
     }
 
-    const data = await response.json();
-    return NextResponse.json(data);
+    // --- CORRECCIÓN ROBUSTA ---
+    // Leemos el texto crudo primero para ver si vino vacío
+    const text = await response.text();
+
+    // Si n8n no devolvió nada (cadena vacía), significa que no hubo datos para procesar.
+    // Devolvemos un array vacío a nuestro frontend.
+    if (!text) {
+      return NextResponse.json([]);
+    }
+
+    try {
+      // Intentamos parsear el JSON
+      const data = JSON.parse(text);
+      return NextResponse.json(data);
+    } catch (e) {
+      // Si n8n devolvió algo que no es JSON (ej: "Workflow started"), también asumimos vacío o error controlado
+      console.warn("Respuesta no-JSON recibida de n8n:", text);
+      return NextResponse.json([]);
+    }
 
   } catch (error: any) {
     console.error('Error proxy n8n:', error);

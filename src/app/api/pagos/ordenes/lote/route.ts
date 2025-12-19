@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import db from '@/lib/db';
-// import { verifyAuth } from '@/lib/auth'; // Descomenta si usas tu auth
+// import { verifyAuth } from '@/lib/auth';
 
 export async function POST(req: NextRequest) {
   try {
-    // 1. Simulación de usuario (En producción, usa verifyAuth(req))
-    // const session = await verifyAuth(req);
-    const userId = 1; // ID de usuario admin temporal
-    const tenantId = '1'; // ID de tu tenant (empresa) temporal
+    // 1. Simulación de usuario
+    const userId = 1;
+
+    // CORRECCIÓN: Usamos el ID de TEXTO (String) que existe en la tabla core.tenants
+    // Según me indicas, el tenant 1 tiene el identificador: "default_tenant"
+    const tenantId = 'default_tenant';
 
     const { dividendos } = await req.json();
 
@@ -20,35 +22,37 @@ export async function POST(req: NextRequest) {
     try {
       await client.query('BEGIN');
 
-      // 2. Iteramos sobre los dividendos aprobados por el usuario
+      // 2. Iteramos sobre los dividendos
       for (const div of dividendos) {
 
-        // A. Crear la Orden de Pago (Queda en estado 'pendiente' para pago manual/banco)
-        const ordenQuery = `
-          INSERT INTO core.ordenes_pago
-          (tenant_id, creado_por_user_id, proveedor_nit, proveedor_nombre, descripcion,
-           monto, moneda, monto_equivalente_cop, estado, estado_pago)
-          VALUES
-          ($1, $2, $3, $4, $5, $6, $7, $8, 'aprobado', 'pendiente')
-          RETURNING id;
-        `;
+        const mockTransactionId = `PENDIENTE_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
 
-        // Asumimos tasa 1:1 si es COP, o 4000 si es USD (simplificado)
         const tasaCambio = div.moneda === 'USD' ? 4000 : 1;
         const montoCOP = div.monto_neto * tasaCambio;
 
+        // A. Insertamos la Orden de Pago (Referenciando al tenant por su String ID)
+        const ordenQuery = `
+          INSERT INTO core.ordenes_pago
+          (tenant_id, creado_por_user_id, proveedor_nit, proveedor_nombre, descripcion,
+           monto, moneda, monto_equivalente_cop, estado, estado_pago, referencia_pago_externo)
+          VALUES
+          ($1, $2, $3, $4, $5, $6, $7, $8, 'aprobado', 'pagada', $9)
+          RETURNING id;
+        `;
+
         await client.query(ordenQuery, [
-          tenantId,
+          tenantId, // 'default_tenant'
           userId,
-          String(div.accionista_id), // Usamos ID accionista como NIT/ID proveedor
+          String(div.accionista_id),
           div.nombre,
           `Dividendos 2025 - ${div.email}`,
           div.monto_neto,
           div.moneda,
-          montoCOP
+          montoCOP,
+          mockTransactionId
         ]);
 
-        // B. Registrar el Dividendo Contable (Para certificados de retención futuros)
+        // B. Registrar el Dividendo Contable
         const dividendoQuery = `
           INSERT INTO core.dividendospagados
           (accionista_id, ano_fiscal, monto_bruto, retencion, monto_neto, fecha_pago)
@@ -64,7 +68,11 @@ export async function POST(req: NextRequest) {
       }
 
       await client.query('COMMIT');
-      return NextResponse.json({ success: true, message: `${dividendos.length} órdenes creadas` });
+
+      return NextResponse.json({
+        success: true,
+        message: `Se registro ${dividendos.length} en Gestion de Pagos`
+      });
 
     } catch (err) {
       await client.query('ROLLBACK');
@@ -76,6 +84,6 @@ export async function POST(req: NextRequest) {
 
   } catch (error: any) {
     console.error('Error general:', error);
-    return NextResponse.json({ error: 'Error procesando lote' }, { status: 500 });
+    return NextResponse.json({ error: 'Error procesando lote', detail: error.message }, { status: 500 });
   }
 }

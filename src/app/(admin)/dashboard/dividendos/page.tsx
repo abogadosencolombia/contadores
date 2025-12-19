@@ -90,7 +90,11 @@ export default function DividendosPage() {
           {loading ? 'Calculando...' : 'Generar Cálculo IA'}
         </Button>
       </div>
-
+      {!loading && dividendos.length === 0 && (
+        <div className="p-4 rounded-lg bg-gray-100 dark:bg-gray-700 text-center text-gray-500">
+          <p>No hay dividendos pendientes para procesar en este periodo.</p>
+        </div>
+      )}
       {dividendos.length > 0 && (
         <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
           <div className="max-w-full overflow-x-auto">
