@@ -4,6 +4,8 @@ import Script from 'next/script';
 
 import { SidebarProvider } from '@/context/SidebarContext';
 import { ThemeProvider } from '@/context/ThemeContext';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -21,6 +23,7 @@ export default function RootLayout({
         <ThemeProvider>
           <SidebarProvider>{children}</SidebarProvider>
         </ThemeProvider>
+        <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} style={{ zIndex: 99999 }} />
         {wompiPublicKey && (
           <Script
             src="https://cdn.wompi.co/libs/js/v1.js"

@@ -83,13 +83,16 @@ export default function InversionistasPage() {
     try {
       const res = await fetch("/api/inversionistas");
       if (!res.ok) {
-         throw new Error("Error al cargar datos");
+         // Manejar error silenciosamente para evitar overlay
+         toast.error("No se pudieron cargar los datos");
+         setInversionistas([]);
+         return;
       }
       const data = await res.json();
       setInversionistas(Array.isArray(data) ? data : []);
-    } catch (_) {
-      console.error(_);
-      toast.error("Error al cargar inversionistas");
+    } catch (error) {
+      console.error(error);
+      toast.error("Error de conexión");
       setInversionistas([]);
     } finally {
       setLoading(false);
@@ -166,16 +169,24 @@ export default function InversionistasPage() {
 
   const handleCreate = async () => {
     try {
-      await fetch("/api/inversionistas", {
+      const res = await fetch("/api/inversionistas", {
         method: "POST",
         body: JSON.stringify(formData),
       });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        // Mostrar error directamente sin lanzar excepción para evitar el overlay de Next.js
+        toast.error(errorData.error || "Error al crear inversionista");
+        return;
+      }
+
       setIsCreateOpen(false);
       fetchInversionistas();
       toast.success("Inversionista creado");
     } catch (error) {
-      console.error(error);
-      toast.error("Error al crear");
+      console.error(error); // Solo para errores de red reales
+      toast.error("Error de conexión al servidor");
     }
   };
 

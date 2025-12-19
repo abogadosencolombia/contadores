@@ -78,7 +78,7 @@ export default function DividendosPage() {
       <div className="mb-6 flex justify-between items-center bg-white p-4 rounded-lg shadow dark:bg-gray-800">
         <div>
           <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-            Simulación Fiscal 2025
+            Fiscal 2025
           </h2>
           <p className="text-sm text-gray-500">Calcula ROI y Retenciones DIAN antes de pagar</p>
         </div>

@@ -45,8 +45,20 @@ export async function POST(req: NextRequest) {
     client.release();
 
     return NextResponse.json({ message: 'Inversionista creado' });
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
+    const errorMessage = error.message || '';
+    
+    // Manejo de error de autenticación (lanzado por verifyAuth)
+    if (errorMessage.includes('No autenticado')) {
+        return NextResponse.json({ error: errorMessage }, { status: 401 });
+    }
+
+    // Manejo de duplicados (Postgres unique constraint)
+    if (error.code === '23505') {
+        return NextResponse.json({ error: 'El inversionista con este número de documento ya existe' }, { status: 409 });
+    }
+    
     return NextResponse.json({ error: 'Error creando inversionista' }, { status: 500 });
   }
 }
